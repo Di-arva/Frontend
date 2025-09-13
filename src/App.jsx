@@ -1,10 +1,11 @@
+import Contact from "./Components/Contact";
 import Footer from "./Components/Footer";
 
 function App() {
   return (
     <>
-      <div className="min-h-screen flex flex-col">
-        <div className="flex-grow">{/* main content goes here */}</div>
+      <div className="min-h-screen flex flex-col bg-lightbg ">
+        <div className="flex-grow ml-10"><Contact/></div>
         <Footer />
       </div>
     </>
