@@ -7,7 +7,7 @@ const Contact = () => {
         Contact
       </h2>
       <p className="font-poppins w-1/2 ml-2 mt-6 text-darkblack">
-        Email, call or complete the form to learn how{" "}
+        Email, call or complete the form to learn how
         <span className="text-darkblue font-semibold text-lg">Di’arva </span>can
         help you.
       </p>

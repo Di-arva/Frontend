@@ -26,7 +26,7 @@ const Faq = () => {
     setOpenIndex(openIndex === index ? null : index);
   }
   return (
-    <div>
+    <div className="my-20">
       <h2 className="text-darkblue font-poppins text-7xl font-semibold">FAQ</h2>
       <p className="font-poppins w-1/2 ml-2 mt-6 text-darkblack">
         Find your general answers here
