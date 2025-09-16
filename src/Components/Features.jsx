@@ -51,7 +51,7 @@ export default function Features() {
       <h2 className="text-darkblue font-poppins text-7xl font-semibold">
         Features
       </h2>
-      <p className="font-poppins md:w-1/6  ml-2 mt-6 text-darkblack">
+      <p className="font-poppins w-1/2  ml-2 mt-6 text-darkblack">
         Because your time matters and care can’t wait, our platform ensures
         trusted professionals are always just a click away.
       </p>
