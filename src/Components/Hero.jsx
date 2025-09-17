@@ -3,13 +3,12 @@ import StickyLabel from "./StickyLabel";
 const Hero = () => {
   return (
     <div className="mb-20">
-      <StickyLabel />
       <div className="flex ml-55">
         <div className="flex flex-col z-10 justify-center h-screen ">
           <h1 className="text-9xl font-bold text-darkblue">
             Support that you can trust
           </h1>
-          <p className="font-poppins w-200 mt-10 text-darkblack">
+          <p className="font-poppins w-200 mt-12 text-darkblack">
             We comprehensive health solutions tailored to your needs. With
             advanced medical practices, modern technology, and a patient first
             approach, we ensure high-quality care at accessible costs supporting
