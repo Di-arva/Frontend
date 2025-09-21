@@ -3,13 +3,14 @@ import classNames from "classnames";
 const Button = ({ children, variant, size, className, ...rest }) => {
   const variantClasses = {
     dark: "bg-darkblue text-lightbg font-poppins hover:cursor-pointer",
-    light: "bg-yellow-500 hover:bg-yellow-600 text-black",
+    light:
+      "bg-white text-sm  font-poppins text-darkblue border-1 border-darkblue  rounded-full  hover:cursor-pointer",
     default: "bg-gray-500 hover:bg-gray-600 text-white",
   };
 
   const sizeClasses = {
     sm: "px-3 py-1 text-sm",
-    md: "px-4 py-2 text-base",
+    md: " px-12 py-3 text-base font-medium",
     lg: "p-2 w-full text-sm",
   };
 

@@ -1,27 +1,23 @@
-import Features from "./Components/Features";
-import Contact from "./Components/Contact";
-import Faq from "./Components/Faq";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Homepage from "./Components/Homepage";
 import Footer from "./Components/Footer";
-import About from "./Components/About";
-import Hero from "./Components/Hero";
+
 import Navigation from "./Components/Navigation";
-import StickyLabel from "./Components/StickyLabel";
+import Login from "./Components/Login";
 
 function App() {
   return (
     <>
-      <div className="min-h-screen flex flex-col bg-lightbg  ">
-        <Navigation />
-        <StickyLabel />
-        <Hero />
-        <div className="flex-grow ml-10 ">
-          <About />
-          <Features />
-          <Faq />
-          <Contact />
+      <BrowserRouter>
+        <div className="min-h-screen flex flex-col bg-lightbg  ">
+          <Navigation />
+          <Routes>
+            <Route path="/" element={<Homepage />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </BrowserRouter>
     </>
   );
 }

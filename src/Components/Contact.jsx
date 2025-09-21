@@ -2,7 +2,7 @@ import Button from "./Button";
 
 const Contact = () => {
   return (
-    <div className="my-20">
+    <div id="contactus" className="my-20">
       <h2 className="text-darkblue font-poppins text-7xl font-semibold">
         Contact
       </h2>
@@ -21,7 +21,7 @@ const Contact = () => {
           <div className="flex py-4">
             <div className="flex flex-col">
               <label
-                for="firstname"
+                htmlFor="firstname"
                 className="text-darkblack text-sm mb-1 px-3"
               >
                 First Name{" "}
@@ -37,7 +37,7 @@ const Contact = () => {
             </div>
             <div className="flex flex-col">
               <label
-                for="lastname"
+                htmlFor="lastname"
                 className="text-darkblack text-sm mb-1 px-3"
               >
                 Last Name
@@ -53,7 +53,10 @@ const Contact = () => {
             </div>
           </div>
           <div className="flex flex-col">
-            <label for="emailid" className="text-darkblack text-sm mb-1 px-3">
+            <label
+              htmlFor="emailid"
+              className="text-darkblack text-sm mb-1 px-3"
+            >
               Email
             </label>
             <input
@@ -67,7 +70,7 @@ const Contact = () => {
             />
           </div>
           <div className="flex flex-col mt-4">
-            <label for="phone" className="text-darkblack text-sm mb-1 px-3">
+            <label htmlFor="phone" className="text-darkblack text-sm mb-1 px-3">
               Phone Number
             </label>
             <input
@@ -81,7 +84,10 @@ const Contact = () => {
             />
           </div>
           <div className="flex flex-col mt-4">
-            <label for="message" className="text-darkblack text-sm mb-1 px-3">
+            <label
+              htmlFor="message"
+              className="text-darkblack text-sm mb-1 px-3"
+            >
               Message
             </label>
             <textarea

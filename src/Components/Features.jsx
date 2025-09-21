@@ -47,7 +47,7 @@ export default function Features() {
   ];
 
   return (
-    <div className="my-20">
+    <div id="features" className="my-20">
       <h2 className="text-darkblue font-poppins text-7xl font-semibold">
         Features
       </h2>
@@ -57,11 +57,11 @@ export default function Features() {
       </p>
       <div className="flex gap-8 flex-wrap">
         {features.map((feature) => (
-          <div className="bg-lightblue px-6 py-4 w-76 h-80 rounded-4xl flex flex-col mt-2">
-            <div
-              key={feature.id}
-              className="bg-lightbg w-14  p-2 rounded-full flex justify-center shadow-inner "
-            >
+          <div
+            key={feature.id}
+            className="bg-lightblue px-6 py-4 w-76 h-80 rounded-4xl flex flex-col mt-2"
+          >
+            <div className="bg-lightbg w-14  p-2 rounded-full flex justify-center shadow-inner ">
               <img className="w-14 " src={feature.icon} alt="" />
             </div>
             <h2 className="font-poppins text-4xl w-1/2 my-4 font-medium text-darkblack">
