@@ -36,7 +36,7 @@ const faqs = [
     id: 6,
     question: "Do you offer both short-term and long-term staffing?",
     answer:
-      "Yes, we provide flexible staffing solutions — from single-day coverage to long-term or recurring placements.",
+      "Yes, we provide flexible staffing solutions from single-day coverage to long-term or recurring placements.",
   },
   {
     id: 7,
@@ -48,7 +48,7 @@ const faqs = [
     id: 8,
     question: "What areas do you serve?",
     answer:
-      "We currently serve [insert your geographic service area here, e.g., “Toronto and surrounding areas”]. If you're outside this area, please contact us — we may still be able to assist.",
+      "We currently serve [insert your geographic service area here, e.g., “Toronto and surrounding areas”]. If you're outside this area, please contact us we may still be able to assist.",
   },
   {
     id: 9,
@@ -72,7 +72,7 @@ const faqs = [
     id: 12,
     question: "What makes your agency different from others?",
     answer:
-      "We focus on quality, trust, and reliability. Our hands-on vetting process, client-focused service, and deep understanding of healthcare settings ensure we provide staff you can count on — every time.",
+      "We focus on quality, trust, and reliability. Our hands-on vetting process, client-focused service, and deep understanding of healthcare settings ensure we provide staff you can count on every time.",
   },
   {
     id: 13,
@@ -88,43 +88,46 @@ const Faq = () => {
   function toggleFAQ(index) {
     setOpenIndex(openIndex === index ? null : index);
   }
-  return (
-    <div id="faq" className="my-20">
-      <h2 className="text-darkblue font-poppins text-7xl font-semibold">FAQ</h2>
-      <p className="font-poppins w-1/2 ml-2 mt-6 text-darkblack">
-        Find your general answers here
-      </p>
-      <p className="mt-1/2 ml-2 text-base">You can reach us at anytime</p>
 
-      {faqs.map((faq, index) => (
-        <div
-          key={faq.id}
-          className="bg-lightblue w-108  rounded-3xl mt-6 px-8 py-6 flex flex-col"
-        >
-          <div className="flex">
+  return (
+    <div id="faq" className="my-20 px-4 md:px-8 lg:px-20">
+      <h2 className="text-darkblue font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold">
+        FAQ
+      </h2>
+      <p className="font-poppins w-full md:w-4/5 lg:w-3/4 xl:w-2/3 mt-4 text-darkblack text-sm sm:text-base md:text-lg">
+        Find your general answers here. You can reach us at anytime
+      </p>
+
+      <div className="mt-8 flex flex-col gap-6">
+        {faqs.map((faq, index) => (
+          <div
+            key={faq.id}
+            className="bg-lightblue w-full max-w-4xl rounded-3xl mx-auto px-6 sm:px-8 py-4 sm:py-6 flex flex-col shadow-md"
+          >
             <button
               onClick={() => toggleFAQ(index)}
-              className="mr-2 text-darkblue hover:cursor-pointer flex gap-2 items-center"
+              className="flex gap-2 items-center text-left w-full text-darkblue hover:cursor-pointer"
             >
-              <span className="ml-2 text-darkblue">
+              <span className="text-lg">
                 {openIndex === index ? <IoIosArrowUp /> : <IoIosArrowDown />}
               </span>
-              <p className="text-darkblue font-poppins text-md font-medium">
+              <p className="font-poppins text-sm sm:text-base md:text-lg font-medium">
                 {faq.question}
               </p>
             </button>
+
+            <div
+              className={`overflow-hidden transition-all duration-500 ${
+                openIndex === index ? "max-h-96 mt-3" : "max-h-0"
+              }`}
+            >
+              <p className="text-darkblack font-poppins text-sm sm:text-base px-1 sm:px-4">
+                {faq.answer}
+              </p>
+            </div>
           </div>
-          <div
-            className={`overflow-hidden transition-all duration-500 ${
-              openIndex === index ? "max-h-40 p-4 pt-0" : "max-h-0 p-0"
-            }`}
-          >
-            <p className="text-darkblack font-poppins text-sm px-4 mx-1 my-1  font-base ">
-              {faq.answer}
-            </p>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };

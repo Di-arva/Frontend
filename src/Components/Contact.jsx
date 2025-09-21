@@ -2,32 +2,36 @@ import Button from "./Button";
 
 const Contact = () => {
   return (
-    <div id="contactus" className="my-20">
-      <h2 className="text-darkblue font-poppins text-7xl font-semibold">
+    <div id="contactus" className="my-20 px-4 md:px-8 lg:px-20">
+      <h2 className="text-darkblue font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold">
         Contact
       </h2>
-      <p className="font-poppins w-1/2 ml-2 mt-6 text-darkblack">
-        Email, call or complete the form to learn how
-        <span className="text-darkblue font-semibold text-lg">Di’arva </span>can
-        help you.
+      <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-4 text-darkblack text-sm sm:text-base md:text-lg">
+        Email, call or complete the form to learn how{" "}
+        <span className="text-darkblue font-semibold text-base sm:text-lg">
+          Di’arva
+        </span>{" "}
+        can help you.
       </p>
 
-      <div className="bg-lightblue w-108  rounded-3xl mt-6 px-10 py-6">
-        <h3 className="text-darkblue font-poppins text-4xl font-medium">
+      <div className="bg-lightblue w-full max-w-4xl rounded-3xl mt-6 px-6 sm:px-10 py-6 mx-auto shadow-md">
+        <h3 className="text-darkblue font-poppins text-2xl sm:text-3xl md:text-4xl font-medium">
           Get In Touch
         </h3>
-        <p className="mt-1/2 ml-2 text-base">You can reach us at anytime</p>
-        <form className="font-poppins">
-          <div className="flex py-4">
-            <div className="flex flex-col">
+        <p className="mt-2 text-sm sm:text-base">You can reach us at anytime</p>
+
+        <form className="font-poppins mt-4">
+          {/* First & Last name row */}
+          <div className="flex flex-col sm:flex-row gap-4 py-4">
+            <div className="flex flex-col flex-1">
               <label
                 htmlFor="firstname"
                 className="text-darkblack text-sm mb-1 px-3"
               >
-                First Name{" "}
+                First Name
               </label>
               <input
-                className="border mr-4 w-42 border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold  placeholder:text-sm"
+                className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold placeholder:text-sm"
                 type="text"
                 name="firstname"
                 id="firstname"
@@ -35,7 +39,7 @@ const Contact = () => {
                 required
               />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col flex-1">
               <label
                 htmlFor="lastname"
                 className="text-darkblack text-sm mb-1 px-3"
@@ -43,7 +47,7 @@ const Contact = () => {
                 Last Name
               </label>
               <input
-                className="border w-42 border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold  placeholder:text-sm"
+                className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold placeholder:text-sm"
                 type="text"
                 name="lastname"
                 id="lastname"
@@ -52,7 +56,9 @@ const Contact = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col">
+
+          {/* Email */}
+          <div className="flex flex-col mt-2">
             <label
               htmlFor="emailid"
               className="text-darkblack text-sm mb-1 px-3"
@@ -60,7 +66,7 @@ const Contact = () => {
               Email
             </label>
             <input
-              className="border w-full border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold  placeholder:text-sm"
+              className="border w-full border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold placeholder:text-sm"
               type="email"
               name="emailid"
               id="emailid"
@@ -69,12 +75,14 @@ const Contact = () => {
               required
             />
           </div>
+
+          {/* Phone */}
           <div className="flex flex-col mt-4">
             <label htmlFor="phone" className="text-darkblack text-sm mb-1 px-3">
               Phone Number
             </label>
             <input
-              className="border w-full border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold  placeholder:text-sm"
+              className="border w-full border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold placeholder:text-sm"
               type="tel"
               name="phone"
               id="phone"
@@ -83,6 +91,8 @@ const Contact = () => {
               required
             />
           </div>
+
+          {/* Message */}
           <div className="flex flex-col mt-4">
             <label
               htmlFor="message"
@@ -91,24 +101,22 @@ const Contact = () => {
               Message
             </label>
             <textarea
-              className="border resize-none w-full h-40 border-darkblue rounded-3xl text-sm p-4 text-darkblue font-semibold  placeholder:text-sm "
+              className="border resize-none w-full h-32 sm:h-40 border-darkblue rounded-3xl text-sm p-4 text-darkblue font-semibold placeholder:text-sm"
               name="message"
               id="message"
               placeholder="Ask your questions here"
               required
             />
           </div>
-          <button
-            className="bg-darkblue w-full text-sm  text-lightbg font-poppins p-2 rounded-4xl mt-4 cursor-pointer"
-            aria-label="Send"
-          >
-            Send
-          </button>
-          <Button variant="dark" size="lg" className="mt-4">
+
+          {/* Buttons */}
+
+          <Button variant="dark" size="lg" className="mt-4 w-full">
             Send
           </Button>
-          <p className="text-sm text-darkblack px-4 mt-4 py-2">
-            By contacting us you agree to our
+
+          <p className="text-xs sm:text-sm text-darkblack px-2 sm:px-4 mt-4 py-2">
+            By contacting us you agree to our{" "}
             <span className="text-darkblue font-semibold">T&C</span> and{" "}
             <span className="text-darkblue font-semibold">Privacy Policy</span>
           </p>

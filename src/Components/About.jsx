@@ -1,12 +1,12 @@
 const About = () => {
   return (
-    <div className="my-20" id="aboutus">
-      <h2 className="text-darkblue font-poppins text-7xl font-semibold">
+    <div className="my-20 px-4 md:px-8 lg:px-20" id="aboutus">
+      <h2 className="text-darkblue font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-semibold">
         About
       </h2>
-      <p className="font-poppins w-1/2 ml-2 mt-6 text-darkblack">
+      <p className="font-poppins w-full md:w-4/5 lg:w-2/3 xl:w-1/2 mt-4 md:mt-6 text-darkblack text-sm sm:text-base md:text-lg leading-relaxed">
         At
-        <span className="text-darkblue font-semibold text-lg mx-1">
+        <span className="text-darkblue font-semibold text-base sm:text-lg md:text-xl mx-1">
           Di’arva Healthcare Staffing agency,
         </span>
         we specialize in providing high-quality temporary staffing solutions for

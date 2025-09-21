@@ -47,27 +47,34 @@ export default function Features() {
   ];
 
   return (
-    <div id="features" className="my-20">
-      <h2 className="text-darkblue font-poppins text-7xl font-semibold">
+    <div id="features" className="my-20 px-4 md:px-8 lg:px-20">
+      <h2 className="text-darkblue font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-semibold">
         Features
       </h2>
-      <p className="font-poppins w-1/2  ml-2 mt-6 text-darkblack">
+      <p className="font-poppins w-full md:w-4/5 lg:w-2/3 xl:w-1/2 mt-4 md:mt-6 text-darkblack text-sm sm:text-base md:text-lg leading-relaxed">
         Because your time matters and care can’t wait, our platform ensures
         trusted professionals are always just a click away.
       </p>
-      <div className="flex gap-8 flex-wrap">
+
+      <div className="mt-10 grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((feature) => (
           <div
             key={feature.id}
-            className="bg-lightblue px-6 py-4 w-76 h-80 rounded-4xl flex flex-col mt-2"
+            className="bg-lightblue px-6 py-6 w-76 h-80 rounded-3xl flex flex-col shadow-md"
           >
-            <div className="bg-lightbg w-14  p-2 rounded-full flex justify-center shadow-inner ">
-              <img className="w-14 " src={feature.icon} alt="" />
+            <div className="bg-lightbg w-14 h-14 p-2 rounded-full flex justify-center items-center shadow-inner">
+              <img
+                className="w-10 h-10"
+                src={feature.icon}
+                alt={feature.title}
+              />
             </div>
-            <h2 className="font-poppins text-4xl w-1/2 my-4 font-medium text-darkblack">
+            <h2 className="font-poppins text-xl sm:text-2xl md:text-3xl my-4 font-medium text-darkblack">
               {feature.title}
             </h2>
-            <p className="font-poppins text-md font-normal ">{feature.desc}</p>
+            <p className="font-poppins text-sm sm:text-base md:text-md font-normal">
+              {feature.desc}
+            </p>
           </div>
         ))}
       </div>
