@@ -95,7 +95,7 @@ const Navigation = () => {
             isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
-          <div className="bg-lightbg shadow-md z-50 w-full py-6 px-6 flex flex-col gap-6">
+          <div className="bg-lightbg shadow-md z-80 w-full py-6 px-6 flex flex-col gap-6">
             <ul className="flex flex-col gap-6">
               <li className={getNavLinkClassName(location.hash === "#home")}>
                 <HashLink smooth to="#home" onClick={toggleMenu}>

@@ -1,16 +1,27 @@
 import Button from "./Button";
 
 const Contact = () => {
+  const handleContact = async (formData) => {
+    const data = {
+      firstname: formData.get("firstname"),
+      lastname: formData.get("lastname"),
+      email: formData.get("emailid"),
+      phone: formData.get("phone"),
+      message: formData.get("message"),
+    };
+    console.log("Form submitted:", data);
+  };
+
   return (
     <div id="contactus" className="my-20 px-4 md:px-8 lg:px-20">
       <h2 className="text-darkblue font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold">
         Contact
       </h2>
       <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-4 text-darkblack text-sm sm:text-base md:text-lg">
-        Email, call or complete the form to learn how{" "}
+        Email, call or complete the form to learn how
         <span className="text-darkblue font-semibold text-base sm:text-lg">
           Di’arva
-        </span>{" "}
+        </span>
         can help you.
       </p>
 
@@ -20,7 +31,7 @@ const Contact = () => {
         </h3>
         <p className="mt-2 text-sm sm:text-base">You can reach us at anytime</p>
 
-        <form className="font-poppins mt-4">
+        <form action={handleContact} className="font-poppins mt-4">
           {/* First & Last name row */}
           <div className="flex flex-col sm:flex-row gap-4 py-4">
             <div className="flex flex-col flex-1">
@@ -111,13 +122,18 @@ const Contact = () => {
 
           {/* Buttons */}
 
-          <Button variant="dark" size="lg" className="mt-4 w-full">
+          <Button
+            type="submit"
+            variant="dark"
+            size="lg"
+            className="mt-4 w-full"
+          >
             Send
           </Button>
 
           <p className="text-xs sm:text-sm text-darkblack px-2 sm:px-4 mt-4 py-2">
-            By contacting us you agree to our{" "}
-            <span className="text-darkblue font-semibold">T&C</span> and{" "}
+            By contacting us you agree to our
+            <span className="text-darkblue font-semibold">T&C</span> and
             <span className="text-darkblue font-semibold">Privacy Policy</span>
           </p>
         </form>
