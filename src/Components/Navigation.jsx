@@ -38,27 +38,27 @@ const Navigation = () => {
         {/* Desktop Nav (Large screens) */}
         <ul className="hidden xl:flex gap-12">
           <li className={getNavLinkClassName(location.hash === "#home")}>
-            <HashLink smooth to="#home">
+            <HashLink smooth to="/#home">
               Home
             </HashLink>
           </li>
           <li className={getNavLinkClassName(location.hash === "#aboutus")}>
-            <HashLink smooth to="#aboutus">
+            <HashLink smooth to="/#aboutus">
               About Us
             </HashLink>
           </li>
           <li className={getNavLinkClassName(location.hash === "#features")}>
-            <HashLink smooth to="#features">
+            <HashLink smooth to="/#features">
               Features
             </HashLink>
           </li>
           <li className={getNavLinkClassName(location.hash === "#faq")}>
-            <HashLink smooth to="#faq">
+            <HashLink smooth to="/#faq">
               Faq
             </HashLink>
           </li>
           <li className={getNavLinkClassName(location.hash === "#contactus")}>
-            <HashLink smooth to="#contactus">
+            <HashLink smooth to="/#contactus">
               Contact Us
             </HashLink>
           </li>
@@ -98,31 +98,31 @@ const Navigation = () => {
           <div className="bg-lightbg shadow-md z-80 w-full py-6 px-6 flex flex-col gap-6">
             <ul className="flex flex-col gap-6">
               <li className={getNavLinkClassName(location.hash === "#home")}>
-                <HashLink smooth to="#home" onClick={toggleMenu}>
+                <HashLink smooth to="/#home" onClick={toggleMenu}>
                   Home
                 </HashLink>
               </li>
               <li className={getNavLinkClassName(location.hash === "#aboutus")}>
-                <HashLink smooth to="#aboutus" onClick={toggleMenu}>
+                <HashLink smooth to="/#aboutus" onClick={toggleMenu}>
                   About Us
                 </HashLink>
               </li>
               <li
                 className={getNavLinkClassName(location.hash === "#features")}
               >
-                <HashLink smooth to="#features" onClick={toggleMenu}>
+                <HashLink smooth to="/#features" onClick={toggleMenu}>
                   Features
                 </HashLink>
               </li>
               <li className={getNavLinkClassName(location.hash === "#faq")}>
-                <HashLink smooth to="#faq" onClick={toggleMenu}>
+                <HashLink smooth to="/#faq" onClick={toggleMenu}>
                   Faq
                 </HashLink>
               </li>
               <li
                 className={getNavLinkClassName(location.hash === "#contactus")}
               >
-                <HashLink smooth to="#contactus" onClick={toggleMenu}>
+                <HashLink smooth to="/#contactus" onClick={toggleMenu}>
                   Contact Us
                 </HashLink>
               </li>
