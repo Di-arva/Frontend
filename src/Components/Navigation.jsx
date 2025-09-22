@@ -91,7 +91,7 @@ const Navigation = () => {
 
         {/* Mobile / Tablet Dropdown with Slide Animation */}
         <div
-          className={`fixed  top-20 left-0 w-full flex justify-center lg:hidden transform transition-transform duration-300 ease-in-out ${
+          className={`fixed  top-20 left-0 w-full flex justify-center  transform transition-transform duration-300 ease-in-out ${
             isOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >

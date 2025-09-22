@@ -56,11 +56,11 @@ export default function Features() {
         trusted professionals are always just a click away.
       </p>
 
-      <div className="mt-10 grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-10 grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 justify-items-center">
         {features.map((feature) => (
           <div
             key={feature.id}
-            className="bg-lightblue px-6 py-6 w-76 h-80 rounded-3xl flex flex-col shadow-md"
+            className="bg-lightblue px-3 py-4 sm:px-4 sm:py-5 md:px-6 md:py-6 rounded-3xl flex flex-col shadow-md"
           >
             <div className="bg-lightbg w-14 h-14 p-2 rounded-full flex justify-center items-center shadow-inner">
               <img
