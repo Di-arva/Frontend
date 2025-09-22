@@ -9,7 +9,7 @@ const Homepage = () => {
   return (
     <>
       <Hero />
-      <div className="flex-grow ml-10 ">
+      <div className="flex-grow">
         <About />
         <Features />
         <Faq />

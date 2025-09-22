@@ -32,7 +32,7 @@ const StickyLabel = () => {
 
   return (
     <div
-      className=" w-full  bg-darkblue opacity-85 mt-4 flex items-center fixed font-poppins  md:text-md font-medium py-2 z-20 top-16
+      className=" w-full  bg-darkblue opacity-85 mt-4 flex items-center fixed font-poppins  md:text-md font-medium py-2 z-40 top-16
                     h-auto  px-2 text-base md:h-auto"
     >
       <ul className="flex flex-wrap justify-around gap-2     text-lightbg w-full  ">
