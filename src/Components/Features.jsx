@@ -9,12 +9,13 @@ export default function Features() {
     {
       id: 1,
       icon: `${Multilingual}`,
-      title: "Multilingual Support",
+      title1: "Multilingual",
+      title2: "Support",
       desc: (
         <>
           Services available in{" "}
           <span className="text-darkblue m-1">
-            English, हिन्दी, ਪੰਜਾਬੀ & Polski
+            English, हिन्दी, ગુજરાતી, ਪੰਜਾਬੀ & Polski
           </span>
           languages to ensure comfort and clear communication.
         </>
@@ -23,25 +24,29 @@ export default function Features() {
     {
       id: 2,
       icon: `${Dashboard}`,
-      title: "Smart Dashboard",
+      title1: "Smart",
+      title2: "Dashboard",
       desc: "Practices can request shifts, professionals can apply, and approvals happen in a few clicks.",
     },
     {
       id: 3,
       icon: `${Piggybank}`,
-      title: "Affordable Pricing",
+      title1: "Affordable",
+      title2: "Pricing",
       desc: "Competitive pricing with no hidden fees. Save more by hiring from us compared to hiring from others.",
     },
     {
       id: 4,
       icon: `${Sevendays}`,
-      title: "7 Days Availability",
+      title1: "7 Days",
+      title2: "Availability",
       desc: "Whether it’s a last-minute staffing need or an emergency care request at home, we got you covered.",
     },
     {
       id: 5,
       icon: `${Approve}`,
-      title: "Trusted Professionals",
+      title1: "Trusted",
+      title2: "Professionals",
       desc: "Certified health care professionals are trained to provide safe, reliable, and personalized care.",
     },
   ];
@@ -70,7 +75,8 @@ export default function Features() {
               />
             </div>
             <h2 className="font-poppins text-xl sm:text-2xl md:text-3xl my-4 font-medium text-darkblack">
-              {feature.title}
+              <span className="block">{feature.title1}</span>
+              <span className="text-darkblack">{feature.title2}</span>
             </h2>
             <p className="font-poppins text-sm sm:text-base md:text-md font-normal">
               {feature.desc}

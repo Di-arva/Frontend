@@ -133,8 +133,10 @@ const Contact = () => {
 
           <p className="text-xs sm:text-sm text-darkblack px-2 sm:px-4 mt-4 py-2">
             By contacting us you agree to our
-            <span className="text-darkblue font-semibold">T&C</span> and
-            <span className="text-darkblue font-semibold">Privacy Policy</span>
+            <span className="text-darkblue font-semibold ml-1">T&C</span> and
+            <span className="text-darkblue font-semibold ml-1">
+              Privacy Policy
+            </span>
           </p>
         </form>
       </div>
