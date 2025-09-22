@@ -5,7 +5,7 @@ const Hero = () => {
     <div id="home" className="">
       <div className="flex flex-col md:flex-row min-h-screen">
         {/* Left Content - 70% */}
-        <div className="flex flex-col justify-center px-4 sm:px-8 lg:px-16 py-10 md:py-0 w-full md:w-[70%] z-20">
+        <div className="flex flex-col justify-center px-4 sm:px-8 lg:px-16 py-10 md:py-0 w-full md:w-[70%] ">
           <h1 className="font-bold text-darkblue text-7xl tracking-wider">
             Quality Staff <br />
             Trusted Care <br />
