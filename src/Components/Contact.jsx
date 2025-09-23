@@ -151,8 +151,8 @@ const Contact = () => {
               type="tel"
               name="phone"
               id="phone"
-              placeholder="+1-1231231234"
-              pattern="^\+1-\d{10}$"
+              placeholder="+11231231234"
+              pattern="^\+1\d{10}$"
               required
               disabled={isSubmitting}
             />
