@@ -97,30 +97,46 @@ const Navigation = () => {
         >
           <div className="bg-lightbg shadow-md z-80 w-full py-6 px-6 flex flex-col gap-6">
             <ul className="flex flex-col gap-6">
-              <li className={getNavLinkClassName(location.hash === "#home")}>
+              <li
+                className={`${getNavLinkClassName(
+                  location.hash === "#home"
+                )} w-max`}
+              >
                 <HashLink smooth to="/#home" onClick={toggleMenu}>
                   Home
                 </HashLink>
               </li>
-              <li className={getNavLinkClassName(location.hash === "#aboutus")}>
+              <li
+                className={`${getNavLinkClassName(
+                  location.hash === "#aboutus"
+                )} w-max`}
+              >
                 <HashLink smooth to="/#aboutus" onClick={toggleMenu}>
                   About Us
                 </HashLink>
               </li>
               <li
-                className={getNavLinkClassName(location.hash === "#features")}
+                className={`${getNavLinkClassName(
+                  location.hash === "#features"
+                )} w-max`}
               >
                 <HashLink smooth to="/#features" onClick={toggleMenu}>
                   Features
                 </HashLink>
               </li>
-              <li className={getNavLinkClassName(location.hash === "#faq")}>
+              <li
+                className={`${getNavLinkClassName(
+                  location.hash === "#faq"
+                )} w-max`}
+              >
                 <HashLink smooth to="/#faq" onClick={toggleMenu}>
                   Faq
                 </HashLink>
               </li>
               <li
-                className={getNavLinkClassName(location.hash === "#contactus")}
+                className={`${getNavLinkClassName(
+                  location.hash === "#contactus"
+                )} w-max`}
               >
                 <HashLink smooth to="/#contactus" onClick={toggleMenu}>
                   Contact Us
