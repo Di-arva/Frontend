@@ -70,7 +70,7 @@ const Contact = () => {
       </h2>
       <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-4 text-darkblack text-sm sm:text-base md:text-lg">
         Email, call or complete the form to learn how
-        <span className="text-darkblue font-semibold text-base sm:text-lg">
+        <span className="text-darkblue font-semibold text-base sm:text-lg mx-2">
           Di’arva
         </span>
         can help you.
