@@ -1,15 +1,15 @@
 import Button from "./Button";
-import emailjs from '@emailjs/browser';
-import { useState } from 'react';
+import emailjs from "@emailjs/browser";
+import { useState } from "react";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+  const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
 
   const handleContact = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus({ type: '', message: '' });
+    setSubmitStatus({ type: "", message: "" });
 
     const formData = new FormData(e.target);
     const data = {
@@ -20,9 +20,9 @@ const Contact = () => {
       message: formData.get("message"),
     };
 
-    const serviceID = 'service_jkxnddc'; 
-    const templateID = 'template_au3h8ke';
-    const publicKey = 'Ar8C8CxRfnaFbOMuo';
+    const serviceID = "service_jkxnddc";
+    const templateID = "template_au3h8ke";
+    const publicKey = "Ar8C8CxRfnaFbOMuo";
 
     try {
       await emailjs.send(
@@ -38,16 +38,16 @@ const Contact = () => {
       );
 
       setSubmitStatus({
-        type: 'success',
-        message: 'Thank you for your message! We will get back to you soon.'
+        type: "success",
+        message: "Thank you for your message! We will get back to you soon.",
       });
-      
+
       e.target.reset();
-      
     } catch (error) {
       setSubmitStatus({
-        type: 'error',
-        message: 'Sorry, there was an error sending your message. Please try again.'
+        type: "error",
+        message:
+          "Sorry, there was an error sending your message. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -175,7 +175,7 @@ const Contact = () => {
             className="mt-4 w-full"
             disabled={isSubmitting}
           >
-            {isSubmitting ? 'Sending...' : 'Send'}
+            {isSubmitting ? "Sending..." : "Send"}
           </Button>
 
           <p className="text-xs sm:text-sm text-darkblack px-2 sm:px-4 mt-4 py-2">
@@ -188,11 +188,13 @@ const Contact = () => {
         </form>
 
         {submitStatus.message && (
-          <div className={`mt-4 p-3 rounded-lg text-sm ${
-            submitStatus.type === 'success' 
-              ? 'bg-green-100 text-green-700 border border-green-200' 
-              : 'bg-red-100 text-red-700 border border-red-200'
-          }`}>
+          <div
+            className={`mt-4 p-3 rounded-lg text-sm ${
+              submitStatus.type === "success"
+                ? "bg-green-100 text-green-700 border border-green-200"
+                : "bg-red-100 text-red-700 border border-red-200"
+            }`}
+          >
             {submitStatus.message}
           </div>
         )}

@@ -11,7 +11,7 @@ const Hero = () => {
         </div>
 
         {/* Left Content (Heading + Text + Buttons) */}
-        <div className="flex flex-col w-full lg:w-[80%] items-center lg:items-start z-10 ">
+        <div className="flex mt-24 flex-col w-full lg:w-[80%] items-center lg:items-start z-10 ">
           <h1
             className="font-bold text-darkblue 
              text-4xl sm:text-5xl md:text-6xl lg:text-7xl
