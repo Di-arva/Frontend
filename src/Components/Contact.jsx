@@ -1,7 +1,17 @@
 import Button from "./Button";
+import emailjs from '@emailjs/browser';
+import { useState } from 'react';
 
 const Contact = () => {
-  const handleContact = async (formData) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
+
+  const handleContact = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus({ type: '', message: '' });
+
+    const formData = new FormData(e.target);
     const data = {
       firstname: formData.get("firstname"),
       lastname: formData.get("lastname"),
@@ -9,7 +19,39 @@ const Contact = () => {
       phone: formData.get("phone"),
       message: formData.get("message"),
     };
-    console.log("Form submitted:", data);
+
+    const serviceID = 'service_jkxnddc'; 
+    const templateID = 'template_au3h8ke';
+    const publicKey = 'Ar8C8CxRfnaFbOMuo';
+
+    try {
+      await emailjs.send(
+        serviceID,
+        templateID,
+        {
+          name: `${data.firstname} ${data.lastname}`,
+          email: data.email,
+          phone: data.phone,
+          message: data.message,
+        },
+        publicKey
+      );
+
+      setSubmitStatus({
+        type: 'success',
+        message: 'Thank you for your message! We will get back to you soon.'
+      });
+      
+      e.target.reset();
+      
+    } catch (error) {
+      setSubmitStatus({
+        type: 'error',
+        message: 'Sorry, there was an error sending your message. Please try again.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -31,7 +73,7 @@ const Contact = () => {
         </h3>
         <p className="mt-2 text-sm sm:text-base">You can reach us at anytime</p>
 
-        <form action={handleContact} className="font-poppins mt-4">
+        <form onSubmit={handleContact} className="font-poppins mt-4">
           {/* First & Last name row */}
           <div className="flex flex-col sm:flex-row gap-4 py-4">
             <div className="flex flex-col flex-1">
@@ -48,6 +90,7 @@ const Contact = () => {
                 id="firstname"
                 placeholder="John"
                 required
+                disabled={isSubmitting}
               />
             </div>
             <div className="flex flex-col flex-1">
@@ -64,6 +107,7 @@ const Contact = () => {
                 id="lastname"
                 placeholder="Smith"
                 required
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -84,6 +128,7 @@ const Contact = () => {
               placeholder="john@smith.com"
               pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
               required
+              disabled={isSubmitting}
             />
           </div>
 
@@ -100,6 +145,7 @@ const Contact = () => {
               placeholder="+1-123-123-1234"
               pattern="\+1-\d{3}-\d{3}-\d{4}"
               required
+              disabled={isSubmitting}
             />
           </div>
 
@@ -117,18 +163,19 @@ const Contact = () => {
               id="message"
               placeholder="Ask your questions here"
               required
+              disabled={isSubmitting}
             />
           </div>
 
           {/* Buttons */}
-
           <Button
             type="submit"
             variant="dark"
             size="lg"
             className="mt-4 w-full"
+            disabled={isSubmitting}
           >
-            Send
+            {isSubmitting ? 'Sending...' : 'Send'}
           </Button>
 
           <p className="text-xs sm:text-sm text-darkblack px-2 sm:px-4 mt-4 py-2">
@@ -139,6 +186,16 @@ const Contact = () => {
             </span>
           </p>
         </form>
+
+        {submitStatus.message && (
+          <div className={`mt-4 p-3 rounded-lg text-sm ${
+            submitStatus.type === 'success' 
+              ? 'bg-green-100 text-green-700 border border-green-200' 
+              : 'bg-red-100 text-red-700 border border-red-200'
+          }`}>
+            {submitStatus.message}
+          </div>
+        )}
       </div>
     </div>
   );
