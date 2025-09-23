@@ -1,11 +1,20 @@
 import Button from "./Button";
 import emailjs from "@emailjs/browser";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
 
+  useEffect(() => {
+    if (submitStatus.message) {
+      const timer = setTimeout(() => {
+        setSubmitStatus({ type: "", message: "" });
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [submitStatus]);
   const handleContact = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -20,9 +29,9 @@ const Contact = () => {
       message: formData.get("message"),
     };
 
-    const serviceID = "service_jkxnddc";
-    const templateID = "template_au3h8ke";
-    const publicKey = "Ar8C8CxRfnaFbOMuo";
+    const serviceID = "service_ul00k0k";
+    const templateID = "template_za5jqac";
+    const publicKey = "PUHd-9-v4ll3uJMX_";
 
     try {
       await emailjs.send(
@@ -45,7 +54,7 @@ const Contact = () => {
       e.target.reset();
     } catch (error) {
       setSubmitStatus({
-        type: "error",
+        type: error,
         message:
           "Sorry, there was an error sending your message. Please try again.",
       });
@@ -142,8 +151,8 @@ const Contact = () => {
               type="tel"
               name="phone"
               id="phone"
-              placeholder="+1-123-123-1234"
-              pattern="\+1-\d{3}-\d{3}-\d{4}"
+              placeholder="+1-1231231234"
+              pattern="^\+1-\d{10}$"
               required
               disabled={isSubmitting}
             />
@@ -188,13 +197,7 @@ const Contact = () => {
         </form>
 
         {submitStatus.message && (
-          <div
-            className={`mt-4 p-3 rounded-lg text-sm ${
-              submitStatus.type === "success"
-                ? "bg-green-100 text-green-700 border border-green-200"
-                : "bg-red-100 text-red-700 border border-red-200"
-            }`}
-          >
+          <div className="mt-6 p-4 font-poppins text-lg font-medium rounded-2xl shadow-md text-center text-darkblue border border-darkblue">
             {submitStatus.message}
           </div>
         )}
