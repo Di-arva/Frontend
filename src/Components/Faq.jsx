@@ -4,61 +4,62 @@ import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 const faqs = [
   {
     id: 1,
-    question: "What types of healthcare professionals do you provide?",
+    question: "What types of healthcare professionals do we provide?",
     answer:
-      "We provide qualified and pre-screened temporary staff including dental hygienists, dental assistants, home care aides, personal support workers (PSWs), physiotherapists, physiotherapy assistants, and other allied health professionals.",
+      "We provide qualified and pre screened temporary staff including dental hygienists, dental assistants, home care aides, personal support workers (PSWs), physiotherapists, physiotherapy assistants, and other allied health professionals.",
   },
   {
     id: 2,
-    question: "What types of facilities do you work with?",
+    question: "What types of facilities do we work with?",
     answer:
       "We serve a variety of healthcare providers including dental clinics, home care agencies, private home care clients, and physiotherapy clinics.",
   },
   {
     id: 3,
-    question: "How do you ensure the quality of your temp staff?",
+    question: "How do we ensure the quality of our temp staff?",
     answer:
       "All our professionals undergo a rigorous screening process, including license verification, reference checks, background checks, and skills assessments. We only work with staff who demonstrate professionalism, competence, and a commitment to patient care.",
   },
   {
     id: 4,
-    question: "How quickly can you fill a staffing request?",
+    question: "How quickly can we fill a staffing request?",
     answer:
-      "We offer both same-day and scheduled staffing services. Depending on availability and your needs, we can often fill urgent requests within hours.",
+      "We offer both same day and scheduled staffing services. Depending on availability and your needs, we can often fill urgent requests within hours.",
   },
   {
     id: 5,
-    question: "Are your staff insured and licensed?",
+    question: "Is Di'arva staff insured and licensed?",
     answer:
       "Yes, all our professionals hold the required licenses, certifications, and liability insurance appropriate for their role and province.",
   },
   {
     id: 6,
-    question: "Do you offer both short-term and long-term staffing?",
+    question: "Do we offer both short-term and long-term staffing?",
     answer:
       "Yes, we provide flexible staffing solutions from single-day coverage to long-term or recurring placements.",
   },
   {
     id: 7,
-    question: "How does your matching process work?",
+    question: "How does our matching process work?",
     answer:
       "We take the time to understand your clinic’s specific needs and culture. Our team then matches you with a professional whose skills and personality align with your environment and requirements.",
   },
   {
     id: 8,
-    question: "What areas do you serve?",
+    question: "What areas do we serve?",
     answer:
-      "We currently serve [insert your geographic service area here, e.g., “Toronto and surrounding areas”]. If you're outside this area, please contact us we may still be able to assist.",
+      "We currently serve Ontario region. If you're outside this area, please contact us we may still be able to assist.",
   },
   {
     id: 9,
-    question: "How much notice is required to request a temp staff member?",
+    question:
+      "How much notice period is required to request a temp staff member?",
     answer:
-      "While we can often accommodate same-day requests, we recommend providing as much notice as possible to ensure the best match for your clinic.",
+      "While we can often accommodate same day requests, we recommend providing as much notice as possible to ensure the best match for your clinic.",
   },
   {
     id: 10,
-    question: "How are your services billed?",
+    question: "How are our services billed?",
     answer:
       "We offer transparent, competitive pricing with hourly or daily rates depending on the role and shift length. Detailed invoices are provided for each placement.",
   },
@@ -70,13 +71,13 @@ const faqs = [
   },
   {
     id: 12,
-    question: "What makes your agency different from others?",
+    question: "What makes our agency different from others?",
     answer:
       "We focus on quality, trust, and reliability. Our hands-on vetting process, client-focused service, and deep understanding of healthcare settings ensure we provide staff you can count on every time.",
   },
   {
     id: 13,
-    question: "How do I get started with your staffing services?",
+    question: "How do I get started with our staffing services?",
     answer:
       "Simply contact us via phone, email, or our online request form. One of our staffing coordinators will follow up to discuss your needs and begin the matching process.",
   },

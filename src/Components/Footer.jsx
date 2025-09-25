@@ -136,7 +136,8 @@ const Footer = () => {
         <div className="flex flex-col justify-between pt-3 pb-4 gap-2 ">
           <p className="text-sm text-darkblack font-poppins font-normal flex md:items-center">
             <FaLock className="mr-2 text-darkblue flex" />
-            Your data is secure with AES-256, block-level storage encryption
+            Your data is secure with us (with AES-256, block-level storage
+            encryption)
           </p>
           <div className="flex gap-4 ml-5">
             <p className="hover:text-darkblue cursor-pointer  font-poppins text-sm font-normal text-darkblack">
