@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Homepage from "./Components/Homepage";
 import Footer from "./Components/Footer";
-import StickyLabel from "./Components/StickyLabel";
+import FollowUs from "./Components/FollowUs";
 import Navigation from "./Components/Navigation";
 import Login from "./Components/Login";
 
@@ -11,7 +11,7 @@ function App() {
       <BrowserRouter>
         <div className="min-h-screen flex flex-col bg-lightbg">
           <Navigation />
-
+          <FollowUs />
           <main className="flex-1 mt-30">
             <Routes>
               <Route path="/" element={<Homepage />} />
