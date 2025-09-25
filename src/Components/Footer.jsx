@@ -95,7 +95,7 @@ const Footer = () => {
             </span>
             <div className="flex items-center mt-1 space-x-3">
               <a
-                href="https://x.com/diarvastaffing"
+                href="https://x.com/diarvasolution"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-lightbg border rounded-full p-2 bg-darkblue"
@@ -103,7 +103,7 @@ const Footer = () => {
                 <FaSquareXTwitter />
               </a>
               <a
-                href="https://www.instagram.com/diarvastaffing/"
+                href="https://www.instagram.com/diarvahealthcare/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-lightbg border rounded-full p-2 bg-darkblue"
@@ -111,7 +111,7 @@ const Footer = () => {
                 <FiInstagram />
               </a>
               <a
-                href="https://www.facebook.com/Diarvastaffing/"
+                href="https://www.facebook.com/diarvahealthcare/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-lightbg border rounded-full p-2 bg-darkblue"
