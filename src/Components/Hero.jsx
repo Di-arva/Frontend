@@ -2,7 +2,7 @@ import Button from "./Button";
 
 const Hero = () => {
   return (
-    <div className="relative bg-lightblue py-10 px-4 sm:px-8 lg:px-16">
+    <div className="relative bg-lightblue px-4 sm:px-8 lg:px-16">
       {/* Inner container with max width */}
       <div className="relative max-w-7xl mx-auto flex flex-col lg:flex-row">
         {/* Watermark "•D•" for large screens */}
@@ -11,7 +11,7 @@ const Hero = () => {
         </div>
 
         {/* Left Content (Heading + Text + Buttons) */}
-        <div className="flex mt-24 flex-col w-full lg:w-[80%] items-center lg:items-start z-10 ">
+        <div className="flex mt-8 flex-col w-full lg:w-[80%] items-center lg:items-start z-10 ">
           <h1
             className="font-bold text-darkblue 
              text-4xl sm:text-5xl md:text-6xl lg:text-7xl
@@ -34,7 +34,7 @@ const Hero = () => {
             costs supporting your well-being at every stage of life.
           </p>
 
-          <div className="flex mt-6 gap-3 sm:gap-5 md:gap-5 lg:gap-6 flex-wrap justify-center lg:justify-start">
+          <div className="flex mt-6 gap-3 mb-10 sm:gap-5 md:gap-5 lg:gap-6 flex-wrap justify-center lg:justify-start">
             <Button variant="light" size="md">
               Create Account
             </Button>

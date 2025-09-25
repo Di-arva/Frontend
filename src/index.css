@@ -6,3 +6,12 @@
   --color-lightblue: #D2E2FC;
   --color-lightbg: #FEFEFE;
 }
+
+@keyframes scroll {
+  0% { transform: translateX(100vw); } /* Start from viewport width */
+  100% { transform: translateX(-100%); }
+}
+
+.animate-scroll {
+  animation: scroll 40s linear infinite;
+}
