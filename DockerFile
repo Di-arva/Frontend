@@ -1,0 +1,15 @@
+FROM node:alpine3.18 as build
+
+#Build App
+WORKDIR /app
+COPY package.json
+RUN nmp install
+COPY npm run build
+
+# Serve with Ngnix
+FROM ngnix:1.23-alpine
+WORKDIR /user/share/nginx/html
+RUN rm -rf *
+COPY --from=build /app/dist .
+EXPOSE 80
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
