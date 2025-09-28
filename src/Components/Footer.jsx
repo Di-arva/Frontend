@@ -23,7 +23,7 @@ const Footer = () => {
             >
               <img
                 className="w-52"
-                src={Logo}
+                src="/Logo.png"
                 alt="Di'arva text in dark blue colour with healthcare staffing solution text at bottom"
               />
             </Link>
