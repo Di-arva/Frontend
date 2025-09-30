@@ -44,7 +44,7 @@ const Navigation = () => {
           </li>
           <li className={getNavLinkClassName(location.hash === "#aboutus")}>
             <HashLink smooth to="/#aboutus">
-              About Us
+              About
             </HashLink>
           </li>
           <li className={getNavLinkClassName(location.hash === "#features")}>
