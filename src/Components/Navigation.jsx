@@ -31,7 +31,7 @@ const Navigation = () => {
           <img
             className="w-52"
             src={Logo}
-            alt="Di'arva text in dark blue colour with healthcare staffing solution text at bottom"
+            alt="Di'arva text in dark blue colour with healthcare staffing solution text at bottom in black color"
           />
         </div>
 
