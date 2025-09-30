@@ -69,7 +69,11 @@ const Navigation = () => {
           <Button variant="light" size="md" onClick={() => navigate("/login")}>
             Login
           </Button>
-          <Button variant="dark" size="md">
+          <Button
+            variant="dark"
+            size="md"
+            onClick={() => navigate("/register")}
+          >
             Create Account
           </Button>
         </div>
@@ -155,7 +159,14 @@ const Navigation = () => {
               >
                 Login
               </Button>
-              <Button variant="dark" size="md">
+              <Button
+                variant="dark"
+                size="md"
+                onClick={() => {
+                  navigate("/register");
+                  toggleMenu();
+                }}
+              >
                 Create Account
               </Button>
             </div>

@@ -4,6 +4,7 @@ import Footer from "./Components/Footer";
 import FollowUs from "./Components/FollowUs";
 import Navigation from "./Components/Navigation";
 import Login from "./Components/Login";
+import CreateAccount from "./Components/CreateAccount";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Homepage />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<CreateAccount />} />
             </Routes>
           </main>
           <Footer />
