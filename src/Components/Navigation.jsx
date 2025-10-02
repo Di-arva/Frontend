@@ -173,7 +173,6 @@ const Navigation = () => {
           </div>
         </div>
       </nav>
-      <StickyLabel />
     </>
   );
 };

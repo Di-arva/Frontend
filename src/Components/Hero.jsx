@@ -1,52 +1,94 @@
 import Button from "./Button";
+import { useState, useEffect } from "react";
 
 const Hero = () => {
+  const words = ["dental", "homecare", "rehabilitation"];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length);
+    }, 2000); // every 2s
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative bg-lightblue px-4 sm:px-8 lg:px-16">
-      {/* Inner container with max width */}
-      <div className="relative max-w-7xl mx-auto flex flex-col lg:flex-row">
-        {/* Watermark "•D•" for large screens */}
-        <div className="hidden lg:block absolute right-0 top-1/2 transform -translate-y-1/2 text-[400px] font-bold text-darkblue opacity-20 leading-none pointer-events-none">
-          •D•
-        </div>
-
-        {/* Left Content (Heading + Text + Buttons) */}
-        <div className="flex mt-8 flex-col w-full lg:w-[80%] items-center lg:items-start z-10 ">
+      <div className="relative max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-2 lg:gap-8 items-center lg:items-center py-10">
+        <div className="relative z-10 flex flex-col w-full">
           <h1
             className="font-bold text-darkblue 
-             text-4xl sm:text-5xl md:text-6xl lg:text-7xl
-             tracking-wider leading-tight 
-             text-center lg:text-left"
+                 text-4xl sm:text-5xl md:text-6xl
+                 tracking-wider leading-tight text-center lg:text-left"
           >
-            Quality Staff <br />
-            Trusted Care <br />
-            Every Shift
+            Professional staffing solutions for{" "}
+            {/* This is the "window" that clips the content */}
+            <span className="relative inline-block h-[1.2em] overflow-hidden align-bottom">
+              {/* This is the sliding container that moves up and down */}
+              <span
+                className="block transition-transform duration-700 ease-in-out"
+                style={{
+                  // The magic happens here: we move the entire block of words up
+                  // by the height of one item (1.2em) multiplied by the current index.
+                  transform: `translateY(-${index * 1.2}em)`,
+                }}
+              >
+                {/* Map through the words and render each one */}
+                {words.map((word) => (
+                  <div key={word} className="h-[1.2em]">
+                    {word}
+                  </div>
+                ))}
+              </span>
+            </span>{" "}
+            services
           </h1>
-
           <p
-            className="font-poppins mt-3 text-darkblack 
+            className="font-poppins mt-4 text-darkblack 
                          text-base sm:text-lg md:text-lg lg:text-lg 
-                         text-center lg:text-left max-w-2xl lg:w-[80%]"
+                         max-w-2xl text-center lg:text-left"
           >
             We provide comprehensive health solutions tailored to your needs.
-            With advanced medical practices, modern technology, and a
-            patient-first approach, we ensure high-quality care at accessible
-            costs supporting your well-being at every stage of life.
+            With advanced medical practices, modern technology, and a patient
+            first approach, we ensure high quality care at accessible costs
+            supporting your well being at every stage of life.
           </p>
-
-          <div className="flex mt-6 gap-3 mb-10 sm:gap-5 md:gap-5 lg:gap-6 flex-wrap justify-center lg:justify-start">
-            <Button variant="light" size="md">
-              Create Account
+          <div className="flex  mt-6 gap-3 mb-10 sm:gap-5 md:gap-5 lg:gap-6 flex-wrap justify-center lg:justify-start">
+            <Button variant="dark" size="md">
+              Office Sign Up
             </Button>
             <Button variant="dark" size="md">
-              Talk to us
+              Candidates Sign Up
+            </Button>
+            <Button variant="dark" size="md">
+              Individual / Family Sign Up
             </Button>
           </div>
         </div>
 
-        {/* Right Content for Mobile / iPad Pro */}
-        <div className="flex items-center justify-center mt-10 lg:hidden w-full">
-          <div className="font-bold text-darkblue opacity-20 leading-none text-[150px] sm:text-[220px]">
+        <div className="relative w-full h-full flex justify-center items-center">
+          <h1
+            className="font-bold text-darkblue 
+                         text-4xl sm:text-5xl md:text-6xl lg:text-7xl
+                         tracking-widest leading-tight 
+                         text-center lg:text-left"
+          >
+            <h1
+              className="font-bold text-darkblue 
+                         text-4xl sm:text-5xl md:text-6xl lg:text-7xl
+                         tracking-widest lg:leading-32 leading-snug
+                         text-center lg:text-left "
+            >
+              Quality Staff <br />
+              Trusted Care <br />
+              Every Shift
+            </h1>
+          </h1>
+
+          <div
+            className="absolute text-[300px] lg:text-[500px] font-bold text-darkblue opacity-10 leading-none 
+                           pointer-events-none z-0"
+          >
             •D•
           </div>
         </div>

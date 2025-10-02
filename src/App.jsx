@@ -13,7 +13,7 @@ function App() {
         <div className="min-h-screen flex flex-col bg-lightbg">
           <Navigation />
           <FollowUs />
-          <main className="flex-1 mt-30">
+          <main className="flex-1 mt-16">
             <Routes>
               <Route path="/" element={<Homepage />} />
               <Route path="/login" element={<Login />} />
