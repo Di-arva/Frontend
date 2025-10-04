@@ -8,11 +8,15 @@ import CreateAccount from "./Components/CreateAccount";
 import Officesignup from "./Components/SignUp/Officesignup";
 import Candidatesignup from "./Components/SignUp/Candidatesignup";
 import Individualsignup from "./Components/SignUp/Individualsignup";
+import Admindashboard from "./Components/Dashboard/Admindashboard";
 
 function App() {
   return (
     <>
       <BrowserRouter>
+        <Routes>
+          <Route path="/admin" element={<Admindashboard />} />
+        </Routes>
         <div className="min-h-screen flex flex-col bg-lightbg">
           <Navigation />
           <FollowUs />
@@ -26,6 +30,7 @@ function App() {
               <Route path="/individualsignup" element={<Individualsignup />} />
             </Routes>
           </main>
+
           <Footer />
         </div>
       </BrowserRouter>
