@@ -1,5 +1,6 @@
 import Button from "./Button";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const Hero = () => {
   const words = ["dental", "homecare", "rehabilitation"];
@@ -21,7 +22,7 @@ const Hero = () => {
                  text-4xl sm:text-5xl md:text-6xl
                  tracking-wider leading-tight text-center lg:text-left"
           >
-            Professional staffing solutions for{" "}
+            Professional staffing solutions for
             {/* This is the "window" that clips the content */}
             <span className="relative inline-block h-[1.2em] overflow-hidden align-bottom">
               {/* This is the sliding container that moves up and down */}
@@ -54,15 +55,21 @@ const Hero = () => {
             supporting your well being at every stage of life.
           </p>
           <div className="flex  mt-6 gap-3 mb-10 sm:gap-5 md:gap-5 lg:gap-6 flex-wrap justify-center lg:justify-start">
-            <Button variant="dark" size="md">
-              Office Sign Up
-            </Button>
-            <Button variant="dark" size="md">
-              Candidates Sign Up
-            </Button>
-            <Button variant="dark" size="md">
-              Individual / Family Sign Up
-            </Button>
+            <Link to="/officesignup">
+              <Button variant="dark" size="md">
+                Office Sign Up
+              </Button>
+            </Link>
+            <Link to="/candidatesignup">
+              <Button variant="dark" size="md">
+                Candidates Sign Up
+              </Button>
+            </Link>
+            <Link to="/individualsignup">
+              <Button variant="dark" size="md">
+                Individual / Family Sign Up
+              </Button>
+            </Link>
           </div>
         </div>
 
