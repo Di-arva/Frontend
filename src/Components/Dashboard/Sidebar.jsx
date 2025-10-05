@@ -86,7 +86,7 @@ const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
     <div
       className={`${
         collapsed ? "w-20" : "w-72"
-      } transition duration-300 ease-in-out bg-lightblue backdrop-blur-xl border-r border-blue-200 flex flex-col relative z-10`}
+      } transition-all duration-300 ease-in-out bg-lightblue backdrop-blur-xl border-r border-blue-200 flex flex-col relative z-10`}
     >
       {/* Logo */}
       <div className="p-6 border-b border-blue-200 flex gap-4 items-center">
@@ -114,7 +114,7 @@ const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
           return (
             <div key={item.id}>
               <button
-                className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200 ${
+                className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200 cursor-pointer ${
                   currentPage === item.id || item.active
                     ? "border-darkblue border-1"
                     : ""
@@ -131,22 +131,23 @@ const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
                   <item.icon className={`w-5 h-5`} />
                   {/* Conditional Rendering */}
                   {!collapsed && (
-                    <span className="font-poppins font-normal ml-2 text-darkblack">
-                      {item.label}
-                    </span>
+                    <>
+                      <span className="font-poppins font-normal ml-2 text-darkblack">
+                        {item.label}
+                      </span>
+
+                      {item.badge && (
+                        <span className="px-2 py-1 text-xs bg-darkblue text-lightbg rounded-full">
+                          {item.badge}
+                        </span>
+                      )}
+                      {item.count && (
+                        <span className="px-2 py-1 text-xs bg-darkblue text-lightbg rounded-full">
+                          {item.count}
+                        </span>
+                      )}
+                    </>
                   )}
-                  <>
-                    {item.badge && (
-                      <span className="px-2 py-1 text-xs bg-darkblue text-lightbg rounded-full">
-                        {item.badge}
-                      </span>
-                    )}
-                    {item.count && (
-                      <span className="px-2 py-1 text-xs bg-darkblue text-lightbg rounded-full">
-                        {item.count}
-                      </span>
-                    )}
-                  </>
                 </div>
 
                 {!collapsed && item.submenu && (
