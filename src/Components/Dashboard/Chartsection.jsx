@@ -1,4 +1,4 @@
-import React from "react";
+import Saleschart from "./Saleschart";
 import Revanuechart from "./Revanuechart";
 
 const Chartsection = () => {
@@ -6,6 +6,9 @@ const Chartsection = () => {
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
       <div className="xl:col-span-2">
         <Revanuechart />
+      </div>
+      <div className="space-y-6">
+        <Saleschart />
       </div>
     </div>
   );
