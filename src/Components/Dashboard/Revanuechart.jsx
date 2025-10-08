@@ -3,9 +3,9 @@ import {
   Bar,
   XAxis,
   YAxis,
-  CartesianGrid,
+
   Tooltip,
-  Legend,
+
   ResponsiveContainer,
 } from "recharts";
 
@@ -25,24 +25,24 @@ const financeData = [
 ];
 const Revanuechart = () => {
   return (
-    <div className="bg-lightbg backdrop-blur-xl rounded-b-2xl border border-darkblue">
+    <div className=" bg-lightbg border-2 border-lightblue backdrop-blur-xl rounded-2xl">
       <div className="flex items-center justify-between mb-6 p-6">
         <div>
-          <h3 className="text-xl font-bold text-darkblack"> Revenue Chart</h3>
-          <p className="text-sm text-darkblack">Monthly Revenue & Expenses</p>
+          <h3 className="text-xl font-semibold text-darkblue font-poppins">Revenue Chart</h3>
+          <p className="text-sm text-darkblack font-poppins">Monthly Revenue & Expenses</p>
         </div>
 
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-gradient-to-r from-blue-500 to purple-600 rounded-full"></div>
-            <div className=" text-sm">
-              <span>Revenue</span>
+            <div className="w-3 h-3 bg-[#323299] rounded-full"></div>
+            <div className="text-sm text-[#323299]">
+              <span className="font-poppins text-md font-medium">Revenue</span>
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 bg-gradient-to-r from-slate-500 to purple-600 rounded-full"></div>
-            <div className=" text-sm">
-              <span>Expenses</span>
+            <div className="w-3 h-3 bg-[#8ab4f7] rounded-full border border-[#000080]"></div>
+            <div className="text-sm text-[#323299]">
+              <span className="font-poppins text-md font-medium">Expenses</span>
             </div>
           </div>
         </div>
@@ -54,17 +54,38 @@ const Revanuechart = () => {
             data={financeData}
             margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
-            <Legend />
-            <Bar dataKey="revenue" fill="#4ade80" radius={[6, 6, 0, 0]} />
-            <Bar dataKey="expenses" fill="#f87171" radius={[6, 6, 0, 0]} />
+           
+            <XAxis dataKey="month" stroke="#000080"
+             style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 300, fontSize:"14px"}} />
+            <YAxis stroke="#000080"
+              style={{ fontFamily: 'Poppins, sans-serif', fontWeight: 300, fontSize:"14px"}} />
+          <Tooltip
+  formatter={(value) => `$${value.toLocaleString()}`}
+  contentStyle={{ 
+    backgroundColor: "#D2E2FC", // gray background
+    color: "#000080", 
+    borderRadius: "8px", 
+    fontFamily: 'Poppins, sans-serif',
+    cursor: 'pointer' // pointer on hover
+  }}
+  itemStyle={{ 
+    color: "#000080", 
+    fontFamily: 'Poppins, sans-serif' 
+  }}
+  labelStyle={{ 
+    color: "#000080", 
+    fontFamily: 'Poppins, sans-serif' 
+  }}
+cursor={{ fill: '#EAF1FE' }}
+/>
+          
+            <Bar dataKey="revenue" fill="#323299" radius={[6, 6, 0, 0]} />
+            <Bar dataKey="expenses" fill="#8ab4f7" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
     </div>
+
   );
 };
 

@@ -9,7 +9,7 @@ import { Clock,Hospital,UserPlus,UserCheck,CalendarCheck,CreditCard} from "lucid
     description: "Highland Dental Clinic registered successfully.",
     time: "5 minutes ago",
     color: "text-darkblue",
-    bgColor: "bg-lightblue"
+    bgColor: "bg-lightbg"
   },
   {
     id: 2,
@@ -56,18 +56,18 @@ import { Clock,Hospital,UserPlus,UserCheck,CalendarCheck,CreditCard} from "lucid
 
 const Activity = () => {
   return (
-    <div className="bg-white backdrop-blur-xl rounded-b-2xl border border-darkblack overflow-hidden">
+    <div className="bg-lightblue  backdrop-blur-xl rounded-2xl overflow-hidden">
 
 
-         <div className="p-6 border-b border-darkblue">
+         <div className="p-6">
 
             <div>
-                 <h3 className="text-lg font-bold text-darkblack">
-                 Activity Feed
+                <h3 className="text-xl font-semibold text-darkblue font-poppins">
+                Recent Registartion
               </h3>
-               <p className="text-sm text-darkblack">Recent System Activities </p>
+              <p className="text-sm text-darkblack font-poppins">Latest </p>
             </div>
-            <button className="text-blue-900 hover:text-blue-500 font-medium text-sm hover:cursor-pointer">
+            <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">
               View All
             </button>
         </div>
@@ -76,13 +76,13 @@ const Activity = () => {
             <div className="space-y-4">
                {Activityies.map((activity)=>{
 
-               return( <div key={activity.id} className="flex items-start space-x-4 p-3 round-xl transition-colors">
+               return( <div key={activity.id} className="flex items-start space-x-4 p-3 round-xl transition-colors font-poppins">
                     <div className={`p-2 rounded-lg ${activity.bgColor}`}>
                     <activity.icon className={`w-4 h-4 ${activity.color}`}/>
                     </div>
                     <div className="flex-1 min-w-0">
-                        <h4 className="text-sm font-semibold">{activity.title}</h4>
-                        <p className="text-sm truncate">{activity.description}</p>
+                        <h4 className="text-sm font-semibold text-darkblue">{activity.title}</h4>
+                        <p className="text-sm truncate text-darkblack">{activity.description}</p>
                         <div className="flex items-center-safe space-x-1 mt-1">
                             
                             <Clock className="w-3 h-3"/>

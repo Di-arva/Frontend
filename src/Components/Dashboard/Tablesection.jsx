@@ -1,4 +1,4 @@
-import { MoreHorizontal, TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
 
 const customerData = [
   {
@@ -92,122 +92,95 @@ const Tablesection = () => {
   };
   return (
     <>
-      <div className="bg-white backdrop-blur-xl rounded-b-2xl border border-darkblack overflow-hidden">
-        <div className="p-6 border-b border-darkblue">
+      <div className=" rounded-2xl backdrop-blur-xl bg-lightblue overflow-hidden">
+        <div className="p-6 ">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-lg font-bold text-darkblack">
+              <h3 className="text-xl font-semibold text-darkblue font-poppins">
                 Recent Registartion
               </h3>
-              <p className="text-sm text-darkblack">Latest </p>
+              <p className="text-sm text-darkblack font-poppins">Latest </p>
             </div>
-            <button className="text-blue-900 hover:text-blue-500 font-medium text-sm hover:cursor-pointer">
+            <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">
               View All
             </button>
           </div>
         </div>
 
         {/* Tabel */}
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th className="text-left p-4 text-sm font-semibold text-darkblack">
-                  Oredr Id
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-darkblack">
-                  Customer
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-darkblack">
-                  Product
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-darkblack">
-                  Amount
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-darkblack">
-                  Status
-                </th>
-                <th className="text-left p-4 text-sm font-semibold text-darkblack">
-                  Date
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {customerData.map((data, index) => {
-                return (
-                  <tr className="border-b border-darkblack hover:bg-amber-400 transform-colors">
-                    <td className="p-4" key={index}>
-                      <span className="text-sm font-medium text-darkblue">
-                        {data.id}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <span className="text-sm font-medium text-darkblue">
-                        {data.customer}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <span className="text-sm font-medium text-darkblue">
-                        {data.amount}
-                      </span>
-                    </td>
-                    <td
-                      className={`text-darkblack font-medium text-xs px-3 py-1 rounded-full ${getStatusColor(
-                        data.status
-                      )}`}
-                    >
-                      <span className="text-sm font-medium text-darkblue">
-                        {data.status}
-                      </span>
-                    </td>
-                    <td
-                      className={`text-darkblack font-medium text-xs px-3 py-1 rounded-full ${getStatusColor(
-                        data.status
-                      )} `}
-                    >
-                      <span className="text-sm font-medium text-darkblue">
-                        {data.date}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="text-sm font-medium text-darkblue">
-                        <MoreHorizontal className="w-4 h-4" />
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
+<div className="overflow-x-auto">
+  <table className="w-full">
+    <thead className="border-b border-darkblue">
+      <tr>
+        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+          Order Id
+        </th>
+        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+          Customer
+        </th>
+        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+          Amount
+        </th>
+        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+          Status
+        </th>
+        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+          Date
+        </th>
+      </tr>
+    </thead>
+
+    {/* This line makes blue dividers between rows but none after the last */}
+    <tbody className="divide-y divide-darkblue">
+      {customerData.map((data, index) => (
+        <tr key={index} className="hover:cursor-pointer font-poppins transition-colors">
+          <td className="p-4 text-sm font-medium text-darkblue">{data.id}</td>
+          <td className="p-4 text-sm font-medium text-darkblue">{data.customer}</td>
+          <td className="p-4 text-sm font-medium text-darkblue">{data.amount}</td>
+          <td className="p-4">
+            <span
+              className={`text-sm font-medium px-2 rounded-full ${getStatusColor(data.status)}`}
+            >
+              {data.status}
+            </span>
+          </td>
+          <td className="p-4 text-sm font-medium text-darkblue">{data.date}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
       </div>
       {/* Top Clients */}
-      <div className="backdrop-blur-xl mt-8 rounded-2xl border border-darkblue overflow-hidden">
-        <div className="p-6 border-b">
+      <div className="backdrop-blur-xl mt-8 rounded-2xl border-2 border-lightblue overflow-hidden">
+        <div className="p-6 border-b-2  border-lightblue">
           <div className="flex items-center justify-between">
             <div className="text-lg font-bold text-darkblack">
-              <h3 className="text-lg font-bold">Top Clients</h3>
+                <h3 className="text-xl font-semibold text-darkblue font-poppins">
+                Top Clients
+              </h3>
+            <p className="text-sm text-darkblack font-poppins font-light">Latest </p>
             </div>
-            <p className="text-sm text-darkblack">Best Clients </p>
-          </div>
-          <button className="text-blue-900 hover:text-blue-500 font-medium text-sm hover:cursor-pointer">
-            View All
-          </button>
+            <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">
+              View All
+            </button>
+            </div>
         </div>
         {/* Data */}
 
-        <div className="p-6 space-y-4">
+        <div className="p-6 space-y-4 font-poppins">
           {topClients.map((client, index) => {
             return (
               <div className="flex items-center justify-between p-4 rounded-xl transition-colors">
                 <div className="flex-1">
-                  <h4 className="text-sm font-semibold text-darkblack">
+                  <h4 className="text-sm font-semibold text-darkblue">
                     {client.name}
                   </h4>
-                  <p className="text-xs">{client.sales}</p>
+                  <p className="text-sm font-poppins text-darkblack">{client.sales}</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-semibold">{client.total}</p>
+                  <p className="text-sm font-semibold text-darkblue">{client.total}</p>
                   <div className="flex items-center space-x-1">
                     {client.trend === "Up" ? (
                       <TrendingUp className="w-3 h-3 text-emerald-500" />
@@ -217,8 +190,8 @@ const Tablesection = () => {
                     <span
                       className={`${
                         client.trend === "Up"
-                          ? "text-emerald-500"
-                          : "text-red-500"
+                          ? "text-emerald-500 font-poppins font-normal"
+                          : "text-red-500 font-poppins font-normal"
                       }`}
                     >
                       {client.change}

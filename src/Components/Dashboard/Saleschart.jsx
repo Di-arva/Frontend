@@ -1,19 +1,20 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
 const data = [
-  { name: "Dental Offices", value: 45, color: "#3b82f6" },
-  { name: "Home Care Centers", value: 30, color: "#10b981" },
-  { name: "Rehabilitation Clinics", value: 15, color: "#f59e0b" },
-  { name: "Private Practices", value: 10, color: "#ef4444" },
+  { name: "Dental Offices", value: 45, color: "#323299" },
+  { name: "Home Care Centers", value: 30, color: "#8ab4f7" },
+  { name: "Rehabilitation Clinics", value: 15, color: "#7f7fbf" },
+  { name: "Private Practices", value: 10, color: "#cccce5" },
 ];
 
 const SaleschartCompact = () => {
   return (
-    <div className="bg-lightbg backdrop-blur-xl rounded-2xl p-4 border border-darkblue shadow-md">
+    <div className="bg-lightbg backdrop-blur-xl rounded-2xl p-4 border-2 border-lightblue shadow-md">
       {/* Header */}
       <div className="mb-4 text-center">
-        <h3 className="text-lg font-bold text-darkblack">Sales by Category</h3>
-        <p className="text-sm text-darkblack opacity-70">
+        
+        <h3 className="text-xl font-semibold text-darkblue font-poppins">Sales by Category</h3>
+        <p className="text-sm text-darkblack font-poppins">
           Production Distribution
         </p>
       </div>

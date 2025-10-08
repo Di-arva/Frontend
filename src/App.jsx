@@ -9,6 +9,7 @@ import Officesignup from "./Components/SignUp/Officesignup";
 import Candidatesignup from "./Components/SignUp/Candidatesignup";
 import Individualsignup from "./Components/SignUp/Individualsignup";
 import Admindashboard from "./Components/Dashboard/Admindashboard";
+import Candidatedashboard from "./Components/Dashboard/Candidatedashboard";
 
 // Layout wrapper for public pages
 const PublicLayout = ({ children }) => {
@@ -28,6 +29,7 @@ function App() {
       <Routes>
         {/* Admin dashboard */}
         <Route path="/admin/*" element={<Admindashboard />} />
+          <Route path="/candidate/*" element={<Candidatedashboard />} />
 
         {/* Public routes wrapped in PublicLayout */}
         <Route
