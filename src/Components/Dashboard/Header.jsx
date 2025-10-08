@@ -1,9 +1,9 @@
 import {
   Bell,
   ChevronDown,
-  Filter,
+
   Menu,
-  Plus,
+
   Search,
   Settings,
 } from "lucide-react";
@@ -45,25 +45,14 @@ const Header = ({ sideBarCollapsed, onToggleSidebar }) => {
               className="w-full pl-10 pr-4 py-2.5 bg-lightblue border-lightblue/50 rounded-xl text-darkblack font-poppins text-sm placeholder:text-darkblue focus:outline-none focus:ring-2 focus:ring-darkblue focus:border-transparent transition-all"
             />
 
-            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 p-1.5 text-darkblue hover:text-darkblue/80 hover:cursor-pointer">
-              <Filter />
-            </button>
+           
           </div>
         </div>
 
         {/* Right */}
 
         <div className="flex items-center space-x-3">
-          {/* Quick Action */}
-          <Button
-            variant="dark"
-            size="md"
-            className="hidden text-lightbg font-poppins lg:flex items-center"
-          >
-            <Plus className="w-4 h-4 mr-1 text-lightbg" />
-            <span className="text-sm font-medium">New</span>
-          </Button>
-
+         
           {/* Notification */}
 
           <button className="relative p-2.5 rounded-xl text-darkblue bg-lightblue hover:bg-lightblue/70 transition-colors hover:cursor-pointer">
