@@ -40,7 +40,27 @@ const SaleschartCompact = () => {
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip formatter={(value) => `${value}%`} />
+       
+  <Tooltip
+  
+    formatter={(value) => `${value}%`}
+    contentStyle={{
+      backgroundColor: "#D2E2FC",
+      color: "#000080",
+      borderRadius: "8px",
+      fontFamily: "Poppins, sans-serif",
+      cursor: "pointer",
+    }}
+    itemStyle={{
+      color: "#000080",
+      fontFamily: "Poppins, sans-serif",
+    }}
+    labelStyle={{
+      color: "#000080",
+      fontFamily: "Poppins, sans-serif",
+    }}
+    cursor={{ fill: "#EAF1FE" }} // soft blue hover background
+  />
             </PieChart>
           </ResponsiveContainer>
         </div>
