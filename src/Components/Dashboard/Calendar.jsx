@@ -1,5 +1,5 @@
-import React from "react";
-import { ChevronLeft, ChevronRight, Plus } from "lucide-react";
+
+import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 
 const events = [
   { date: "2025-10-02", title: "All-hands", time: "12:00 PM", color: "bg-gray-200 text-gray-700" },
@@ -58,38 +58,64 @@ export default function Calendar() {
     `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm">
+    <div className="bg-white p-6 rounded-2xl border border-lightblue shadow-sm">
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-lg text-xs font-medium">
+          <div className="flex items-center gap-2 ">
+            <div className="flex flex-col items-center border border-lightblue  rounded-xl overflow-hidden">
+                  <span className="font-poppins  text-darkblack px-6 py-2 h-7 text-xs font-medium bg-lightblue ">
               OCT
             </span>
-            <h2 className="text-2xl font-semibold">October 2025</h2>
-            <span className="border px-2 py-1 rounded-lg text-xs text-gray-600">Week 2</span>
+            <span className="font-poppins text-lg font-semibold text-darkblue">9</span>
+            </div>
+
+     <div className="flex flex-col">
+  <div className="flex items-center gap-2">
+    <h2 className="text-xl font-semibold font-poppins text-darkblue">October 2025</h2>
+    <span className="border px-2 py-1 font-poppins rounded-lg border-lightblue text-xs text-darkblack">Week 2</span>
+  </div>
+  
+
+  <p className=" text-sm mt-1 font-poppins text-darkblack">Oct 1, 2025 – Oct 30, 2025</p>
+</div>
+           
+           
           </div>
-          <p className="text-gray-400 text-sm">Oct 1, 2025 – Oct 31, 2025</p>
+         
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="p-2 border rounded-lg hover:bg-gray-50">
+          <button className="p-1 border rounded-lg text-darkblack hover:bg-lightblue  border-lightblue hover:cursor-pointer bg-gray-50">
             <ChevronLeft size={16} />
           </button>
-          <button className="px-3 py-1 border rounded-lg text-sm hover:bg-gray-50">Today</button>
-          <button className="p-2 border rounded-lg hover:bg-gray-50">
+          <button className="px-3 py-0.5 border font-poppins rounded-lg text-sm  hover:bg-lightblue  border-lightblue hover:cursor-pointer">Today</button>
+              <button className="p-1 border rounded-lg text-darkblack hover:bg-lightblue  border-lightblue hover:cursor-pointer bg-gray-50">
             <ChevronRight size={16} />
           </button>
-          <select className="px-2 py-1 border rounded-lg text-sm text-gray-700">
-            <option>Month view</option>
-            <option>Week view</option>
-          </select>
+         <div className="relative inline-block">
+   <select
+    className="appearance-none bg-transparent border border-lightblue rounded-lg text-sm font-poppins text-darkblack px-3 py-1 pr-8 cursor-pointer hover:bg-lightblue focus:outline-none focus:ring-2 focus:ring-lightblue"
+  >
+    <option value="Month view" >
+      Month view
+    </option>
+    <option value="Week view" >
+      Week view
+    </option>
+  </select>
+
+  <ChevronDown
+    size={16}
+    className="absolute right-2 top-1/2 -translate-y-1/2 text-darkblack pointer-events-none"
+  />
+</div>
    
         </div>
       </div>
 
       {/* Week days */}
-      <div className="grid grid-cols-7 text-center text-gray-500 text-sm font-medium border-b pb-2 mb-2">
+      <div className="grid grid-cols-7 text-center text-darkblack text-sm font-medium border-b border-lightblue pb-2 mb-2">
         {days.map((d) => (
           <div key={d}>{d}</div>
         ))}
@@ -101,18 +127,18 @@ export default function Calendar() {
           week.map((day, j) => {
             const dateKey = day ? formatDate(day) : null;
             const dayEvents = events.filter((e) => e.date === dateKey);
-            const isToday = day === 8; // highlight Oct 8
+            const isToday = day === 9; // highlight 
 
             return (
               <div
                 key={`${i}-${j}`}
-                className="bg-white min-h-[110px] p-1.5 flex flex-col relative hover:bg-gray-50 transition"
+                className="bg-white min-h-[110px] p-1.5 flex flex-col relative hover:bg-lightblue hover:cursor-pointer transition font-poppins"
               >
                 {day && (
                   <div className="flex justify-end mb-1">
                     <div
                       className={`w-6 h-6 flex items-center justify-center text-xs font-medium rounded-full ${
-                        isToday ? "bg-violet-600 text-white" : "text-gray-400"
+                        isToday ? "bg-darkblue text-white" : "text-gray-400"
                       }`}
                     >
                       {day}

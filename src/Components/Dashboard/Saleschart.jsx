@@ -31,8 +31,8 @@ const SaleschartCompact = () => {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                innerRadius={50} // smaller inner radius
-                outerRadius={80} // smaller outer radius
+                innerRadius={50} 
+                outerRadius={80} 
                 paddingAngle={4}
                 stroke="none"
               >
