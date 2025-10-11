@@ -1,6 +1,120 @@
+import { useState } from "react";
 import Marklogo from "../../assets/Diarva_mark.png";
 import Button from "../Button";
+import { postData } from "../../lib/http";
+
+const SPECIALIZATIONS = [
+  "Chairside Assisting",
+  "Dental Radiography",
+  "Infection Control",
+  "Preventive Dentistry",
+  "Orthodontic Assisting",
+  "Surgical Assisting",
+  "Pediatric Assisting",
+  "Laboratory Procedures",
+  "Administrative Tasks",
+];
+
+const PROVINCES = ["AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK", "NT", "NU", "YT"];
+
 const Candidatesignup = () => {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    zipcode: "",
+    province: "ON",
+    country: "Canada",
+    password: "",
+    confirmPassword: "",
+    certification: "level-1",
+    specialization: "",
+    emergency_name: "",
+    emergency_relationship: "",
+    emergency_phone: "",
+    emergency_email: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState({ type: "", text: "" });
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+  };
+
+  const validate = () => {
+    const phoneRe = /^\+?1?[2-9]\d{2}[2-9]\d{2}\d{4}$/;
+    const postalRe = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+
+    if (!form.name.trim().includes(" ")) return "Please enter full name (first and last).";
+    if (!phoneRe.test(form.phone)) return "Invalid Canadian phone number format.";
+    if (!postalRe.test(form.zipcode)) return "Invalid Canadian postal code.";
+    if (form.password !== form.confirmPassword) return "Passwords do not match.";
+    if (!form.city.trim()) return "City is required.";
+    if (!form.specialization) return "Please select one specialization.";
+    if (!form.emergency_name || !form.emergency_phone) return "Emergency contact name and phone are required.";
+    if (!phoneRe.test(form.emergency_phone.trim())) return "Invalid emergency contact phone format.";
+    return "";
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMsg({ type: "", text: "" });
+
+    const err = validate();
+    if (err) {
+      setMsg({ type: "error", text: err });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const [first_name, ...rest] = form.name.trim().split(" ");
+      const last_name = rest.join(" ") || "";
+
+      const payload = {
+        email: form.email.trim(),
+        mobile: form.phone.trim(),
+        first_name,
+        last_name,
+        city: form.city.trim(),
+        zipcode: form.zipcode.toUpperCase().replace(/\s+/g, ""),
+        province: form.province,
+        role: "assistant",
+
+        certification: form.certification,
+        specializations: form.specialization ? [form.specialization] : [],
+        emergency_contact: {
+          name: form.emergency_name,
+          relationship: form.emergency_relationship,
+          phone: form.emergency_phone,
+          email: form.emergency_email || "",
+        },
+      };
+
+      const res = await postData("/auth/register", payload);
+
+      if (!res?.success) {
+        throw new Error(res?.message || "Registration failed");
+      }
+
+      setMsg({
+        type: "success",
+        text: "Registration submitted. Pending admin approval. Please check your email for further instructions.",
+      });
+
+      setForm((f) => ({ ...f}));
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message || "Something went wrong";
+      setMsg({ type: "error", text: message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
       <div className="flex min-h-full flex-col justify-center px-6 py-8 lg:px-8 bg-lightblue font-poppins">
@@ -16,7 +130,7 @@ const Candidatesignup = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form action="#" method="POST" className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
                 for="name"
@@ -32,13 +146,16 @@ const Candidatesignup = () => {
                   placeholder="John Smith"
                   required
                   autocomplete="name"
+                  value={form.name}
+                  onChange={onChange}
                   className="block w-full rounded-full  px-3 py-1.5 text-base text-darkblue outline-1 -outline-offset-1 outline-darkblue  focus:outline-2 focus:-outline-offset-2 focus:outline-darkblue sm:text-sm/6"
                 />
               </div>
             </div>
+
             <div>
               <label
-                for="email"
+                htmlFor="email"
                 className="block text-sm/6 font-medium text-gray-900 "
               >
                 Email Address
@@ -51,6 +168,8 @@ const Candidatesignup = () => {
                   placeholder="john@smith.com"
                   required
                   autocomplete="email"
+                  value={form.email}
+                  onChange={onChange}
                   className="block w-full rounded-full  px-3 py-1.5 text-base text-darkblue outline-1 -outline-offset-1 outline-darkblue  focus:outline-2 focus:-outline-offset-2 focus:outline-darkblue sm:text-sm/6"
                 />
                 <p className="text-sm text-darkblue mt-2 font-poppins font-medium ml-2">
@@ -70,9 +189,11 @@ const Candidatesignup = () => {
                 type="tel"
                 name="phone"
                 id="phone"
-                placeholder="+11231231234"
-                pattern="^\+1\d{10}$"
+                placeholder="+14165550123"
+                pattern="^\+?1?[2-9]\d{2}[2-9]\d{2}\d{4}$"
                 required
+                value={form.phone}
+                onChange={onChange}
               />
               <p className="text-sm text-darkblue mt-2 font-poppins font-medium ml-2">
                 *We will send OTP on this phone number
@@ -81,7 +202,7 @@ const Candidatesignup = () => {
 
             <div>
               <label
-                for="address"
+                htmlFor="address"
                 className="block text-sm/6 font-medium text-gray-900 "
               >
                 Address
@@ -94,17 +215,35 @@ const Candidatesignup = () => {
                   placeholder="60 Fredrick street"
                   required
                   autocomplete="address"
+                  value={form.address}
+                  onChange={onChange}
                   className="block w-full rounded-full  px-3 py-1.5 text-base text-darkblue outline-1 -outline-offset-1 outline-darkblue  focus:outline-2 focus:-outline-offset-2 focus:outline-darkblue sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="city" className="block text-sm/6 font-medium text-gray-900 ">
+                City
+              </label>
+              <div className="mt-2">
+                <input
+                  id="city"
+                  type="text"
+                  name="city"
+                  placeholder="Toronto"
+                  required
+                  autoComplete="address-level2"
+                  value={form.city}
+                  onChange={onChange}
+                  className="block w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 -outline-offset-1 outline-darkblue focus:outline-2 focus:-outline-offset-2 focus:outline-darkblue sm:text-sm/6"
                 />
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex flex-col flex-1">
-                <label
-                  for="postalcode"
-                  className="block text-sm/6 font-medium text-gray-900 "
-                >
+                <label htmlFor="postalcode" className="block text-sm/6 font-medium text-gray-900 ">
                   Postal code
                 </label>
                 <div>
@@ -115,6 +254,8 @@ const Candidatesignup = () => {
                     placeholder="N2H 0C7"
                     required
                     autocomplete="zipcode"
+                    value={form.zipcode}
+                    onChange={onChange}
                     className="block w-full rounded-full  px-3 py-1.5 text-base text-darkblue outline-1 -outline-offset-1 outline-darkblue  focus:outline-2 focus:-outline-offset-2 focus:outline-darkblue sm:text-sm/6"
                   />
                 </div>
@@ -126,20 +267,27 @@ const Candidatesignup = () => {
                 >
                   Province
                 </label>
-                <input
+                <select
                   className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold placeholder:text-sm"
-                  type="text"
                   name="province"
                   id="province"
-                  placeholder="ON"
                   autoComplete="province"
                   required
-                />
+                  value={form.province}
+                  onChange={onChange}
+                >
+                  {PROVINCES.map((p) => (
+                    <option key={p} value={p}>
+                      {p}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
+
             <div>
               <label
-                for="country"
+                htmlFor="country"
                 className="block text-sm/6 font-medium text-gray-900 "
               >
                 Country
@@ -151,19 +299,123 @@ const Candidatesignup = () => {
                   name="country"
                   placeholder="Canada"
                   required
-                  autocomplete="address"
+                  autoComplete="country-name"
+                  value={form.country}
+                  onChange={onChange}
                   className="block w-full rounded-full  px-3 py-1.5 text-base text-darkblue outline-1 -outline-offset-1 outline-darkblue  focus:outline-2 focus:-outline-offset-2 focus:outline-darkblue sm:text-sm/6"
                 />
               </div>
             </div>
+
             <div>
-              <Button
-                type="submit"
-                variant="dark"
-                size="lg"
-                className="mb-4 w-full"
+              <label className="block text-sm/6 font-medium text-gray-900">Certification & Specialization</label>
+              <div className="mt-2 flex flex-col gap-3">
+                <select
+                  name="certification"
+                  value={form.certification}
+                  onChange={onChange}
+                  className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
+                >
+                  <option value="level-1">Level 1</option>
+                  <option value="level-2">Level 2</option>
+                  <option value="harp">HARP</option>
+                </select>
+
+                <select
+                  name="specialization"
+                  value={form.specialization}
+                  onChange={onChange}
+                  className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
+                >
+                  <option value="" disabled>
+                    Select specialization
+                  </option>
+                  {SPECIALIZATIONS.map((spec) => (
+                    <option key={spec} value={spec}>
+                      {spec}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-darkblack">Emergency Contact</p>
+              <div>
+                <label htmlFor="emergency_name" className="block text-sm/6 font-medium text-gray-900">
+                  Name
+                </label>
+                <input
+                  id="emergency_name"
+                  name="emergency_name"
+                  type="text"
+                  required
+                  value={form.emergency_name}
+                  onChange={onChange}
+                  className="mt-1 block w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 outline-darkblue focus:outline-2 sm:text-sm/6"
+                />
+              </div>
+              <div>
+                <label htmlFor="emergency_relationship" className="block text-sm/6 font-medium text-gray-900">
+                  Relationship
+                </label>
+                <input
+                  id="emergency_relationship"
+                  name="emergency_relationship"
+                  type="text"
+                  value={form.emergency_relationship}
+                  onChange={onChange}
+                  className="mt-1 block w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 outline-darkblue focus:outline-2 sm:text-sm/6"
+                />
+              </div>
+              <div>
+                <label htmlFor="emergency_phone" className="block text-sm/6 font-medium text-gray-900">
+                  Phone
+                </label>
+                <input
+                  id="emergency_phone"
+                  name="emergency_phone"
+                  type="tel"
+                  required
+                  placeholder="+14165550123"
+                  value={form.emergency_phone}
+                  onChange={onChange}
+                  className="mt-1 block w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 outline-darkblue focus:outline-2 sm:text-sm/6"
+                />
+              </div>
+              <div>
+                <label htmlFor="emergency_email" className="block text-sm/6 font-medium text-gray-900">
+                  Email (optional)
+                </label>
+                <input
+                  id="emergency_email"
+                  name="emergency_email"
+                  type="email"
+                  value={form.emergency_email}
+                  onChange={onChange}
+                  className="mt-1 block w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 outline-darkblue focus:outline-2 sm:text-sm/6"
+                />
+              </div>
+            </div>
+
+            {/* note for nishi
+              instead of msg.text you can redirect it to specific page
+              and remove msg/setMsg state
+            */}
+
+            {msg.text ? (
+              <div
+                className={`rounded-xl px-4 py-3 text-sm ${
+                  msg.type === "error" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+                }`}
               >
-                Sign Up
+                {msg.text}
+              </div>
+            ) : null}
+
+            <div>
+              <Button type="submit" variant="dark" size="lg" className="mb-4 w-full" disabled={loading}>
+                {loading ? "Submitting..." : "Sign Up"}
               </Button>
             </div>
           </form>
