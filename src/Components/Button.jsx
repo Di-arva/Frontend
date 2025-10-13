@@ -2,10 +2,10 @@ import classNames from "classnames";
 
 const Button = ({ children, variant, size, className, ...rest }) => {
   const variantClasses = {
-    dark: "bg-darkblue text-lightbg font-poppins hover:cursor-pointer",
+    dark: "bg-darkblue text-lightbg font-poppins",
     light:
-      "bg-white text-sm  font-poppins text-darkblue border-1 border-darkblue  rounded-full  hover:cursor-pointer",
-    default: "bg-gray-500 hover:bg-gray-600 text-white",
+      "bg-white text-sm  font-poppins text-darkblue border-1 border-darkblue  rounded-full ",
+    default: "bg-darkblue hover:bg-gray-600 text-white",
   };
 
   const sizeClasses = {

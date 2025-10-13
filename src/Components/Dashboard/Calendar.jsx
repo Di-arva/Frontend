@@ -152,7 +152,7 @@ export default function Calendar() {
                       key={idx}
                       className={`truncate text-xs px-2 py-[2px] rounded-md font-medium ${ev.color}`}
                     >
-                      {ev.title}{" "}
+                      {ev.title}
                       <span className="font-normal opacity-70">{ev.time}</span>
                     </div>
                   ))}
