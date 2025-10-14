@@ -1,11 +1,14 @@
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard";
+import Users from "./Users";
+import UserDetailsPage from "./UserDetailsPage"
+
 
 const Admindashboard = () => {
   const [sideBarCollapsed, setSidebarCollapsed] = useState(false);
-  const [currentPage, setCurrentPage] = useState("dashboard");
 
   return (
     <div className="h-screen flex overflow-hidden">
@@ -13,8 +16,6 @@ const Admindashboard = () => {
       <Sidebar
         collapsed={sideBarCollapsed}
         onToggle={() => setSidebarCollapsed(!sideBarCollapsed)}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
       />
 
       {/* Main area */}
@@ -24,10 +25,19 @@ const Admindashboard = () => {
           sideBarCollapsed={sideBarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed(!sideBarCollapsed)}
         />
+   
 
-        {/* Scrollable dashboard content */}
+
+
+
+        {/* Main Content */}
         <main className="flex-1 overflow-auto p-6 space-y-6">
-          {currentPage === "dashboard" && <Dashboard />}
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="users" element={<Users />} />
+            <Route path="users/:id" element={<UserDetailsPage />} />
+           
+          </Routes>
         </main>
       </div>
     </div>
