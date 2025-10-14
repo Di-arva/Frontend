@@ -1,30 +1,48 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Marklogo from "../../assets/Diarva_mark.png";
 import Button from "../Button";
 import { postData } from "../../lib/http";
 import { useNavigate } from "react-router-dom"; 
 
 
+//Specialization as per levels 
 
 
-
-const SPECIALIZATIONS = [
+const LEVEL_1_SPECIALIZATIONS = [
   "Chairside Assisting",
   "Dental Radiography",
   "Infection Control",
-  "Preventive Dentistry",
-  "Orthodontic Assisting",
-  "Surgical Assisting",
-  "Pediatric Assisting",
   "Laboratory Procedures",
   "Administrative Tasks",
 ];
 
+const LEVEL_2_SPECIALIZATIONS = [
+  "Chairside Assisting",
+  "Dental Radiography",
+  "Infection Control",
+  "Laboratory Procedures",
+  "Administrative Tasks",
+  "Preventive Dentistry",
+  "Orthodontic Assisting",
+  "Surgical Assisting",
+  "Pediatric Assisting",
+];
+
+
+
+//Provinces Array
+
 const PROVINCES = ["AB", "BC", "MB", "NB", "NL", "NS", "ON", "PE", "QC", "SK", "NT", "NU", "YT"];
+
+// Component Starts
 
 const CandidateSignup = () => {
 
+  //Navigate Route
+
   const navigate = useNavigate(); 
+
+  //Intial state of Form Empty
 
   const [form, setForm] = useState({
     firstname: "",
@@ -39,12 +57,14 @@ const CandidateSignup = () => {
     password: "",
     confirmPassword: "",
     certification: "level-1", // "harp" | "level-1" | "level-2"
-    specialization: "",       // single selection
+    specialization: "",       
     emergency_name: "",
     emergency_relationship: "",
     emergency_phone: "",
     emergency_email: "",
   });
+
+  //States Definition
 
   const [emailOtp, setEmailOtp] = useState("");
   const [phoneOtp, setPhoneOtp] = useState("");
@@ -66,13 +86,16 @@ const CandidateSignup = () => {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState({ type: "", text: "" });
 
+  //Onchange Events
+
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
   };
 
 
-  // --- NEW: Handler for file input change ---
+
+  // --- NEW: Handler for certificate file input change ---
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -82,6 +105,24 @@ const CandidateSignup = () => {
     }
   };
 
+  //specializations selection
+
+  const availableSpecializations =
+  form.certification === "level-1"
+    ? LEVEL_1_SPECIALIZATIONS
+    : form.certification === "level-2"
+    ? LEVEL_2_SPECIALIZATIONS
+    : [];
+
+    //Changing data on selection of specialization
+    useEffect(() => {
+      if (form.certification === 'harp') {
+        setForm(prev => ({ ...prev, specialization: '' }));
+      } 
+      else if (form.specialization && !availableSpecializations.includes(form.specialization)) {
+        setForm(prev => ({ ...prev, specialization: '' }));
+      }
+    }, [form.certification]);
 
   //Form data validation
 
@@ -94,7 +135,7 @@ const CandidateSignup = () => {
     if (!phoneRe.test(form.phone)) return "Invalid Canadian phone number format.";
     if (!postalRe.test(form.zipcode)) return "Invalid Canadian postal code.";
     if (!form.city.trim()) return "City is required.";
-    if (!form.specialization) return "Please select one specialization.";
+    if (form.certification !== 'harp' && !form.specialization) return "Please select one specialization.";
     if (!certificateFile) return "Please upload your certificate file.";
     if (!form.emergency_name || !form.emergency_phone) return "Emergency contact name and phone are required.";
     if (!phoneRe.test(form.emergency_phone.trim())) return "Invalid emergency contact phone format.";
@@ -257,6 +298,9 @@ const CandidateSignup = () => {
       formData.append("province", form.province);
       formData.append("role", "assistant");
       formData.append("certification", form.certification);
+      if (form.specialization) {
+        formData.append("specializations[0]", form.specialization);
+      }
       
       // Specializations is an array, so we append it this way
       if (form.specialization) {
@@ -477,7 +521,7 @@ const CandidateSignup = () => {
                     />
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="dark"
                       size="sm"
                       onClick={handleVerifyEmailOtp}
                       disabled={!emailOtp || verifyingEmailOtp}
@@ -567,7 +611,7 @@ const CandidateSignup = () => {
                     />
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="dark"
                       size="sm"
                       onClick={handleVerifyPhoneOtp}
                       disabled={!phoneOtp || verifyingPhoneOtp}
@@ -591,7 +635,7 @@ const CandidateSignup = () => {
             </div>
  {/* --- NEW: Upload Certificate Field --- */}
  <div>
-                <label htmlFor="certificate-upload" className="block text-sm/6 font-medium text-gray-900">
+                <label htmlFor="certificate-upload" className="block text-sm/6 font-medium text-darkblue font-poppins">
                   Upload Certificate
                 </label>
                 <div className="mt-2">
@@ -607,7 +651,7 @@ const CandidateSignup = () => {
                       file:rounded-full file:border-0
                       file:text-sm file:font-semibold
                       file:bg-darkblue file:text-white
-                      hover:file:bg-opacity-90"
+                      hover:file:bg-opacity-90 "
                   />
                   {certificateFile && (
                     <p className="text-xs text-darkblue mt-2 ml-2">
@@ -699,18 +743,16 @@ const CandidateSignup = () => {
               <label htmlFor="country" className="block text-sm/6 font-medium text-gray-900 ">
                 Country
               </label>
-              <div className="mt-2">
-                <input
-                  id="country"
-                  type="text"
-                  name="country"
-                  placeholder="Canada"
-                  required
-                  autoComplete="country-name"
-                  value={form.country}
-                  onChange={onChange}
-                  className="block w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 -outline-offset-1 outline-darkblue focus:outline-2 focus:-outline-offset-2 focus:outline-darkblue sm:text-sm/6"
-                />
+              <div className="mt-2 flex flex-col gap-3">
+              <select
+  name="country"
+  value={form.country}
+  onChange={onChange}
+  className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
+>
+  <option value="Canada">Canada</option>
+</select>
+
               </div>
             </div>
 
@@ -728,21 +770,24 @@ const CandidateSignup = () => {
                   <option value="harp">HARP</option>
                 </select>
 
-                <select
-                  name="specialization"
-                  value={form.specialization}
-                  onChange={onChange}
-                  className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
-                >
-                  <option value="" disabled>
-                    Select specialization
-                  </option>
-                  {SPECIALIZATIONS.map((spec) => (
-                    <option key={spec} value={spec}>
-                      {spec}
-                    </option>
-                  ))}
-                </select>
+                {form.certification !== "harp" && (
+                    <select
+                      name="specialization"
+                      value={form.specialization}
+                      onChange={onChange}
+                      required
+                      className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
+                    >
+                      <option value="" disabled>
+                        Select specialization
+                      </option>
+                      {availableSpecializations.map((spec) => (
+                        <option key={spec} value={spec}>
+                          {spec}
+                        </option>
+                      ))}
+                    </select>
+                  )}
               </div>
             </div>
 
