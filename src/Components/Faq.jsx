@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 const faqs = [
   {
@@ -110,7 +110,7 @@ const Faq = () => {
               className="flex gap-2 items-center text-left w-full text-darkblue hover:cursor-pointer"
             >
               <span className="text-lg">
-                {openIndex === index ? <IoIosArrowUp /> : <IoIosArrowDown />}
+                {openIndex === index ? <ChevronUp /> : <ChevronDown />}
               </span>
               <p className="font-poppins text-sm sm:text-base md:text-lg font-medium">
                 {faq.question}

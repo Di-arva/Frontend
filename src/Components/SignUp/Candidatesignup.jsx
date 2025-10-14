@@ -1,8 +1,9 @@
 import { useState,useEffect } from "react";
-import Marklogo from "../../assets/Diarva_mark.png";
+import Marklogo from "../../assets/icons/Dashboard.png";
 import Button from "../Button";
 import { postData } from "../../lib/http";
 import { useNavigate } from "react-router-dom"; 
+import { CheckCircle,ChevronDown } from "lucide-react";
 
 
 //Specialization as per levels 
@@ -123,6 +124,16 @@ const CandidateSignup = () => {
         setForm(prev => ({ ...prev, specialization: '' }));
       }
     }, [form.certification]);
+
+    //changing messages at bottom 
+    useEffect(() => {
+      if (msg.text === "Email verified successfully.") {
+        setEmailVerified(true);
+      }
+      if (msg.text === "Phone verified successfully.") {
+        setPhoneVerified(true);
+      }
+    }, [msg.text]);
 
   //Form data validation
 
@@ -262,7 +273,7 @@ const CandidateSignup = () => {
                 // Clear OTP message after 5 seconds
     setTimeout(() => setPhoneOtpError(""), 5000);
 
-      setMsg({ type: "success", text: "Phone verified successfully." });
+      setMsg({ type: "success", text: "Phone number is verified successfully." });
     } catch (err) {
       setPhoneVerified(false);
       setPhoneToken("");
@@ -349,13 +360,15 @@ const CandidateSignup = () => {
 
   const canRegister = emailVerified && phoneVerified && !loading;
 
+  // Component JSX
+
   return (
     <>
-    <div id="contactus" className="my-10 px-4 md:px-8 lg:px-20">
+    <div id="contactus" className="my-6 md:my-10 lg:my-10 px-8 md:px-8 lg:px-20">
     <h2 className="text-darkblue font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold">
       Candidate SignUp
     </h2>
-    <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-2 text-darkblack text-sm ml-2 sm:text-base md:text-lg">
+    <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-1 text-darkblack text-sm  sm:text-base md:text-lg md:ml-2 lg:ml-2">
       Register yourself at
       <span className="text-darkblue font-semibold text-base sm:text-lg mx-2">
         Di’arva
@@ -366,17 +379,19 @@ const CandidateSignup = () => {
  
   </div>
     <div>
-      <div className="flex min-h-full flex-col justify-center px-6 py-8 lg:px-8  font-poppins">
+      <div className="flex min-h-full flex-col justify-center px-6 mb-12 lg:px-8 md:py-8  font-poppins">
       
         
       
     
         <div className="bg-lightblue w-full max-w-4xl rounded-3xl mt-2 px-6 sm:px-10 py-6 mx-auto shadow-md">
-        <img src={Marklogo} alt="Diarva Mark Logo" className=" h-20 w-auto " />
-      <h3 className="text-darkblue font-poppins text-2xl sm:text-3xl md:text-4xl font-medium">
+        <img src={Marklogo} alt="Diarva Mark Logo" className="bg-lightbg h-20 rounded-full w-auto " />
+      <h3 className="text-darkblue font-poppins text-2xl sm:text-3xl md:text-4xl font-medium mt-6">
       Register as Candidate
       </h3>
-      <p className="mt-2 mb-8 text-sm sm:text-base">You can reach us at anytime</p>
+      <p className="mt-2 mb-8 text-sm sm:text-base">You can reach us at anytime at<a href="mailto:support@diarva.org" target="_blank" className="text-md font-poppins text-darkblue font-normal ml-2">
+    support@diarva.org
+  </a></p>
       
       {/* Form Begins */}
       
@@ -472,7 +487,7 @@ const CandidateSignup = () => {
                
                     disabled={emailVerified} 
                      className={`flex-1 rounded-full px-3 py-1.5 text-base text-darkblue outline-1 outline-darkblue focus:outline-2 sm:text-sm/6 ${
-    emailVerified ? "opacity-50 cursor-not-allowed text-red-500 font-semibold" : ""
+    emailVerified ? "opacity-50 cursor-not-allowed font-semibold" : ""
   }`}
                   />
 
@@ -502,7 +517,7 @@ const CandidateSignup = () => {
 
                 {/* Email OTP sent notification */}
 {emailOtpSent && !emailVerified && (
-  <p className="text-sm text-darkblue mt-1 font-medium ml-2">
+  <p className="text-sm font-poppins text-darkblue mt-1 font-medium ml-2">
     OTP has been sent to your email.
   </p>
 )}
@@ -531,14 +546,27 @@ const CandidateSignup = () => {
                     </Button>
                   </div>
                 )}
+                
                 {/* Email OTP Error */}
 {emailOtpError && (
-  <p className="text-sm text-red-600 mt-1 ml-2">{emailOtpError}</p>
+  <p className=" font-poppins text-sm text-red-700 mt-1 ml-2">{emailOtpError}</p>
 )}
-
-                <p className="text-sm text-darkblue mt-1 font-poppins font-medium ml-2">
+{!emailVerified ? ( <p className="text-sm text-darkblue mt-1 font-poppins font-medium ml-2">
                   *We will send OTP on this email address
-                </p>
+                </p>)  : ""}
+               
+                <div className="flex items-center ml-2 gap-2">
+    {emailVerified ? (
+      <CheckCircle className="w-5 h-5 text-darkblue" />
+    ) : ""}
+    <span
+      className={`text-sm ${
+        emailVerified ? "text-darkblue font-medium font-poppins" : "text-darkblue"
+      }`}
+    >
+      {emailVerified ? "Email address is verified" : "Email address is not verified"}
+    </span>
+  </div>
               </div>
             </div>
 
@@ -567,8 +595,8 @@ const CandidateSignup = () => {
                     }}
                     disabled={phoneVerified} 
                     className={`flex-1 rounded-full px-3 py-1.5 text-base text-darkblue outline-1 outline-darkblue focus:outline-2 sm:text-sm/6 ${
-   phoneVerified ? "opacity-50 cursor-not-allowed text-red-500 font-semibold" : ""
- }`}
+                      phoneVerified ? "opacity-50 cursor-not-allowed font-semibold" : ""
+                    }`}
                   />
                   <Button
                     type="button"
@@ -584,9 +612,9 @@ const CandidateSignup = () => {
                     }`}
                   >
                     {phoneVerified ? "Verified"
-    : emailOtpTimer > 0
-    ? `Resend OTP in ${emailOtpTimer}s`
-    : sendingEmailOtp
+    : phoneOtpTimer > 0
+    ? `Resend OTP in ${phoneOtpTimer}s`
+    : sendingPhoneOtp
     ? "Sending..."
     : "Send OTP"}
                   </Button>
@@ -595,7 +623,7 @@ const CandidateSignup = () => {
                 </div>
 
                 {phoneOtpSent && !phoneVerified && (
-  <p className="text-sm text-green-600 mt-1 font-medium ml-2">
+  <p className="text-sm font-poppins text-darkblue mt-1 font-medium ml-2">
     OTP has been sent to your phone.
   </p>
 )}
@@ -625,12 +653,26 @@ const CandidateSignup = () => {
                 )}
 
 {phoneOtpError && (
-  <p className="text-sm text-red-600 mt-1 ml-2">{phoneOtpError}</p>
+  <p className="text-sm text-red-700 mt-1 ml-2">{phoneOtpError}</p>
 )}
+{!phoneVerified ? ( <p className="text-sm text-darkblue mt-1 font-poppins font-medium ml-2">
+                  *We will send OTP on this email address
+                </p>)  : ""}
+               
+                <div className="flex items-center ml-2 gap-2">
+    {phoneVerified ? (
+      <CheckCircle className="w-5 h-5 text-darkblue" />
+    ) : ""}
+    <span
+      className={`text-sm ${
+        phoneVerified ? "text-darkblue font-medium font-poppins" : "text-darkblue"
+      }`}
+    >
+      {phoneVerified ? "Phone number is verified" : "Phone number is not verified"}
+    </span>
+  </div>
 
-                <p className="text-sm text-darkblue mt-1 font-poppins font-medium ml-2">
-                  *We will send OTP on this phone number
-                </p>
+          
               </div>
             </div>
  {/* --- NEW: Upload Certificate Field --- */}
@@ -721,8 +763,10 @@ const CandidateSignup = () => {
                 <label htmlFor="province" className="block text-sm/6 font-medium text-gray-900">
                   Province
                 </label>
+                <div className="relative">
+
                 <select
-                  className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold placeholder:text-sm"
+                  className="border w-full appearance-none  border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold placeholder:text-sm"
                   name="province"
                   id="province"
                   autoComplete="address-level1"
@@ -735,7 +779,12 @@ const CandidateSignup = () => {
                       {p}
                     </option>
                   ))}
+
                 </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
+                </div>
+              
+                
               </div>
             </div>
 
@@ -744,14 +793,18 @@ const CandidateSignup = () => {
                 Country
               </label>
               <div className="mt-2 flex flex-col gap-3">
-              <select
+                <div className="relative">
+                <select
   name="country"
   value={form.country}
   onChange={onChange}
-  className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
+  className="border w-full appearance-none border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
 >
   <option value="Canada">Canada</option>
 </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
+                </div>
+  
 
               </div>
             </div>
@@ -759,24 +812,29 @@ const CandidateSignup = () => {
             <div>
               <label className="block text-sm/6 font-medium text-gray-900">Certification & Specialization</label>
               <div className="mt-2 flex flex-col gap-3">
+                <div className="relative">
                 <select
                   name="certification"
                   value={form.certification}
                   onChange={onChange}
-                  className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
+                  className="appearance-none w-full border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
                 >
                   <option value="level-1">Level 1</option>
                   <option value="level-2">Level 2</option>
                   <option value="harp">HARP</option>
                 </select>
+                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
+                </div>
+                
 
                 {form.certification !== "harp" && (
+                <div className="relative">
                     <select
                       name="specialization"
                       value={form.specialization}
                       onChange={onChange}
                       required
-                      className="border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
+                      className="border appearance-none w-full border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
                     >
                       <option value="" disabled>
                         Select specialization
@@ -787,7 +845,10 @@ const CandidateSignup = () => {
                         </option>
                       ))}
                     </select>
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2  w-5 h-5 text-darkblue pointer-events-none" />
+                      </div>
                   )}
+
               </div>
             </div>
 
@@ -851,25 +912,21 @@ const CandidateSignup = () => {
             </div>
 
     
+                      
 
-            {msg.text ? (
-              <div
-                className={`rounded-xl px-4 py-3 text-sm ${
-                  msg.type === "error" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
-                }`}
-              >
-                {msg.text}
-              </div>
-            ) : null}
+          
 
 
+  
+
+ 
 
             <div>
-              <Button type="submit" variant="dark" size="lg"  disabled={!canRegister}  className={!canRegister ? "opacity-50 cursor-not-allowed" : ""}>
+              <Button type="submit" variant="dark" size="lg"  disabled={!canRegister}  className={!canRegister ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:opacity-80"}>
                 {loading ? "Submitting..." : emailVerified && phoneVerified ? "Sign Up" : "Verify to Sign Up"}
               </Button>
               {!emailVerified || !phoneVerified ? (
-                <p className="text-xs text-center text-darkblue">Please verify both Email and Phone to enable Sign Up.</p>
+                <p className="text-sm mt-2 text-center text-darkblue">Please verify Email address and Phone number to enable Signup.</p>
               ) : null}
             </div>
           </form>
