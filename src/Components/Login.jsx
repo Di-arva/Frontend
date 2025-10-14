@@ -78,15 +78,7 @@ const Login = () => {
             >
               Login
             </Button>
-            <Button
-              type="submit"
-              variant="light"
-              size="lg"
-              className="mt-2 w-full flex justify-center items-center"
-            >
-              <FcGoogle size={20} className="mr-2" />
-              Sign In with Google
-            </Button>
+       
           </div>
         </form>
 

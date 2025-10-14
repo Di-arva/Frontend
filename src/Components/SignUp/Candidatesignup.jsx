@@ -96,15 +96,7 @@ const CandidateSignup = () => {
 
 
 
-  // --- NEW: Handler for certificate file input change ---
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // You can add validation for file type or size here if needed
-      // For example: if (file.size > 5 * 1024 * 1024) { setMsg(...); return; }
-      setCertificateFile(file);
-    }
-  };
+
 
   //specializations selection
 
@@ -147,7 +139,7 @@ const CandidateSignup = () => {
     if (!postalRe.test(form.zipcode)) return "Invalid Canadian postal code.";
     if (!form.city.trim()) return "City is required.";
     if (form.certification !== 'harp' && !form.specialization) return "Please select one specialization.";
-    if (!certificateFile) return "Please upload your certificate file.";
+    // if (!certificateFile) return "Please upload your certificate file.";
     if (!form.emergency_name || !form.emergency_phone) return "Emergency contact name and phone are required.";
     if (!phoneRe.test(form.emergency_phone.trim())) return "Invalid emergency contact phone format.";
     if (!emailVerified || !phoneVerified) return "Please verify email and phone OTP first.";
@@ -284,79 +276,109 @@ const CandidateSignup = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMsg({ type: "", text: "" });
+// Updated file change handler with size validation
+// const handleFileChange = (e) => {
+//   const file = e.target.files[0];
+//   if (file) {
+//     const fileSizeMB = file.size / (1024 * 1024);
+//     const maxSize = 10; // 10MB limit for separate upload
+    
+//     if (fileSizeMB > maxSize) {
+//       setMsg({ 
+//         type: "error", 
+//         text: `File is too large (${fileSizeMB.toFixed(2)}MB). Maximum size is ${maxSize}MB.` 
+//       });
+//       e.target.value = '';
+//       return;
+//     }
+    
+//     setCertificateFile(file);
+//     setMsg({ type: "", text: "" });
+//   }
+// };
 
-    const err = validate();
-    if (err) {
-      setMsg({ type: "error", text: err });
-      return;
+
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setMsg({ type: "", text: "" });
+
+  const err = validate();
+  if (err) {
+    setMsg({ type: "error", text: err });
+    return;
+  }
+
+  setLoading(true);
+  try {
+    // let certificateUrl = null;
+    
+    // Step 1: Upload certificate file separately
+    // if (certificateFile) {
+    //   setMsg({ type: "info", text: "Uploading certificate..." });
+      
+    //   const fileFormData = new FormData();
+    //   fileFormData.append("file", certificateFile);
+    //   fileFormData.append("type", "certificate"); // Optional: specify file type
+      
+    //   // Use a separate upload endpoint
+    //   const uploadRes = await postData("/upload/file", fileFormData);
+      
+    //   certificateUrl = uploadRes?.data?.url || uploadRes?.url;
+      
+    //   if (!certificateUrl) {
+    //     throw new Error("Failed to upload certificate");
+    //   }
+    // }
+
+    // Step 2: Submit registration with file URL
+    setMsg({ type: "info", text: "Submitting registration..." });
+    
+    const payload = {
+      email: form.email.trim(),
+      mobile: form.phone.trim(),
+      first_name: form.firstname.trim(),
+      last_name: form.lastname.trim(),
+      address: form.address.trim(),
+      city: form.city.trim(),
+      zipcode: form.zipcode.toUpperCase().replace(/\s+/g, ""),
+      province: form.province,
+      country: form.country,
+      role: "assistant",
+       certification: form.certification,
+      specializations: form.specialization ? [form.specialization] : [],
+      emergency_contact: {
+        name: form.emergency_name,
+        relationship: form.emergency_relationship,
+        phone: form.emergency_phone,
+        ...(form.emergency_email && { email: form.emergency_email })
+      },
+      email_verification_token: emailToken,
+      phone_verification_token: phoneToken,
+      // certificate_url: certificateUrl // URL instead of base64
+    };
+
+    const res = await postData("/auth/register", payload);
+    
+    if (res?.data?.success === false || res?.success === false) {
+      throw new Error(res?.data?.message || res?.message || "Registration failed");
     }
 
-    setLoading(true);
-    try {
-      // --- MODIFIED: Use FormData to include the file ---
-      const formData = new FormData();
-
-      // Append all form fields
-      formData.append("email", form.email.trim());
-      formData.append("mobile", form.phone.trim());
-      formData.append("first_name", form.firstname.trim());
-      formData.append("last_name", form.lastname.trim());
-      formData.append("city", form.city.trim());
-      formData.append("zipcode", form.zipcode.toUpperCase().replace(/\s+/g, ""));
-      formData.append("province", form.province);
-      formData.append("role", "assistant");
-      formData.append("certification", form.certification);
-      if (form.specialization) {
-        formData.append("specializations[0]", form.specialization);
+    navigate('/thank-you', {
+      state: {
+        firstname: form.firstname.trim(),
+        lastname: form.lastname.trim(),
       }
-      
-      // Specializations is an array, so we append it this way
-      if (form.specialization) {
-        formData.append("specializations[0]", form.specialization);
-      }
+    });
 
-      // Append nested emergency_contact object fields
-      formData.append("emergency_contact[name]", form.emergency_name);
-      formData.append("emergency_contact[relationship]", form.emergency_relationship);
-      formData.append("emergency_contact[phone]", form.emergency_phone);
-      if (form.emergency_email) {
-        formData.append("emergency_contact[email]", form.emergency_email);
-      }
-
-      formData.append("email_verification_token", emailToken);
-      formData.append("phone_verification_token", phoneToken);
-      
-      // --- NEW: Append the certificate file ---
-      if (certificateFile) {
-        // "certificate_file" is the key the backend API will use to find the file
-        formData.append("certificate_file", certificateFile);
-      }
-
-         // Pass FormData to the API call
-         const res = await postData("/auth/register", formData);
-         if (!res?.success) throw new Error(res?.message || "Registration failed");
-         
-
-   
-      navigate('/thank-you', {
-        state: {
-          firstname: form.firstname.trim(),
-          lastname: form.lastname.trim(),
-        }
-      });
-      
-
-      setForm((f) => ({ ...f }));
-    } catch (error) {
-      const message = error?.response?.data?.message || error.message || "Something went wrong";
-      setMsg({ type: "error", text: message });
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    console.error("Registration error:", error);
+    const message = error?.response?.data?.message || error.message || "Something went wrong";
+    setMsg({ type: "error", text: message });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const canRegister = emailVerified && phoneVerified && !loading;
 
@@ -368,7 +390,7 @@ const CandidateSignup = () => {
     <h2 className="text-darkblue font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold">
       Candidate SignUp
     </h2>
-    <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-1 text-darkblack text-sm  sm:text-base md:text-lg md:ml-2 lg:ml-2">
+    <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-1 text-darkblack text-sm  sm:text-base md:text-lg md:ml-2">
       Register yourself at
       <span className="text-darkblue font-semibold text-base sm:text-lg mx-2">
         Di’arva
@@ -386,7 +408,7 @@ const CandidateSignup = () => {
     
         <div className="bg-lightblue w-full max-w-4xl rounded-3xl mt-2 px-6 sm:px-10 py-6 mx-auto shadow-md">
         <img src={Marklogo} alt="Diarva Mark Logo" className="bg-lightbg h-20 rounded-full w-auto " />
-      <h3 className="text-darkblue font-poppins text-2xl sm:text-3xl md:text-4xl font-medium mt-6">
+      <h3 className="text-darkblue font-poppins text-2xl sm:text-3xl md:text-4xl font-medium">
       Register as Candidate
       </h3>
       <p className="mt-2 mb-8 text-sm sm:text-base">You can reach us at anytime at<a href="mailto:support@diarva.org" target="_blank" className="text-md font-poppins text-darkblue font-normal ml-2">
@@ -680,7 +702,7 @@ const CandidateSignup = () => {
                 <label htmlFor="certificate-upload" className="block text-sm/6 font-medium text-darkblue font-poppins">
                   Upload Certificate
                 </label>
-                <div className="mt-2">
+                {/* <div className="mt-2">
                   <input
                     id="certificate-upload"
                     name="certificate_file"
@@ -700,7 +722,7 @@ const CandidateSignup = () => {
                       Selected file: {certificateFile.name}
                     </p>
                   )}
-                </div>
+                </div> */}
               </div>
             <div>
               <label htmlFor="address" className="block text-sm/6 font-medium text-gray-900 ">
