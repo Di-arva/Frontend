@@ -11,8 +11,7 @@ import Individualsignup from "./Components/SignUp/Individualsignup";
 import Admindashboard from "./Components/Dashboard/Admindashboard";
 import Candidatedashboard from "./Components/Dashboard/Candidatedashboard";
 import ThankYouPage from "./Components/Thanyoupage";
-
-
+import SetPasswordPage from "./Components/SignUp/SetPasswordPage";
 
 // Layout wrapper for public pages
 const PublicLayout = ({ children }) => {
@@ -32,7 +31,7 @@ function App() {
       <Routes>
         {/* Admin dashboard */}
         <Route path="/admin/*" element={<Admindashboard />} />
-          <Route path="/candidate/*" element={<Candidatedashboard />} />
+        <Route path="/candidate/*" element={<Candidatedashboard />} />
 
         {/* Public routes wrapped in PublicLayout */}
         <Route
@@ -41,6 +40,7 @@ function App() {
             <PublicLayout>
               <Routes>
                 <Route path="/" element={<Homepage />} />
+                <Route path="/set-password" element={<SetPasswordPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<CreateAccount />} />
                 <Route path="/officesignup" element={<Officesignup />} />
