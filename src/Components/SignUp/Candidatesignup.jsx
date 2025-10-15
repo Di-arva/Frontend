@@ -5,6 +5,23 @@ import { postData } from "../../lib/http";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, ChevronDown } from "lucide-react";
 
+//Roles
+
+const ROLES = [
+  {
+    value: "dental-assistant",
+    label: "Dental Assistant",
+  },
+  {
+    value: "hygienist",
+    label: "Hygienist",
+  },
+  {
+    value: "assistant-dental",
+    label: "Assistant Dental",
+  },
+];
+
 //Specialization as per levels
 
 const LEVEL_1_SPECIALIZATIONS = [
@@ -45,6 +62,8 @@ const PROVINCES = [
   "YT",
 ];
 
+//URL for DB Server
+
 const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_URL || "";
 
 const CandidateSignup = () => {
@@ -64,9 +83,10 @@ const CandidateSignup = () => {
     zipcode: "",
     province: "ON",
     country: "Canada",
-    password: "",
-    confirmPassword: "",
-    certification: "level-1", // "harp" | "level-1" | "level-2"
+    role: "dental-assistant",
+    yearsOfExperience: "",
+    licenseNumber: "",
+    certification: "Level-1", // "harp" | "level-1" | "level-2"
     specialization: "",
     emergency_name: "",
     emergency_relationship: "",
@@ -113,6 +133,23 @@ const CandidateSignup = () => {
       ? LEVEL_2_SPECIALIZATIONS
       : [];
 
+  //Reseting certification-related fields when role changes
+
+  useEffect(() => {
+    if (form.role !== "dental-assistant") {
+      setCertificateFile(null);
+      setCertificateUrl("");
+      setForm((prev) => ({
+        ...prev,
+        certification: "Level-1",
+        specialization: "",
+      }));
+    } else {
+      setForm((prev) => ({ ...prev, licenseNumber: "" }));
+    }
+  }, [form.role]);
+
+  //Certification changes for HARP only
   useEffect(() => {
     if (form.certification === "harp") {
       setForm((prev) => ({ ...prev, specialization: "" }));
@@ -124,14 +161,20 @@ const CandidateSignup = () => {
     }
   }, [form.certification]);
 
+  // Email and phone number verified with blue tickmark
+
   useEffect(() => {
     if (msg.text === "Email verified successfully.") setEmailVerified(true);
     if (msg.text === "Phone verified successfully.") setPhoneVerified(true);
   }, [msg.text]);
 
+  //validation regex
+
   const validate = () => {
     const phoneRe = /^\+?1?[2-9]\d{2}[2-9]\d{2}\d{4}$/;
     const postalRe = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
+
+    //form filed validation
 
     if (!form.firstname.trim()) return "Please enter first name.";
     if (!form.lastname.trim()) return "Please enter last name.";
@@ -139,9 +182,15 @@ const CandidateSignup = () => {
       return "Invalid Canadian phone number format.";
     if (!postalRe.test(form.zipcode)) return "Invalid Canadian postal code.";
     if (!form.city.trim()) return "City is required.";
-    if (form.certification !== "harp" && !form.specialization)
-      return "Please select one specialization.";
-    if (!certificateFile) return "Please upload your certificate file.";
+    if (!form.yearsOfExperience) return "Years Of Experience is required";
+    if (form.role === "dental-assistant") {
+      if (form.certification !== "harp" && !form.specialization)
+        return "Please select specialization";
+      if (!certificateFile) return "Please upload your certification";
+    } else {
+      if (!form.licenseNumber.trim())
+        return "License/Registration number is required";
+    }
     if (!form.emergency_name || !form.emergency_phone)
       return "Emergency contact name and phone are required.";
     if (!phoneRe.test(form.emergency_phone.trim()))
@@ -358,6 +407,7 @@ const CandidateSignup = () => {
 
       // 2) Register with certificate URL
       setMsg({ type: "info", text: "Submitting registration..." });
+      
       const payload = {
         email: form.email.trim(),
         mobile: form.phone.trim(),
@@ -756,36 +806,147 @@ const CandidateSignup = () => {
                 </div>
               </div>
 
-              {/* Certificate Upload */}
+              {/* Role Selection*/}
+
               <div>
                 <label
-                  htmlFor="certificate-upload"
-                  className="block text-sm/6 font-medium text-darkblue font-poppins"
+                  htmlFor="role"
+                  className="text-darkblack text-sm mb-1 px-3"
                 >
-                  Upload Certificate
+                  Role
                 </label>
-                <div className="mt-2">
-                  <input
-                    id="certificate-upload"
-                    name="certificate_file"
-                    type="file"
+                <div className="relative">
+                  <select
+                    className="border w-full appearance-none  border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold placeholder:text-sm"
+                    name="role"
+                    id="role"
                     required
-                    onChange={handleFileChange}
-                    accept=".pdf,.jpg,.jpeg,.png"
-                    className="block w-full text-sm text-gray-500
-                      file:mr-4 file:py-2 file:px-4
-                      file:rounded-full file:border-0
-                      file:text-sm file:font-semibold
-                      file:bg-darkblue file:text-white
-                      hover:file:bg-opacity-90 "
-                  />
-                  {certificateFile && (
-                    <p className="text-xs text-darkblue mt-2 ml-2">
-                      Selected file: {certificateFile.name}
-                    </p>
-                  )}
+                    value={form.role}
+                    onChange={onChange}
+                  >
+                    {ROLES.map((role) => (
+                      <option key={role.value} value={role.value}>
+                        {role.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
                 </div>
               </div>
+
+              {/* Years of Experience */}
+
+              <div>
+                <label
+                  htmlFor="yearsOfExperience"
+                  className="text-darkblack text-sm mb-1 px-3"
+                >
+                  Years of Experience
+                </label>
+                <input
+                  id="yearsOfExperience"
+                  name="yearsOfExperience"
+                  type="text"
+                  required
+                  onChange={onChange}
+                  placeholder="1"
+                  value={form.yearsOfExperience}
+                  className="w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 outline-darkblue focus:outline-2 sm:text-sm/6"
+                />
+              </div>
+
+              {/* Conditional Fields Based on Role */}
+              {form.role === "dental-assistant" ? (
+                <>
+                  {/* Certificate Upload */}
+                  <div>
+                    <label
+                      htmlFor="certificate-upload"
+                      className="block text-sm font-medium text-blue-900 mb-1 px-3"
+                    >
+                      Upload Certificate
+                    </label>
+                    <input
+                      id="certificate-upload"
+                      name="certificate_file"
+                      type="file"
+                      required
+                      onChange={handleFileChange}
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-white hover:file:bg-opacity-90"
+                    />
+                    {certificateFile && (
+                      <p className="text-xs text-blue-900 mt-2 ml-2">
+                        Selected: {certificateFile.name}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Certification & Specialization */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-900 mb-1 px-3">
+                      Certification & Specialization
+                    </label>
+                    <div className="flex flex-col gap-3">
+                      <div className="relative">
+                        <select
+                          name="certification"
+                          value={form.certification}
+                          onChange={onChange}
+                          className="appearance-none w-full border border-blue-900 h-10 rounded-full text-sm px-4 text-blue-900 font-semibold"
+                        >
+                          <option value="level-1">Level 1</option>
+                          <option value="level-2">Level 2</option>
+                          <option value="harp">HARP</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-900 pointer-events-none" />
+                      </div>
+
+                      {form.certification !== "harp" && (
+                        <div className="relative">
+                          <select
+                            name="specialization"
+                            value={form.specialization}
+                            onChange={onChange}
+                            required
+                            className="appearance-none w-full border border-blue-900 h-10 rounded-full text-sm px-4 text-blue-900 font-semibold"
+                          >
+                            <option value="" disabled>
+                              Select specialization
+                            </option>
+                            {availableSpecializations.map((spec) => (
+                              <option key={spec} value={spec}>
+                                {spec}
+                              </option>
+                            ))}
+                          </select>
+                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-900 pointer-events-none" />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* License Number for Hygienist and Assistant Dental */
+                <div>
+                  <label
+                    htmlFor="licenseNumber"
+                    className="block text-sm font-medium text-gray-900 mb-1 px-3"
+                  >
+                    License / Registration Number
+                  </label>
+                  <input
+                    id="licenseNumber"
+                    type="text"
+                    name="licenseNumber"
+                    placeholder="Enter your license number"
+                    required
+                    value={form.licenseNumber}
+                    onChange={onChange}
+                    className="block w-full rounded-full px-3 py-1.5 text-base text-blue-900 border border-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-900"
+                  />
+                </div>
+              )}
 
               {/* Address */}
               <div>

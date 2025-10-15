@@ -108,64 +108,78 @@ const Tablesection = () => {
         </div>
 
         {/* Tabel */}
-<div className="overflow-x-auto">
-  <table className="w-full">
-    <thead className="border-b border-darkblue">
-      <tr>
-        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
-          Order Id
-        </th>
-        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
-          Customer
-        </th>
-        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
-          Amount
-        </th>
-        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
-          Status
-        </th>
-        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
-          Date
-        </th>
-      </tr>
-    </thead>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="border-b border-darkblue">
+              <tr>
+                <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                  Order Id
+                </th>
+                <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                  Customer
+                </th>
+                <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                  Amount
+                </th>
+                <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                  Status
+                </th>
+                <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                  Date
+                </th>
+              </tr>
+            </thead>
 
-    {/* This line makes blue dividers between rows but none after the last */}
-    <tbody className="divide-y divide-darkblue">
-      {customerData.map((data, index) => (
-        <tr key={index} className="hover:cursor-pointer font-poppins transition-colors">
-          <td className="p-4 text-sm font-medium text-darkblue">{data.id}</td>
-          <td className="p-4 text-sm font-medium text-darkblue">{data.customer}</td>
-          <td className="p-4 text-sm font-medium text-darkblue">{data.amount}</td>
-          <td className="p-4">
-            <span
-              className={`text-sm font-medium px-2 rounded-full ${getStatusColor(data.status)}`}
-            >
-              {data.status}
-            </span>
-          </td>
-          <td className="p-4 text-sm font-medium text-darkblue">{data.date}</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
+            {/* This line makes blue dividers between rows but none after the last */}
+            <tbody className="divide-y divide-darkblue">
+              {customerData.map((data, index) => (
+                <tr
+                  key={index}
+                  className="hover:cursor-pointer font-poppins transition-colors"
+                >
+                  <td className="p-4 text-sm font-medium text-darkblue">
+                    {data.id}
+                  </td>
+                  <td className="p-4 text-sm font-medium text-darkblue">
+                    {data.customer}
+                  </td>
+                  <td className="p-4 text-sm font-medium text-darkblue">
+                    {data.amount}
+                  </td>
+                  <td className="p-4">
+                    <span
+                      className={`text-sm font-medium px-2 rounded-full ${getStatusColor(
+                        data.status
+                      )}`}
+                    >
+                      {data.status}
+                    </span>
+                  </td>
+                  <td className="p-4 text-sm font-medium text-darkblue">
+                    {data.date}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
       {/* Top Clients */}
       <div className="backdrop-blur-xl mt-8 rounded-2xl border-2 border-lightblue overflow-hidden">
         <div className="p-6 border-b-2  border-lightblue">
           <div className="flex items-center justify-between">
             <div className="text-lg font-bold text-darkblack">
-                <h3 className="text-xl font-semibold text-darkblue font-poppins">
+              <h3 className="text-xl font-semibold text-darkblue font-poppins">
                 Top Clients
               </h3>
-            <p className="text-sm text-darkblack font-poppins font-light">Latest </p>
+              <p className="text-sm text-darkblack font-poppins font-light">
+                Latest{" "}
+              </p>
             </div>
             <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">
               View All
             </button>
-            </div>
+          </div>
         </div>
         {/* Data */}
 
@@ -177,10 +191,14 @@ const Tablesection = () => {
                   <h4 className="text-sm font-semibold text-darkblue">
                     {client.name}
                   </h4>
-                  <p className="text-sm font-poppins text-darkblack">{client.sales}</p>
+                  <p className="text-sm font-poppins text-darkblack">
+                    {client.sales}
+                  </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-semibold text-darkblue">{client.total}</p>
+                  <p className="text-sm font-semibold text-darkblue">
+                    {client.total}
+                  </p>
                   <div className="flex items-center space-x-1">
                     {client.trend === "Up" ? (
                       <TrendingUp className="w-3 h-3 text-emerald-500" />
