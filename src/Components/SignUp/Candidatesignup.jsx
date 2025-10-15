@@ -141,7 +141,7 @@ const CandidateSignup = () => {
       setCertificateUrl("");
       setForm((prev) => ({
         ...prev,
-        certification: "Level-1",
+        certification: "level-1",
         specialization: "",
       }));
     } else {
@@ -407,7 +407,7 @@ const CandidateSignup = () => {
 
       // 2) Register with certificate URL
       setMsg({ type: "info", text: "Submitting registration..." });
-      
+
       const payload = {
         email: form.email.trim(),
         mobile: form.phone.trim(),
@@ -884,22 +884,22 @@ const CandidateSignup = () => {
 
                   {/* Certification & Specialization */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-900 mb-1 px-3">
+                    <label className="block text-sm/6 font-medium text-gray-900">
                       Certification & Specialization
                     </label>
-                    <div className="flex flex-col gap-3">
+                    <div className="mt-2 flex flex-col gap-3">
                       <div className="relative">
                         <select
                           name="certification"
                           value={form.certification}
                           onChange={onChange}
-                          className="appearance-none w-full border border-blue-900 h-10 rounded-full text-sm px-4 text-blue-900 font-semibold"
+                          className="appearance-none w-full border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
                         >
                           <option value="level-1">Level 1</option>
                           <option value="level-2">Level 2</option>
                           <option value="harp">HARP</option>
                         </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-900 pointer-events-none" />
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
                       </div>
 
                       {form.certification !== "harp" && (
@@ -909,7 +909,7 @@ const CandidateSignup = () => {
                             value={form.specialization}
                             onChange={onChange}
                             required
-                            className="appearance-none w-full border border-blue-900 h-10 rounded-full text-sm px-4 text-blue-900 font-semibold"
+                            className="border appearance-none w-full border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
                           >
                             <option value="" disabled>
                               Select specialization
@@ -920,7 +920,7 @@ const CandidateSignup = () => {
                               </option>
                             ))}
                           </select>
-                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-blue-900 pointer-events-none" />
+                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2  w-5 h-5 text-darkblue pointer-events-none" />
                         </div>
                       )}
                     </div>
@@ -1065,50 +1065,6 @@ const CandidateSignup = () => {
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
                   </div>
-                </div>
-              </div>
-
-              {/* Certification & Specialization */}
-              <div>
-                <label className="block text-sm/6 font-medium text-gray-900">
-                  Certification & Specialization
-                </label>
-                <div className="mt-2 flex flex-col gap-3">
-                  <div className="relative">
-                    <select
-                      name="certification"
-                      value={form.certification}
-                      onChange={onChange}
-                      className="appearance-none w-full border border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
-                    >
-                      <option value="level-1">Level 1</option>
-                      <option value="level-2">Level 2</option>
-                      <option value="harp">HARP</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
-                  </div>
-
-                  {form.certification !== "harp" && (
-                    <div className="relative">
-                      <select
-                        name="specialization"
-                        value={form.specialization}
-                        onChange={onChange}
-                        required
-                        className="border appearance-none w-full border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
-                      >
-                        <option value="" disabled>
-                          Select specialization
-                        </option>
-                        {availableSpecializations.map((spec) => (
-                          <option key={spec} value={spec}>
-                            {spec}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2  w-5 h-5 text-darkblue pointer-events-none" />
-                    </div>
-                  )}
                 </div>
               </div>
 
