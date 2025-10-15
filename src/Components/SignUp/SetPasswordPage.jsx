@@ -122,12 +122,12 @@ export default function SetPasswordPage() {
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
           <div className="mb-4 flex justify-center">
-            <CheckCircle className="w-16 h-16 text-green-500" />
+            <CheckCircle className="w-16 h-16 text-darkblue" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          <h2 className="text-2xl font-bold text-darkblue mb-2">
             Password Set Successfully!
           </h2>
-          <p className="text-gray-600">Redirecting to login page...</p>
+          <p className="text-darkblue">Redirecting to login page...</p>
         </div>
       </div>
     );

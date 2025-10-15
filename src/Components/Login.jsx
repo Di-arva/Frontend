@@ -1,98 +1,171 @@
+import { useState } from "react";
+import Marklogo from "../assets/icons/Dashboard.png";
 import Button from "./Button";
-import Marklogo from "../assets/Diarva_mark.png";
-import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router-dom";
+import { Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:5173/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          identifier: email,
+          password: password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store token or user data if needed
+        if (data.token) {
+          localStorage.setItem("authToken", data.token);
+        }
+        // Redirect to dashboard
+        navigate("/dashboard");
+      } else {
+        setError(data.message || "Invalid email or password");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-8 lg:px-8 bg-lightblue font-poppins">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <img
-          src={Marklogo}
-          alt="Diarva Mark Logo"
-          className="mx-auto h-20 w-auto "
-        />
-        <h2 className="mt-10 text-center text-2xl/9 font-semibold tracking-tight text-darkblack">
-          Sign in to your account
+    <>
+      <div className="my-6 md:my-10 lg:my-10 px-8 md:px-8 lg:px-20">
+        <h2 className="text-darkblue font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold">
+          Login
         </h2>
-      </div>
-
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form action="#" method="POST" className="space-y-6">
-          <div>
-            <label
-              for="email"
-              className="block text-sm/6 font-medium text-gray-900 "
-            >
-              Email address
-            </label>
-            <div className="mt-2">
-              <input
-                id="email"
-                type="email"
-                name="email"
-                placeholder="john@smith.com"
-                required
-                autocomplete="email"
-                className="block w-full rounded-full  px-3 py-1.5 text-base text-darkblue outline-1 -outline-offset-1 outline-darkblue  focus:outline-2 focus:-outline-offset-2 focus:outline-darkblue sm:text-sm/6"
-              />
-            </div>
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between">
-              <label
-                for="password"
-                className="block text-sm/6 font-medium text-gray-900"
-              >
-                Password
-              </label>
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-semibold text-darkblue hover:text-blue-800 "
-                >
-                  Forgot password?
-                </a>
-              </div>
-            </div>
-            <div className="mt-2">
-              <input
-                id="password"
-                type="password"
-                name="password"
-                placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;"
-                required
-                autocomplete="current-password"
-                className="block w-full rounded-full  px-3 py-1.5 text-base text-darkblue outline-1 -outline-offset-1 outline-darkblue  focus:outline-2 focus:-outline-offset-2 focus:outline-darkblue sm:text-sm/6"
-              />
-            </div>
-          </div>
-
-          <div>
-            <Button
-              type="submit"
-              variant="dark"
-              size="lg"
-              className="mb-4 w-full"
-            >
-              Login
-            </Button>
-       
-          </div>
-        </form>
-
-        <p className="mt-4 text-center  text-sm/6 text-darkblack ">
-          Not a member?
-          <Link
-            to="/register"
-            className="font-semibold ml-2  text-darkblue hover:text-blue-800"
-          >
-            Register Now
-          </Link>
+        <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-1 text-darkblack text-sm  sm:text-base md:text-lg md:ml-2">
+          Login to access
+          <span className="text-darkblue font-semibold text-base sm:text-lg mx-2">
+            Di'arva
+          </span>
+          dashboard
         </p>
       </div>
-    </div>
+      <div>
+        <div className="flex min-h-full flex-col justify-center px-6 mb-12 lg:px-8 md:py-8  font-poppins">
+          <div className="bg-lightblue pb-20 w-full max-w-4xl rounded-3xl mt-2 px-6 sm:px-10 py-6 mx-auto shadow-md">
+            <div className="bg-lightbg h-20 w-20 rounded-full flex items-center justify-center mb-4">
+              <img
+                src={Marklogo}
+                alt="Diarva Mark Logo"
+                className="bg-lightbg h-20 rounded-full w-auto "
+              />
+            </div>
+            <h3 className="text-darkblue font-poppins text-2xl sm:text-3xl md:text-4xl font-medium">
+              Dashboard Login
+            </h3>
+            <p className="mt-2 mb-8 text-sm sm:text-base">
+              Login into dashboard for more access
+            </p>
+
+            {/* Form Begins */}
+            <div className="space-y-6">
+              {error && (
+                <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-700 flex-shrink-0 mt-0.5" />
+                  <p className="text-red-700 text-sm">{error}</p>
+                </div>
+              )}
+
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-darkblack text-sm mb-1 px-3 "
+                >
+                  Email Address
+                </label>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="john@smith.com"
+                  required
+                  autoComplete="email"
+                  className="w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 outline-darkblue focus:outline-2 sm:text-sm/6"
+                />
+              </div>
+              <div>
+                <div className="flex items-center justify-between mb-1 px-3">
+                  <label
+                    htmlFor="password"
+                    className="block text-darkblack text-sm"
+                  >
+                    Password
+                  </label>
+                  <Link
+                    to="/forgot-password"
+                    className="text-darkblue text-sm hover:underline"
+                  >
+                    Forgot Password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="flex-1 w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 outline-darkblue focus:outline-2 sm:text-sm/6"
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-darkblue"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5  text-darkblue hover:cursor-pointer" />
+                    ) : (
+                      <Eye className="w-5 h-5  text-darkblue hover:cursor-pointer" />
+                    )}
+                  </button>
+                </div>
+
+                {/* Submit Button */}
+                <div>
+                  <button
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className="bg-darkblue text-white px-4 py-2 rounded-full w-full mt-4 hover:cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? "Logging in..." : "Login"}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 
