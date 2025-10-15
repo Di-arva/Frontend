@@ -74,7 +74,7 @@ const Hero = () => {
         </div>
 
         <div className="relative w-full h-full flex justify-center items-center">
-          <h1
+          <div
             className="font-bold text-darkblue 
                          text-4xl sm:text-5xl md:text-6xl lg:text-7xl
                          tracking-widest leading-tight 
@@ -90,7 +90,7 @@ const Hero = () => {
               Trusted Care <br />
               Every Shift
             </h1>
-          </h1>
+          </div>
 
           <div
             className="absolute text-[300px] lg:text-[500px] font-bold text-darkblue opacity-10 leading-none 

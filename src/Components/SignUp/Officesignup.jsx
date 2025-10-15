@@ -19,7 +19,7 @@ const Officesignup = () => {
 
   return (
     <>
-    <div id="contactus" className="my-6 md:my-10 lg:my-10 px-8 md:px-8 lg:px-20">
+    <div className="my-6 md:my-10 lg:my-10 px-8 md:px-8 lg:px-20">
     <h2 className="text-darkblue font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold">
       Office SignUp
     </h2>
