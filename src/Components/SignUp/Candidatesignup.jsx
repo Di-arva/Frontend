@@ -221,7 +221,7 @@ const CandidateSignup = () => {
     if (!certificateFile) return "";
     const fd = new FormData();
     fd.append("file", certificateFile);
-    const res = await fetch(`${SERVER_BASE}/upload/certificate`, {
+    const res = await fetch(`${SERVER_BASE}/auth/certificate`, {
       method: "POST",
       body: fd,
     });
