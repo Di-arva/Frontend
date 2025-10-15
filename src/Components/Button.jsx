@@ -11,7 +11,7 @@ const Button = ({ children, variant, size, className, ...rest }) => {
   const sizeClasses = {
     sm: "px-3 py-1 text-sm",
     md: " px-8  py-3 text-base font-medium",
-    lg: "p-2 w-full text-sm ",
+    lg: "p-2 w-full text-md ",
   };
 
   const allClasses = classNames(

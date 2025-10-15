@@ -13,7 +13,10 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     setError("");
 
     if (!email || !password) {
@@ -24,31 +27,36 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5173/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          identifier: email,
-          password: password,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_SERVER_BASE_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            identifier: email,
+            password: password,
+          }),
+        }
+      );
 
       const data = await response.json();
 
-      if (response.ok) {
-        // Store token or user data if needed
-        if (data.token) {
-          localStorage.setItem("authToken", data.token);
-        }
-        // Redirect to dashboard
-        navigate("/dashboard");
-      } else {
-        setError(data.message || "Invalid email or password");
+      // Check for failure in response
+      if (data?.success === false || !response.ok) {
+        throw new Error(data?.message || "Invalid email or password");
       }
+
+      // Success - store token and redirect
+      if (data?.token) {
+        localStorage.setItem("authToken", data.token);
+      }
+
+      // Redirect to dashboard
+      navigate("/dashboard");
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError(err.message || "An error occurred. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -70,7 +78,7 @@ const Login = () => {
       </div>
       <div>
         <div className="flex min-h-full flex-col justify-center px-6 mb-12 lg:px-8 md:py-8  font-poppins">
-          <div className="bg-lightblue pb-20 w-full max-w-4xl rounded-3xl mt-2 px-6 sm:px-10 py-6 mx-auto shadow-md">
+          <div className="bg-lightblue w-full max-w-4xl rounded-3xl mt-2 px-6 sm:px-10 py-6 mx-auto shadow-md">
             <div className="bg-lightbg h-20 w-20 rounded-full flex items-center justify-center mb-4">
               <img
                 src={Marklogo}
@@ -89,8 +97,8 @@ const Login = () => {
             <div className="space-y-6">
               {error && (
                 <div className="p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-red-700 flex-shrink-0 mt-0.5" />
-                  <p className="text-red-700 text-sm">{error}</p>
+                  <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <p className="text-red-800 text-sm">{error}</p>
                 </div>
               )}
 

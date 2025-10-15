@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MoreVertical } from 'lucide-react';
+import React, { useState } from "react";
+import { MoreVertical } from "lucide-react";
 
 const TeamMembersTable = () => {
   const [selectedMembers, setSelectedMembers] = useState([]);
@@ -7,95 +7,93 @@ const TeamMembersTable = () => {
   const teamMembers = [
     {
       id: 1,
-      name: 'Phoenix Baker',
-      username: '@phoenix',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Phoenix',
-      status: 'Pending',
-      role: 'Dental Assistant',
-      certification: 'HARP Certified',
-      email: 'phoenix@untitledui.com',
-      phone: '+1 (555) 123-4567',
-      teams: ['Design', 'Product', 'Marketing'],
-      additionalTeams: 4
+      name: "Phoenix Baker",
+      username: "@phoenix",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Phoenix",
+      status: "Pending",
+      role: "Dental Assistant",
+      certification: "HARP Certified",
+      email: "phoenix@untitledui.com",
+      phone: "+1 (555) 123-4567",
+      teams: ["Design", "Product", "Marketing"],
+      additionalTeams: 4,
     },
     {
       id: 2,
-      name: 'Orlando Diggs',
-      username: '@orlando',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Orlando',
-      status: 'Approved',
-      role: 'Dental Assistant',
-      certification:  'Level 1',
-      email: 'orlando@untitledui.com',
-      phone: '+1 (555) 234-5678',
-      teams: ['Design', 'Product', 'Marketing'],
-      additionalTeams: 4
+      name: "Orlando Diggs",
+      username: "@orlando",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Orlando",
+      status: "Approved",
+      role: "Dental Assistant",
+      certification: "Level 1",
+      email: "orlando@untitledui.com",
+      phone: "+1 (555) 234-5678",
+      teams: ["Design", "Product", "Marketing"],
+      additionalTeams: 4,
     },
     {
       id: 3,
-      name: 'Olivia Rhye',
-      username: '@olivia',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia',
-      status: 'Pending',
-      role: 'Dental Assistant',
-      certification:  'Level 2',
-      email: 'olivia@untitledui.com',
-      phone: '+1 (555) 345-6789',
-      teams: ['Design', 'Product', 'Marketing'],
-      additionalTeams: 4
+      name: "Olivia Rhye",
+      username: "@olivia",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia",
+      status: "Pending",
+      role: "Dental Assistant",
+      certification: "Level 2",
+      email: "olivia@untitledui.com",
+      phone: "+1 (555) 345-6789",
+      teams: ["Design", "Product", "Marketing"],
+      additionalTeams: 4,
     },
     {
       id: 4,
-      name: 'Natali Craig',
-      username: '@natali',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Natali',
-      status: 'Approved',
-      role: 'Dental Assistant',
-      certification:  'HARP Certified',
-      email: 'natali@untitledui.com',
-      phone: '+1 (555) 456-7890',
-      teams: ['Design', 'Product', 'Marketing'],
-      additionalTeams: 2
+      name: "Natali Craig",
+      username: "@natali",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Natali",
+      status: "Approved",
+      role: "Dental Assistant",
+      certification: "HARP Certified",
+      email: "natali@untitledui.com",
+      phone: "+1 (555) 456-7890",
+      teams: ["Design", "Product", "Marketing"],
+      additionalTeams: 2,
     },
     {
       id: 5,
-      name: 'Lana Steiner',
-      username: '@lana',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lana',
-      status: 'Approved',
-      role: 'Dental Assistant',
-      certification:  'level 1',
-      email: 'lana@untitledui.com',
-      phone: '+1 (555) 567-8901',
-      teams: ['Design', 'Product', 'Marketing'],
-      additionalTeams: 2
+      name: "Lana Steiner",
+      username: "@lana",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lana",
+      status: "Approved",
+      role: "Dental Assistant",
+      certification: "level 1",
+      email: "lana@untitledui.com",
+      phone: "+1 (555) 567-8901",
+      teams: ["Design", "Product", "Marketing"],
+      additionalTeams: 2,
     },
   ];
 
   const toggleMember = (id) => {
-    setSelectedMembers(prev => 
-      prev.includes(id) 
-        ? prev.filter(memberId => memberId !== id)
+    setSelectedMembers((prev) =>
+      prev.includes(id)
+        ? prev.filter((memberId) => memberId !== id)
         : [...prev, id]
     );
   };
 
   const toggleAll = () => {
-    setSelectedMembers(prev => 
-      prev.length === teamMembers.length 
-        ? [] 
-        : teamMembers.map(m => m.id)
+    setSelectedMembers((prev) =>
+      prev.length === teamMembers.length ? [] : teamMembers.map((m) => m.id)
     );
   };
 
   const handleViewUser = (userId) => {
     // Store user data in sessionStorage for the details page
-    const user = teamMembers.find(m => m.id === userId);
-    sessionStorage.setItem('selectedUser', JSON.stringify(user));
-    
+    const user = teamMembers.find((m) => m.id === userId);
+    sessionStorage.setItem("selectedUser", JSON.stringify(user));
+
     // Navigate to user details page
     window.location.href = `/admin/users/${userId}`;
-    
+
     // If using React Router with useNavigate, use this instead:
     // navigate(`${userId}`);
   };
@@ -180,14 +178,20 @@ const TeamMembersTable = () => {
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    member.status === 'Approved' ? 'bg-emerald-50 text-emerald-700' : 
-                    'bg-amber-50 text-amber-700'
-                  }`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${
-                      member.status === 'Approved' ? 'bg-emerald-700' : 
-                      'bg-amber-400'
-                    }`}></span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      member.status === "Approved"
+                        ? "bg-emerald-50 text-emerald-700"
+                        : "bg-amber-50 text-amber-700"
+                    }`}
+                  >
+                    <span
+                      className={`w-1.5 h-1.5 rounded-full ${
+                        member.status === "Approved"
+                          ? "bg-emerald-700"
+                          : "bg-amber-400"
+                      }`}
+                    ></span>
                     {member.status}
                   </span>
                 </td>
