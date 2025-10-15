@@ -4,6 +4,7 @@ import Button from "../Button";
 import { postData } from "../../lib/http";
 import { useNavigate } from "react-router-dom";
 import { CheckCircle, ChevronDown } from "lucide-react";
+import Popup from "./Popup";
 
 //Roles
 
@@ -94,6 +95,32 @@ const CandidateSignup = () => {
     emergency_email: "",
   });
 
+  //close pop up
+  const handleClosePopup = () => {
+    setPopup({ visible: false, message: "", type: "" });
+    // Reset form when popup closes
+    setForm({
+      firstname: "",
+      lastname: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      zipcode: "",
+      province: "ON",
+      country: "Canada",
+      role: "dental-assistant",
+      yearsOfExperience: "",
+      licenseNumber: "",
+      certification: "Level-1", // "harp" | "level-1" | "level-2"
+      specialization: "",
+      emergency_name: "",
+      emergency_relationship: "",
+      emergency_phone: "",
+      emergency_email: "",
+    });
+  };
+
   //States Definition
 
   const [emailOtp, setEmailOtp] = useState("");
@@ -115,6 +142,12 @@ const CandidateSignup = () => {
   const [certificateFile, setCertificateFile] = useState(null);
   const [certificateUrl, setCertificateUrl] = useState("");
   const [loading, setLoading] = useState(false);
+  const [popup, setPopup] = useState({
+    visible: false,
+    message: "",
+    type: "info",
+  });
+
   const [msg, setMsg] = useState({ type: "", text: "" });
 
   //Onchange Events
@@ -384,6 +417,7 @@ const CandidateSignup = () => {
       setVerifyingPhoneOtp(false);
     }
   };
+  //form on submit function
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -399,11 +433,15 @@ const CandidateSignup = () => {
     try {
       // 1) Upload certificate first (public route)
       let finalCertUrl = certificateUrl;
-      if (!finalCertUrl) {
-        finalCertUrl = await uploadCertificate();
-        setCertificateUrl(finalCertUrl);
+
+      // Only upload certificate if role is dental-assistant
+      if (form.role === "dental-assistant") {
+        if (!finalCertUrl) {
+          finalCertUrl = await uploadCertificate();
+          setCertificateUrl(finalCertUrl);
+        }
+        if (!finalCertUrl) throw new Error("Failed to upload certificate");
       }
-      if (!finalCertUrl) throw new Error("Failed to upload certificate");
 
       // 2) Register with certificate URL
       setMsg({ type: "info", text: "Submitting registration..." });
@@ -432,7 +470,7 @@ const CandidateSignup = () => {
         },
         email_verification_token: emailToken,
         phone_verification_token: phoneToken,
-        certificates: [finalCertUrl],
+        certificates: form.role === "dental-assistant" ? [finalCertUrl] : [],
       };
 
       const res = await postData("/auth/register", payload);
@@ -450,11 +488,13 @@ const CandidateSignup = () => {
       });
     } catch (error) {
       console.error("Registration error:", error);
-      const message =
-        error?.response?.data?.message ||
-        error.message ||
+
+      const msg =
+        error?.response?.data?.message || // from axios / fetch
+        error.message || // from JS Error
         "Something went wrong";
-      setMsg({ type: "error", text: message });
+
+      setPopup({ visible: true, message: msg, type: "error" });
     } finally {
       setLoading(false);
     }
@@ -1182,6 +1222,12 @@ const CandidateSignup = () => {
                 ) : null}
               </div>
             </form>
+            <Popup
+              visible={popup.visible}
+              message={popup.message}
+              type={popup.type}
+              onClose={handleClosePopup}
+            />
           </div>
         </div>
       </div>
