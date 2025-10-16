@@ -3,7 +3,13 @@ import Marklogo from "../../assets/icons/Dashboard.png";
 import Button from "../Button";
 import { postData } from "../../lib/http";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, ChevronDown, AlertCircle } from "lucide-react";
+import {
+  CheckCircle,
+  ChevronDown,
+  AlertCircle,
+  CheckSquare,
+  Square,
+} from "lucide-react";
 
 const PROVINCES = [
   "AB",
@@ -25,6 +31,8 @@ const Officesignup = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
+    firstname: "",
+    lastname: "",
     clinicname: "",
     email: "",
     phone: "",
@@ -46,6 +54,7 @@ const Officesignup = () => {
   const [emailOtpError, setEmailOtpError] = useState("");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState({ type: "", text: "" });
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -144,7 +153,8 @@ const Officesignup = () => {
   const validate = () => {
     const phoneRe = /^\+?1?[2-9]\d{2}[2-9]\d{2}\d{4}$/;
     const postalRe = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-
+    if (!form.firstname.trim()) return "Please enter first name.";
+    if (!form.lastname.trim()) return "Please enter last name.";
     if (!form.clinicname.trim()) return "Please enter business name.";
     if (!form.email.trim()) return "Please enter email address.";
     if (!emailVerified) return "Please verify your email address.";
@@ -155,6 +165,8 @@ const Officesignup = () => {
     if (!form.city.trim()) return "City is required.";
     if (!form.zipcode.trim()) return "Postal code is required.";
     if (!postalRe.test(form.zipcode)) return "Invalid Canadian postal code.";
+    if (!acceptedTerms)
+      return "You must accept the Terms and Conditions to proceed.";
 
     return "";
   };
@@ -172,18 +184,23 @@ const Officesignup = () => {
     setLoading(true);
     try {
       const payload = {
-        business_name: form.clinicname.trim(),
+        first_name: form.firstname.trim(),
+        last_name: form.lastname.trim(),
+        clinic_name: form.clinicname.trim(),
         email: form.email.trim(),
         phone: form.phone.trim(),
-        address: form.address.trim(),
+        address_line: form.address.trim(),
         city: form.city.trim(),
         zipcode: form.zipcode.toUpperCase().replace(/\s+/g, ""),
         province: form.province,
         country: form.country,
+        role: "clinic", // This tells backend it's an office registration
         email_verification_token: emailToken,
+        acceptedTerms: form.acceptedTerms,
       };
 
-      const res = await postData("/auth/office/register", payload);
+      // Use the same /auth/register endpoint (not /auth/office/register)
+      const res = await postData("/auth/register", payload);
 
       if (res?.data?.success === false || res?.success === false) {
         throw new Error(
@@ -195,22 +212,21 @@ const Officesignup = () => {
       navigate("/thank-you", {
         state: {
           businessName: form.clinicname.trim(),
-          type: "office",
+          type: "clinic",
         },
       });
     } catch (error) {
-      console.error("Registration error:", error);
-      const msg =
+      console.error("Office registration error:", error);
+      const errorMsg =
         error?.response?.data?.message ||
         error.message ||
         "Something went wrong";
-      setMsg({ type: "error", text: msg });
+      setMsg({ type: "error", text: errorMsg });
     } finally {
       setLoading(false);
     }
   };
-
-  const canRegister = emailVerified && !loading;
+  const canRegister = emailVerified && acceptedTerms && !loading;
 
   return (
     <>
@@ -251,6 +267,55 @@ const Officesignup = () => {
 
             {/* Form Begins */}
             <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <label
+                    htmlFor="firstname"
+                    className="block text-darkblack text-sm mb-1 px-3"
+                  >
+                    First Name
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="firstname"
+                      type="text"
+                      name="firstname"
+                      placeholder="John"
+                      required
+                      autoComplete="given-name"
+                      value={form.firstname}
+                      onChange={onChange}
+                      className="block w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 
+                 -outline-offset-1 outline-darkblue focus:outline-2 focus:-outline-offset-2 
+                 focus:outline-darkblue sm:text-sm/6"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex-1">
+                  <label
+                    htmlFor="lastname"
+                    className="block text-darkblack text-sm mb-1 px-3"
+                  >
+                    Last Name
+                  </label>
+                  <div className="mt-2">
+                    <input
+                      id="lastname"
+                      type="text"
+                      name="lastname"
+                      placeholder="Smith"
+                      required
+                      autoComplete="family-name"
+                      value={form.lastname}
+                      onChange={onChange}
+                      className="block w-full rounded-full px-3 py-1.5 text-base text-darkblue outline-1 
+                  -outline-offset-1 outline-darkblue focus:outline-2 focus:-outline-offset-2 
+                 focus:outline-darkblue sm:text-sm/6 placeholder:text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
               {/* Business Name */}
               <div>
                 <label
@@ -517,7 +582,50 @@ const Officesignup = () => {
                   <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
                 </div>
               </div>
+              {/* Terms and Conditions Checkbox */}
+              <div className="bg-lightblue border border-darkblue rounded-4xl p-6">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    className="sr-only"
+                    value={form.acceptedTerms}
+                  />
 
+                  <label
+                    htmlFor="terms"
+                    className="cursor-pointer flex-shrink-0 mt-0.5"
+                  >
+                    {acceptedTerms ? (
+                      <CheckSquare className="w-6 h-6 text-darkblue" />
+                    ) : (
+                      <Square className="w-6 h-6 text-darkblue hover:text-darkblue/70 transition-colors" />
+                    )}
+                  </label>
+                  <label
+                    htmlFor="terms"
+                    className="text-sm text-gray-700 cursor-pointer"
+                  >
+                    <span className="font-semibold font-poppins text-darkblack">
+                      To proceed, please accept our{" "}
+                      <a
+                        href="/terms"
+                        target="_blank"
+                        className="text-darkblue underline hover:text-darkblue/80"
+                      >
+                        Terms and Conditions
+                      </a>
+                      .
+                    </span>
+                    <p className="mt-2 text-gray-600">
+                      It's important that you read and understand them before
+                      continuing to use our services.
+                    </p>
+                  </label>
+                </div>
+              </div>
               {/* Error/Success Messages */}
               {msg.text && (
                 <div
@@ -552,13 +660,17 @@ const Officesignup = () => {
                 >
                   {loading
                     ? "Submitting..."
-                    : emailVerified
+                    : emailVerified && acceptedTerms
                     ? "Sign Up"
-                    : "Verify Email to Sign Up"}
+                    : "Complete Requirements to Sign Up"}
                 </button>
-                {!emailVerified && (
+                {(!emailVerified || !acceptedTerms) && (
                   <p className="text-sm mt-2 text-center text-darkblue">
-                    Please verify your email address to enable Signup.
+                    {!emailVerified && !acceptedTerms
+                      ? "Please verify your email and accept Terms & Conditions"
+                      : !emailVerified
+                      ? "Please verify your email address"
+                      : "Please accept Terms and Conditions to proceed"}
                   </p>
                 )}
               </div>

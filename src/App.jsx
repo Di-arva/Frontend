@@ -12,6 +12,8 @@ import Admindashboard from "./Components/Dashboard/Admindashboard";
 import Candidatedashboard from "./Components/Dashboard/Candidatedashboard";
 import ThankYouPage from "./Components/Thanyoupage";
 import SetPasswordPage from "./Components/SignUp/SetPasswordPage";
+import TermsCheckbox from "./Components/Termsandcondition";
+import ClinicDashboard from "./Components/Dashboard/ClinicDashboard";
 
 // Layout wrapper for public pages
 const PublicLayout = ({ children }) => {
@@ -50,6 +52,8 @@ function App() {
                   path="/individualsignup"
                   element={<Individualsignup />}
                 />
+                <Route path="/terms" element={<TermsCheckbox/>} />
+                <Route path="/clinic" element={<ClinicDashboard/>} />
               </Routes>
             </PublicLayout>
           }

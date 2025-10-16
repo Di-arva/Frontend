@@ -28,7 +28,7 @@ const Login = () => {
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_SERVER_BASE_URL}/auth/login`,
+        `${import.meta.env.VITE_SERVER_BASE_URL}auth/login`,
         {
           method: "POST",
           headers: {
@@ -54,7 +54,7 @@ const Login = () => {
       }
 
       // Redirect to dashboard
-      navigate("/dashboard");
+      navigate("/admin");
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");
     } finally {
