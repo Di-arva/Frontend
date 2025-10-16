@@ -1,18 +1,8 @@
 import Button from "./Button";
-import { useState, useEffect } from "react";
+
 import { Link } from "react-router-dom";
 
 const Hero = () => {
-  const words = ["dental", "homecare", "rehabilitation"];
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % words.length);
-    }, 2000); // every 2s
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="relative bg-lightblue px-4 sm:px-8 lg:px-16">
       <div className="relative max-w-7xl mx-auto flex flex-col lg:grid lg:grid-cols-2 lg:gap-8 items-center lg:items-center py-10">
@@ -24,25 +14,12 @@ const Hero = () => {
           >
             Professional staffing solutions for
             {/* This is the "window" that clips the content */}
-            <span className="relative inline-block h-[1.2em] overflow-hidden align-bottom">
+            <span className="ml-4 relative inline-block h-[1.2em] overflow-hidden align-bottom">
               {/* This is the sliding container that moves up and down */}
-              <span
-                className="block transition-transform duration-700 ease-in-out"
-                style={{
-                  // The magic happens here: we move the entire block of words up
-                  // by the height of one item (1.2em) multiplied by the current index.
-                  transform: `translateY(-${index * 1.2}em)`,
-                }}
-              >
-                {/* Map through the words and render each one */}
-                {words.map((word) => (
-                  <div key={word} className="h-[1.2em]">
-                    {word}
-                  </div>
-                ))}
+              <span className="block transition-transform duration-700 ease-in-out text-darkblue/60">
+                Dental services
               </span>
-            </span>{" "}
-            services
+            </span>
           </h1>
           <p
             className="font-poppins mt-4 text-darkblack 
@@ -63,11 +40,6 @@ const Hero = () => {
             <Link to="/candidatesignup">
               <Button variant="dark" size="md">
                 Candidates Sign Up
-              </Button>
-            </Link>
-            <Link to="/individualsignup">
-              <Button variant="dark" size="md">
-                Individual / Family Sign Up
               </Button>
             </Link>
           </div>
