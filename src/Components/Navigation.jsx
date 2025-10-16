@@ -70,6 +70,7 @@ const Navigation = () => {
             Login
           </Button>
           <Button
+            className="hover:bg-darkblue/80"
             variant="dark"
             size="md"
             onClick={() => navigate("/register")}
@@ -160,6 +161,7 @@ const Navigation = () => {
                 Login
               </Button>
               <Button
+                className="hover:bg-darkblue/80"
                 variant="dark"
                 size="md"
                 onClick={() => {

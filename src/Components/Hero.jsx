@@ -33,12 +33,20 @@ const Hero = () => {
           </p>
           <div className="flex  mt-6 gap-3 mb-10 sm:gap-5 md:gap-5 lg:gap-6 flex-wrap justify-center lg:justify-start">
             <Link to="/officesignup">
-              <Button variant="dark" size="md">
+              <Button
+                variant="dark"
+                size="md"
+                className="hover:cursor-pointer hover:bg-darkblue/70"
+              >
                 Office Sign Up
               </Button>
             </Link>
             <Link to="/candidatesignup">
-              <Button variant="dark" size="md">
+              <Button
+                variant="dark"
+                size="md"
+                className="hover:cursor-pointer hover:bg-darkblue/70"
+              >
                 Candidates Sign Up
               </Button>
             </Link>
