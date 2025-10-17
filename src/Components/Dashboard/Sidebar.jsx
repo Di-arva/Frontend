@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Settings,
   ChevronDown,
+  Building2
 } from "lucide-react";
 import Marklogo from "../../assets/Diarva_mark.png";
 import { useState } from "react";
@@ -19,6 +20,7 @@ const menuItems = [
     active: true,
     badge: "New",
   },
+
   {
     id: "analytics",
     icon: ChartBar,

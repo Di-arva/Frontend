@@ -4,8 +4,8 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import Users from "./Users";
-import UserDetailsPage from "./UserDetailsPage"
-
+import UserDetailsPage from "./UserDetailsPage";
+import Clinics from "./Clinics"; // ADD THIS IMPORT
 
 const Admindashboard = () => {
   const [sideBarCollapsed, setSidebarCollapsed] = useState(false);
@@ -25,10 +25,6 @@ const Admindashboard = () => {
           sideBarCollapsed={sideBarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed(!sideBarCollapsed)}
         />
-   
-
-
-
 
         {/* Main Content */}
         <main className="flex-1 overflow-auto p-6 space-y-6">
@@ -36,7 +32,7 @@ const Admindashboard = () => {
             <Route path="/" element={<Dashboard />} />
             <Route path="users" element={<Users />} />
             <Route path="users/:id" element={<UserDetailsPage />} />
-           
+            <Route path="clinics" element={<Clinics />} /> {/* ADD THIS ROUTE */}
           </Routes>
         </main>
       </div>

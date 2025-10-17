@@ -118,14 +118,7 @@ const TeamMembersTable = () => {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="w-12 px-6 py-3">
-                <input
-                  type="checkbox"
-                  checked={selectedMembers.length === teamMembers.length}
-                  onChange={toggleAll}
-                  className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                />
-              </th>
+          
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Name
               </th>
@@ -152,14 +145,7 @@ const TeamMembersTable = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {teamMembers.map((member) => (
               <tr key={member.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4">
-                  <input
-                    type="checkbox"
-                    checked={selectedMembers.includes(member.id)}
-                    onChange={() => toggleMember(member.id)}
-                    className="w-4 h-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-                  />
-                </td>
+             
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-3">
                     <img
