@@ -3,7 +3,7 @@ import Marklogo from "../../assets/icons/Dashboard.png";
 import Button from "../Button";
 import { postData } from "../../lib/http";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, ChevronDown } from "lucide-react";
+import { CheckCircle, ChevronDown, CheckSquare, Square } from "lucide-react";
 import Popup from "./Popup";
 
 //Roles
@@ -148,6 +148,7 @@ const CandidateSignup = () => {
     type: "info",
   });
 
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [msg, setMsg] = useState({ type: "", text: "" });
 
   //Onchange Events
@@ -230,6 +231,8 @@ const CandidateSignup = () => {
       return "Invalid emergency contact phone format.";
     if (!emailVerified || !phoneVerified)
       return "Please verify email and phone OTP first.";
+    if (!acceptedTerms)
+      return "You must accept the Terms and Conditions to proceed.";
     return "";
   };
 
@@ -471,6 +474,7 @@ const CandidateSignup = () => {
         email_verification_token: emailToken,
         phone_verification_token: phoneToken,
         certificates: form.role === "dental-assistant" ? [finalCertUrl] : [],
+        acceptedTerms: form.acceptedTerms,
       };
 
       const res = await postData("/auth/register", payload);
@@ -1181,7 +1185,50 @@ const CandidateSignup = () => {
                   />
                 </div>
               </div>
+              {/* Terms and Conditions Checkbox */}
+              <div className="bg-lightblue border border-darkblue rounded-4xl p-6">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={acceptedTerms}
+                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                    className="sr-only"
+                    value={form.acceptedTerms}
+                  />
 
+                  <label
+                    htmlFor="terms"
+                    className="cursor-pointer flex-shrink-0 mt-0.5"
+                  >
+                    {acceptedTerms ? (
+                      <CheckSquare className="w-6 h-6 text-darkblue" />
+                    ) : (
+                      <Square className="w-6 h-6 text-darkblue hover:text-darkblue/70 transition-colors" />
+                    )}
+                  </label>
+                  <label
+                    htmlFor="terms"
+                    className="text-sm text-gray-700 cursor-pointer"
+                  >
+                    <span className="font-semibold font-poppins text-darkblack">
+                      To proceed, please accept our{" "}
+                      <a
+                        href="/terms"
+                        target="_blank"
+                        className="text-darkblue underline hover:text-darkblue/80"
+                      >
+                        Terms and Conditions
+                      </a>
+                      .
+                    </span>
+                    <p className="mt-2 text-gray-600">
+                      It's important that you read and understand them before
+                      continuing to use our services.
+                    </p>
+                  </label>
+                </div>
+              </div>
               {msg.text ? (
                 <div
                   className={`rounded-xl px-4 py-3 text-sm ${
@@ -1214,10 +1261,19 @@ const CandidateSignup = () => {
                     ? "Sign Up"
                     : "Verify to Sign Up"}
                 </Button>
-                {!emailVerified || !phoneVerified ? (
+                {!emailVerified || !phoneVerified || !acceptedTerms ? (
                   <p className="text-sm mt-2 text-center text-darkblue">
-                    Please verify Email address and Phone number to enable
-                    Signup.
+                    {!emailVerified && !phoneVerified && !acceptedTerms
+                      ? "Please verify your Email, Phone and accept Terms & Conditions"
+                      : !emailVerified && !phoneVerified
+                      ? "Please verify your Email and Phone number"
+                      : !emailVerified
+                      ? "Please verify your Email address"
+                      : !phoneVerified
+                      ? "Please verify your Phone number"
+                      : !acceptedTerms
+                      ? "Please accept Terms and Conditions to proceed"
+                      : ""}
                   </p>
                 ) : null}
               </div>
