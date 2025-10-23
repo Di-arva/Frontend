@@ -12,23 +12,24 @@ import {
 } from "lucide-react";
 import Marklogo from "../../assets/Diarva_mark.png";
 import { useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+
 const menuItems = [
   {
     id: "dashboard",
     icon: LayoutDashboard,
     label: "Dashboard",
-    active: true,
+    path: "/admin",
     badge: "New",
   },
-
   {
     id: "analytics",
     icon: ChartBar,
     label: "Analytics",
     submenu: [
-      { id: "overview", label: "Overview" },
-      { id: "reports", label: "Reports" },
-      { id: "insights", label: "Insights" },
+      { id: "overview", label: "Overview", path: "/admin/analytics/overview" },
+      { id: "reports", label: "Reports", path: "/admin/analytics/reports" },
+      { id: "insights", label: "Insights", path: "/admin/analytics/insights" },
     ],
   },
   {
@@ -37,53 +38,82 @@ const menuItems = [
     label: "Users",
     count: "2.4k",
     submenu: [
-      { id: "all-users", label: "All Users" },
-      { id: "roles", label: "Roles & Permission" },
-      { id: "activity", label: "User Activity" },
+      { id: "all-users", label: "All Users", path: "/admin/users" },
+      { id: "roles", label: "Roles & Permission", path: "/admin/users/roles" },
+      { id: "activity", label: "User Activity", path: "/admin/users/activity" },
     ],
+  },
+  {
+    id: "clinics",
+    icon: Building2,
+    label: "Clinics",
+    path: "/admin/clinics",
   },
   {
     id: "messages",
     icon: MessageSquare,
     label: "Messages",
     count: "12",
+    path: "/admin/messages",
   },
   {
     id: "transactions",
     icon: CreditCardIcon,
     label: "Transaction",
     count: "23",
+    path: "/admin/transactions",
   },
   {
     id: "calendar",
     icon: Calendar,
     label: "Calendar",
+    path: "/admin/calendar",
   },
   {
     id: "reports",
     icon: FileSpreadsheet,
     label: "Reports",
+    path: "/admin/reports",
   },
   {
     id: "settings",
     icon: Settings,
     label: "Settings",
+    path: "/admin/settings",
   },
 ];
 
-const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
+const Sidebar = ({ collapsed, onToggle }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [expandedItems, setExpandedItems] = useState(new Set(["analytics"]));
 
-  const toggleExpanded = (itemid) => {
+  const toggleExpanded = (itemId) => {
     const newExpanded = new Set(expandedItems);
-
-    if (newExpanded.has(itemid)) {
-      newExpanded.delete(itemid);
+    if (newExpanded.has(itemId)) {
+      newExpanded.delete(itemId);
     } else {
-      newExpanded.add(itemid);
+      newExpanded.add(itemId);
     }
     setExpandedItems(newExpanded);
   };
+
+  const handleNavigation = (path) => {
+    if (path) {
+      navigate(path);
+    }
+  };
+
+  const isActive = (item) => {
+    if (item.path && location.pathname === item.path) {
+      return true;
+    }
+    if (item.submenu) {
+      return item.submenu.some(sub => location.pathname === sub.path);
+    }
+    return false;
+  };
+
   return (
     <div
       className={`${
@@ -110,22 +140,21 @@ const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
       </div>
 
       {/* Navigation */}
-
       <nav className="flex-1 p-4 space-y-2 overflow-auto">
         {menuItems.map((item) => {
           return (
             <div key={item.id}>
               <button
                 className={`w-full flex items-center justify-between p-3 rounded-xl transition-all duration-200 cursor-pointer ${
-                  currentPage === item.id || item.active
-                    ? "border-darkblue border-1"
-                    : ""
-                } `}
+                  isActive(item)
+                    ? "border-darkblue border-1 bg-white/50"
+                    : "hover:bg-white/30"
+                }`}
                 onClick={() => {
                   if (item.submenu) {
                     toggleExpanded(item.id);
-                  } else {
-                    onPageChange(item.id);
+                  } else if (item.path) {
+                    handleNavigation(item.path);
                   }
                 }}
               >
@@ -154,7 +183,9 @@ const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
 
                 {!collapsed && item.submenu && (
                   <ChevronDown
-                    className={`w-4 h-4 transition-transform hover:cursor-pointer`}
+                    className={`w-4 h-4 transition-transform ${
+                      expandedItems.has(item.id) ? "rotate-180" : ""
+                    } hover:cursor-pointer`}
                   />
                 )}
               </button>
@@ -164,7 +195,15 @@ const Sidebar = ({ collapsed, onToggle, currentPage, onPageChange }) => {
                 <div className="ml-8 mt-2 space-y-1">
                   {item.submenu.map((subitem) => {
                     return (
-                      <button className="w-full text-left p-2 text-sm font-poppins text-darkblack hover:cursor-pointer rounded-lg transition-all hover:border-1 hover:border-darkblue">
+                      <button
+                        key={subitem.id}
+                        onClick={() => handleNavigation(subitem.path)}
+                        className={`w-full text-left p-2 text-sm font-poppins text-darkblack hover:cursor-pointer rounded-lg transition-all ${
+                          location.pathname === subitem.path
+                            ? "border-1 border-darkblue bg-white/50"
+                            : "hover:border-1 hover:border-darkblue hover:bg-white/30"
+                        }`}
+                      >
                         {subitem.label}
                       </button>
                     );

@@ -34,7 +34,8 @@ function App() {
         {/* Admin dashboard */}
         <Route path="/admin/*" element={<Admindashboard />} />
         <Route path="/candidate/*" element={<Candidatedashboard />} />
-
+       
+      
         {/* Public routes wrapped in PublicLayout */}
         <Route
           path="/*"
