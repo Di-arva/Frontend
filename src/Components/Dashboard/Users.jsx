@@ -1,102 +1,110 @@
-import React, { useState } from "react";
-import { MoreVertical } from "lucide-react";
+import { useState, useEffect } from "react";
+import { MoreVertical, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const TeamMembersTable = () => {
-  const [selectedMembers, setSelectedMembers] = useState([]);
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const teamMembers = [
-    {
-      id: 1,
-      name: "Phoenix Baker",
-      username: "@phoenix",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Phoenix",
-      status: "Pending",
-      role: "Dental Assistant",
-      certification: "HARP Certified",
-      email: "phoenix@untitledui.com",
-      phone: "+1 (555) 123-4567",
-      teams: ["Design", "Product", "Marketing"],
-      additionalTeams: 4,
-    },
-    {
-      id: 2,
-      name: "Orlando Diggs",
-      username: "@orlando",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Orlando",
-      status: "Approved",
-      role: "Dental Assistant",
-      certification: "Level 1",
-      email: "orlando@untitledui.com",
-      phone: "+1 (555) 234-5678",
-      teams: ["Design", "Product", "Marketing"],
-      additionalTeams: 4,
-    },
-    {
-      id: 3,
-      name: "Olivia Rhye",
-      username: "@olivia",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Olivia",
-      status: "Pending",
-      role: "Dental Assistant",
-      certification: "Level 2",
-      email: "olivia@untitledui.com",
-      phone: "+1 (555) 345-6789",
-      teams: ["Design", "Product", "Marketing"],
-      additionalTeams: 4,
-    },
-    {
-      id: 4,
-      name: "Natali Craig",
-      username: "@natali",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Natali",
-      status: "Approved",
-      role: "Dental Assistant",
-      certification: "HARP Certified",
-      email: "natali@untitledui.com",
-      phone: "+1 (555) 456-7890",
-      teams: ["Design", "Product", "Marketing"],
-      additionalTeams: 2,
-    },
-    {
-      id: 5,
-      name: "Lana Steiner",
-      username: "@lana",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lana",
-      status: "Approved",
-      role: "Dental Assistant",
-      certification: "level 1",
-      email: "lana@untitledui.com",
-      phone: "+1 (555) 567-8901",
-      teams: ["Design", "Product", "Marketing"],
-      additionalTeams: 2,
-    },
-  ];
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
-  const toggleMember = (id) => {
-    setSelectedMembers((prev) =>
-      prev.includes(id)
-        ? prev.filter((memberId) => memberId !== id)
-        : [...prev, id]
-    );
-  };
+  const BASE_URL=import.meta.env.VITE_SERVER_BASE_URL
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${BASE_URL}admin/users`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  const toggleAll = () => {
-    setSelectedMembers((prev) =>
-      prev.length === teamMembers.length ? [] : teamMembers.map((m) => m.id)
-    );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch users: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      setTeamMembers(data.users || data); // Adjust based on your API response structure
+      setError(null);
+    } catch (err) {
+  
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleViewUser = (userId) => {
-    // Store user data in sessionStorage for the details page
-    const user = teamMembers.find((m) => m.id === userId);
-    sessionStorage.setItem("selectedUser", JSON.stringify(user));
-
-    // Navigate to user details page
-    window.location.href = `/admin/users/${userId}`;
-
-    // If using React Router with useNavigate, use this instead:
-    // navigate(`${userId}`);
+ navigate(`/admin/users/${userId}`)
+  
   };
+
+  const getStatusColor = (status) => {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === "approved" || statusLower === "active") {
+      return "bg-emerald-50 text-emerald-700";
+    } else if (statusLower === "pending") {
+      return "bg-amber-50 text-amber-700";
+    } else if (statusLower === "rejected" || statusLower === "inactive") {
+      return "bg-red-50 text-red-700";
+    }
+    return "bg-gray-50 text-gray-700";
+  };
+
+  const getStatusDotColor = (status) => {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === "approved" || statusLower === "active") {
+      return "bg-emerald-700";
+    } else if (statusLower === "pending") {
+      return "bg-amber-400";
+    } else if (statusLower === "rejected" || statusLower === "inactive") {
+      return "bg-red-700";
+    }
+    return "bg-gray-400";
+  };
+
+  const getAvatarUrl = (user) => {
+    // Use user's avatar if available, otherwise generate one based on name
+    if (user.avatar || user.profileImage) {
+      return user.avatar || user.profileImage;
+    }
+    const seed = user.name || user.username || user.email || user.id;
+    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+  };
+
+  if (loading) {
+    return (
+      <div className="w-full bg-white rounded-lg border border-gray-200 p-12">
+        <div className="flex flex-col items-center justify-center gap-3">
+          <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
+          <p className="text-sm text-gray-500">Loading users...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full bg-white rounded-lg border border-gray-200 p-12">
+        <div className="flex flex-col items-center justify-center gap-3">
+          <div className="text-red-600 text-center">
+            <p className="font-semibold">Error loading users</p>
+            <p className="text-sm text-gray-500 mt-1">{error}</p>
+          </div>
+          <button
+            onClick={fetchUsers}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-white rounded-lg border border-gray-200">
@@ -105,7 +113,7 @@ const TeamMembersTable = () => {
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold text-gray-900">All Users</h2>
           <span className="px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-full">
-            100 users
+            {teamMembers.length} users
           </span>
         </div>
         <button className="p-1 hover:bg-gray-100 rounded">
@@ -118,7 +126,6 @@ const TeamMembersTable = () => {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-          
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Name
               </th>
@@ -143,63 +150,68 @@ const TeamMembersTable = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {teamMembers.map((member) => (
-              <tr key={member.id} className="hover:bg-gray-50">
-             
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={member.avatar}
-                      alt={member.name}
-                      className="w-10 h-10 rounded-full"
-                    />
-                    <div>
-                      <div className="text-sm font-medium text-gray-900">
-                        {member.name}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        {member.username}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      member.status === "Approved"
-                        ? "bg-emerald-50 text-emerald-700"
-                        : "bg-amber-50 text-amber-700"
-                    }`}
-                  >
-                    <span
-                      className={`w-1.5 h-1.5 rounded-full ${
-                        member.status === "Approved"
-                          ? "bg-emerald-700"
-                          : "bg-amber-400"
-                      }`}
-                    ></span>
-                    {member.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {member.role}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {member.email}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {member.phone}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <button
-                    onClick={() => handleViewUser(member.id)}
-                    className="text-sm font-medium text-darkblue hover:text-darkblue/70 hover:cursor-pointer"
-                  >
-                    View
-                  </button>
+            {teamMembers.length === 0 ? (
+              <tr>
+                <td colSpan="6" className="px-6 py-12 text-center text-gray-500">
+                  No users found
                 </td>
               </tr>
-            ))}
+            ) : (
+              teamMembers.map((member) => (
+                <tr key={member.id || member._id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={getAvatarUrl(member)}
+                        alt={member.name}
+                        className="w-10 h-10 rounded-full"
+                      />
+                      <div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {member.name || member.fullName || "N/A"}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {member.username
+                            ? `@${member.username}`
+                            : member.email}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                        member.status
+                      )}`}
+                    >
+                      <span
+                        className={`w-1.5 h-1.5 rounded-full ${getStatusDotColor(
+                          member.status
+                        )}`}
+                      ></span>
+                      {member.status || "N/A"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {member.role || member.certification || "N/A"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {member.email || "N/A"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {member.phone || member.phoneNumber || "N/A"}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => handleViewUser(member.id || member._id)}
+                      className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:cursor-pointer"
+                    >
+                      View
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

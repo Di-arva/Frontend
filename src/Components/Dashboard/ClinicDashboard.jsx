@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Tasks from './Tasks';
 import { 
   Calendar, 
   Users, 
@@ -10,12 +11,10 @@ import {
   Search,
   Bell,
   FileText,
-  MapPin,
-  Filter,
+
   Download,
   ChevronDown,
-  CheckCircle,
-  XCircle,
+ 
   AlertCircle,
   Menu
 } from "lucide-react";
@@ -293,14 +292,18 @@ const ClinicDashboard = () => {
             </div>
           )}
 
-          {activeTab !== "dashboard" && (
-            <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 text-center">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Page
-              </h3>
-              <p className="text-gray-600">Content for {activeTab} will be displayed here</p>
-            </div>
-          )}
+{activeTab === "shifts" && (
+  <Tasks apiBaseUrl={import.meta.env.VITE_SERVER_BASE_URL} />
+)}
+
+{activeTab !== "dashboard" && activeTab !== "shifts" && (
+  <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 text-center">
+    <h3 className="text-xl font-semibold text-gray-800 mb-2">
+      {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Page
+    </h3>
+    <p className="text-gray-600">Content for {activeTab} will be displayed here</p>
+  </div>
+)}
         </main>
       </div>
 

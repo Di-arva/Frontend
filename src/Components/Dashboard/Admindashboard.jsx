@@ -5,7 +5,7 @@ import { Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import Users from "./Users";
 import UserDetailsPage from "./UserDetailsPage";
-import Clinics from "./Clinics"; // ADD THIS IMPORT
+import Clinics from "./Clinics"; 
 
 const Admindashboard = () => {
   const [sideBarCollapsed, setSidebarCollapsed] = useState(false);
@@ -33,6 +33,7 @@ const Admindashboard = () => {
             <Route path="users" element={<Users />} />
             <Route path="users/:id" element={<UserDetailsPage />} />
             <Route path="clinics" element={<Clinics />} /> {/* ADD THIS ROUTE */}
+        
           </Routes>
         </main>
       </div>

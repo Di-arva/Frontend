@@ -85,7 +85,9 @@ const Footer = () => {
                 title="Our address"
                 className="hover:text-darkblue font-poppins text-sm font-medium text-darkblack"
               >
-                312 Lovely Street, NY
+                94 eringate drive
+Etobicoke M9C 3Z6
+ON Canada
               </a>
             </div>
           </div>

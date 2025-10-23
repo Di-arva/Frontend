@@ -64,10 +64,13 @@ const mockClinics = [
   },
 ];
 
-const Clinics = ({ token = "demo-token", useMockData = true }) => {
+const BASE_URL=import.meta.env.VITE_SERVER_BASE_URL
+
+const Clinics = ({ token, useMockData = false, apiBaseUrl = BASE_URL }) => {
   const [clinics, setClinics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     fetchClinics();
@@ -75,22 +78,37 @@ const Clinics = ({ token = "demo-token", useMockData = true }) => {
 
   const fetchClinics = async () => {
     setLoading(true);
+    setError(null);
     try {
       if (useMockData) {
         await new Promise((resolve) => setTimeout(resolve, 500));
         setClinics(mockClinics);
       } else {
-        const response = await fetch("/api/admin/clinics", {
+        // Get token from localStorage (same key as login)
+        const authToken = localStorage.getItem('authToken');
+        
+        if (!authToken) {
+          throw new Error('No authentication token found. Please login again.');
+        }
+
+        const response = await fetch(`${apiBaseUrl}admin/clinics`, {
+          method: 'GET',
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
             "Content-Type": "application/json",
           },
         });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
-        setClinics(data.clinics || []);
+        setClinics(data.clinics || data || []);
       }
     } catch (err) {
       console.error("Failed to fetch clinics:", err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
@@ -100,13 +118,37 @@ const Clinics = ({ token = "demo-token", useMockData = true }) => {
     if (!window.confirm("Approve this clinic?")) return;
     setProcessingId(id);
 
-    if (useMockData) {
-      await new Promise((r) => setTimeout(r, 800));
-      setClinics((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, status: "approved" } : c))
-      );
+    try {
+      if (useMockData) {
+        await new Promise((r) => setTimeout(r, 800));
+        setClinics((prev) =>
+          prev.map((c) => (c.id === id ? { ...c, status: "approved" } : c))
+        );
+      } else {
+        const authToken = localStorage.getItem('authToken');
+        
+        const response = await fetch(`${apiBaseUrl}admin/clinics/${id}/approve`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to approve clinic');
+        }
+
+        // Update local state
+        setClinics((prev) =>
+          prev.map((c) => (c.id === id ? { ...c, status: "approved" } : c))
+        );
+      }
+    } catch (err) {
+      console.error("Failed to approve clinic:", err);
+      alert("Failed to approve clinic. Please try again.");
+    } finally {
       setProcessingId(null);
-      return;
     }
   };
 
@@ -114,13 +156,37 @@ const Clinics = ({ token = "demo-token", useMockData = true }) => {
     if (!window.confirm("Reject this clinic?")) return;
     setProcessingId(id);
 
-    if (useMockData) {
-      await new Promise((r) => setTimeout(r, 800));
-      setClinics((prev) =>
-        prev.map((c) => (c.id === id ? { ...c, status: "rejected" } : c))
-      );
+    try {
+      if (useMockData) {
+        await new Promise((r) => setTimeout(r, 800));
+        setClinics((prev) =>
+          prev.map((c) => (c.id === id ? { ...c, status: "rejected" } : c))
+        );
+      } else {
+        const authToken = localStorage.getItem('authToken');
+        
+        const response = await fetch(`${apiBaseUrl}admin/clinics/${id}/reject`, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to reject clinic');
+        }
+
+        // Update local state
+        setClinics((prev) =>
+          prev.map((c) => (c.id === id ? { ...c, status: "rejected" } : c))
+        );
+      }
+    } catch (err) {
+      console.error("Failed to reject clinic:", err);
+      alert("Failed to reject clinic. Please try again.");
+    } finally {
       setProcessingId(null);
-      return;
     }
   };
 
@@ -138,6 +204,19 @@ const Clinics = ({ token = "demo-token", useMockData = true }) => {
           <MoreVertical className="w-5 h-5 text-gray-400" />
         </button>
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="px-6 py-4 bg-rose-50 border-b border-rose-100">
+          <p className="text-sm text-rose-700">Error: {error}</p>
+          <button 
+            onClick={fetchClinics}
+            className="mt-2 text-sm text-rose-800 underline hover:no-underline"
+          >
+            Try again
+          </button>
+        </div>
+      )}
 
       {/* Table */}
       <div className="overflow-x-auto">

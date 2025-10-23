@@ -47,11 +47,15 @@ const Login = () => {
       if (data?.success === false || !response.ok) {
         throw new Error(data?.message || "Invalid email or password");
       }
-
+      
       // Success - store token and redirect
-      if (data?.token) {
-        localStorage.setItem("authToken", data.token);
+      if (data?.data?.accessToken) {
+        localStorage.setItem("authToken", data.data.accessToken);
+        console.log('Token saved successfully!'); // You can remove this later
       }
+      
+      // Redirect to dashboard
+      navigate("/admin");
 
       // Redirect to dashboard
       navigate("/admin");
