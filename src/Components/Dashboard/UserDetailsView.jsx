@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Mail, Phone, MapPin, Calendar, Shield, CheckCircle, XCircle, Loader2, User, Clock } from "lucide-react";
+import { ArrowLeft, Mail, Phone, MapPin, Calendar, Shield, CheckCircle, XCircle, Loader2, User, Clock, Eye, X, FileText } from "lucide-react";
 
 const UserDetailsView = () => {
   const params = useParams();
@@ -12,6 +12,7 @@ const UserDetailsView = () => {
   const [error, setError] = useState(null);
   const [actionLoading, setActionLoading] = useState(false);
   const [actionMessage, setActionMessage] = useState(null);
+  const [selectedCertificate, setSelectedCertificate] = useState(null);
 
   const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
@@ -508,6 +509,26 @@ const UserDetailsView = () => {
                     </div>
                   </div>
                 )}
+                {user.profile.professional_info.certificates?.length > 0 && (
+                  <div>
+                    <span className="text-sm text-gray-600 block mb-2">Certificates</span>
+                    <div className="space-y-2">
+                      {user.profile.professional_info.certificates.map((cert, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setSelectedCertificate(cert)}
+                          className="flex items-center gap-2 w-full px-3 py-2 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition-colors text-left"
+                        >
+                          <FileText className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                          <span className="text-xs text-gray-700 truncate flex-1">
+                            Certificate {idx + 1}
+                          </span>
+                          <Eye className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {user.profile.professional_info.skills?.length > 0 && (
                   <div>
                     <span className="text-sm text-gray-600 block mb-2">Skills</span>
@@ -645,6 +666,43 @@ const UserDetailsView = () => {
           </div>
         )}
       </div>
+
+      {/* Certificate Viewer Modal */}
+      {selectedCertificate && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl h-[90vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-900">Certificate Viewer</h3>
+              <div className="flex items-center gap-2">
+                <a
+                  href={selectedCertificate}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Open in New Tab
+                </a>
+                <button
+                  onClick={() => setSelectedCertificate(null)}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5 text-gray-500" />
+                </button>
+              </div>
+            </div>
+
+            {/* Modal Content */}
+            <div className="flex-1 overflow-hidden">
+              <iframe
+                src={selectedCertificate}
+                className="w-full h-full border-0"
+                title="Certificate Preview"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

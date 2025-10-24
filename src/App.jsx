@@ -34,6 +34,7 @@ function App() {
         {/* Admin dashboard */}
         <Route path="/admin/*" element={<Admindashboard />} />
         <Route path="/candidate/*" element={<Candidatedashboard />} />
+        <Route path="/clinic/*" element={<ClinicDashboard/>} />
        
       
         {/* Public routes wrapped in PublicLayout */}
@@ -54,7 +55,7 @@ function App() {
                   element={<Individualsignup />}
                 />
                 <Route path="/terms" element={<TermsCheckbox/>} />
-                <Route path="/clinic" element={<ClinicDashboard/>} />
+
               </Routes>
             </PublicLayout>
           }

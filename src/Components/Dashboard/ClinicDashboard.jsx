@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Tasks from './Tasks';
+import Sidebar from "./Sidebar";
+import Header from "./Header";
 import { 
   Calendar, 
   Users, 
@@ -22,6 +24,8 @@ import {
 const ClinicDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sideBarCollapsed, setSidebarCollapsed] = useState(false);
+  const [currentPage, setCurrentPage] = useState("dashboard");
 
   // Sample data
   const stats = [
@@ -65,70 +69,25 @@ const ClinicDashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-20'} bg-blue-900 text-white transition-all duration-300 flex flex-col`}>
-        <div className="p-6 flex items-center justify-between">
-          {sidebarOpen && <h1 className="text-2xl font-bold">Di'arva</h1>}
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-white">
-            <Menu className="w-6 h-6" />
-          </button>
-        </div>
-        
-        <nav className="flex-1 px-4">
-          {[
-            { id: "dashboard", label: "Dashboard", icon: Calendar },
-            { id: "shifts", label: "My Shifts", icon: Clock },
-            { id: "requests", label: "Requests", icon: AlertCircle },
-            { id: "invoices", label: "Invoices", icon: FileText },
-            { id: "staff", label: "Staff", icon: Users },
-          ].map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg mb-2 transition-colors ${
-                activeTab === item.id ? "bg-blue-800" : "hover:bg-blue-800"
-              }`}
-            >
-              <item.icon className="w-5 h-5" />
-              {sidebarOpen && <span>{item.label}</span>}
-            </button>
-          ))}
-        </nav>
-      </div>
+    <div className="h-screen flex overflow-hidden bg-gray-50">
+    {/* Sidebar */}
+    <Sidebar
+      collapsed={sideBarCollapsed}
+      onToggle={() => setSidebarCollapsed(!sideBarCollapsed)}
+      currentPage={currentPage}
+      onPageChange={setCurrentPage}
+    />
 
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Header */}
-        <header className="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800">Welcome Back, Highland Dental</h2>
-            <p className="text-gray-600 text-sm">Manage your staff and shifts efficiently</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <button className="relative p-2 hover:bg-gray-100 rounded-lg">
-              <Bell className="w-6 h-6 text-gray-600" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
-                HD
-              </div>
-              <ChevronDown className="w-4 h-4 text-gray-600" />
-            </div>
-          </div>
-        </header>
+    {/* Main area */}
+    <div className="flex-1 flex flex-col overflow-hidden">
+      {/* Header */}
+      <Header
+        sideBarCollapsed={sideBarCollapsed}
+        onToggleSidebar={() => setSidebarCollapsed(!sideBarCollapsed)}
+      />
 
-        {/* Content Area */}
-        <main className="flex-1 overflow-y-auto p-8">
+      {/* Scrollable dashboard content */}
+      <main className="flex-1 overflow-auto p-8">
           {activeTab === "dashboard" && (
             <div className="space-y-6">
               {/* Stats Grid */}
@@ -304,11 +263,8 @@ const ClinicDashboard = () => {
     <p className="text-gray-600">Content for {activeTab} will be displayed here</p>
   </div>
 )}
-        </main>
-      </div>
-
-      {/* Create Shift Modal */}
-      {showShiftModal && (
+    {/* Create Shift Modal */}
+    {showShiftModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl">
             <div className="p-6 border-b border-gray-200">
@@ -392,6 +348,13 @@ const ClinicDashboard = () => {
           </div>
         </div>
       )}
+        </main>
+
+        {/* Content Area */}
+    
+      </div>
+
+  
     </div>
   );
 };
