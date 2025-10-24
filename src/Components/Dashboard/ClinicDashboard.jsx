@@ -7,19 +7,23 @@ import {
   Plus, 
   Check, 
   X, 
-
+  Search,
   Bell,
   FileText,
   Download,
- 
+  ChevronDown,
+  AlertCircle,
   Menu
 } from "lucide-react";
+import ClinicTasksList from "./ClinicTasksList";
 
 const ClinicDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [sideBarCollapsed, setSidebarCollapsed] = useState(false);
   const [currentPage, setCurrentPage] = useState("dashboard");
+
+  console.log("Current page:", currentPage); // Debug log
 
   // Sample data
   const stats = [
@@ -197,12 +201,14 @@ const ClinicDashboard = () => {
       console.log("=== SENDING PAYLOAD ===");
       console.log(JSON.stringify(payload, null, 2));
       console.log("======================");
+      console.log("Clinic ID extracted:", clinicId);
+      console.log("Token:", token);
       
       const response = await fetch(`${apiBaseUrl}/api/v1/clinic/tasks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+          'Authorization': `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
@@ -211,8 +217,18 @@ const ClinicDashboard = () => {
       
       if (!response.ok) {
         console.error("=== API ERROR RESPONSE ===");
-        console.error(JSON.stringify(result, null, 2));
+        console.error("Status:", response.status);
+        console.error("Response:", JSON.stringify(result, null, 2));
         console.error("=========================");
+        
+        // Handle 401 specifically
+        if (response.status === 401) {
+          alert('Authentication failed. Please log in again.');
+          // Optionally redirect to login
+          // window.location.href = '/login';
+          setIsSubmitting(false);
+          return;
+        }
         
         // Show detailed error message
         const errorMessage = result.message || result.error || 'Failed to create shift';
@@ -318,7 +334,7 @@ const ClinicDashboard = () => {
 
         {/* Scrollable dashboard content */}
         <main className="flex-1 overflow-auto p-8">
-          {activeTab === "dashboard" && (
+          {currentPage === "dashboard" && (
             <div className="space-y-6">
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -481,12 +497,16 @@ const ClinicDashboard = () => {
             </div>
           )}
 
-          {activeTab !== "dashboard" && (
+          {currentPage === "shifts" && (
+            <ClinicTasksList />
+          )}
+
+          {currentPage !== "dashboard" && currentPage !== "shifts" && (
             <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 text-center">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} Page
+                {currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} Page
               </h3>
-              <p className="text-gray-600">Content for {activeTab} will be displayed here</p>
+              <p className="text-gray-600">Content for {currentPage} will be displayed here</p>
             </div>
           )}
 
