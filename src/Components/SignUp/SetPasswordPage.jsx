@@ -24,6 +24,7 @@ export default function SetPasswordPage() {
     return params.get("token");
   };
 
+  const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
   // Check individual password requirements
   const checkRequirements = () => {
     return {
@@ -88,7 +89,7 @@ export default function SetPasswordPage() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5173/auth/set-password", {
+      const response = await fetch(`${BASE_URL}auth/set-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

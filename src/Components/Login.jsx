@@ -18,14 +18,14 @@ const Login = () => {
       e.stopPropagation();
     }
     setError("");
-
+  
     if (!email || !password) {
       setError("Please enter both email and password");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const response = await fetch(
         `${import.meta.env.VITE_SERVER_BASE_URL}auth/login`,
@@ -40,25 +40,37 @@ const Login = () => {
           }),
         }
       );
-
+  
       const data = await response.json();
-
+  
       // Check for failure in response
       if (data?.success === false || !response.ok) {
         throw new Error(data?.message || "Invalid email or password");
       }
       
-      // Success - store token and redirect
+      // Success - store token and user data
       if (data?.data?.accessToken) {
         localStorage.setItem("authToken", data.data.accessToken);
-        console.log('Token saved successfully!'); // You can remove this later
+        
+        // Store user role for future reference (optional)
+        if (data?.data?.user?.role) {
+          localStorage.setItem("userRole", data.data.user.role);
+        }
+        
+        // Redirect based on role
+        const userRole = data?.data?.user?.role;
+        
+        if (userRole === "admin") {
+          navigate("/admin");
+        } else if (userRole === "clinic") {
+          navigate("/clinic");
+        } else {
+          // Default fallback for other roles (like "candidate")
+          navigate("/candidate");
+        }
+      } else {
+        throw new Error("Authentication failed. No access token received.");
       }
-      
-      // Redirect to dashboard
-      navigate("/admin");
-
-      // Redirect to dashboard
-      navigate("/admin");
     } catch (err) {
       setError(err.message || "An error occurred. Please try again.");
     } finally {

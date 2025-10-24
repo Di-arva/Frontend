@@ -296,7 +296,7 @@ const TeamMembersTable = () => {
               </tr>
             ) : (
               filteredMembers.map((member) => (
-                <tr key={member.id || member._id} className="hover:bg-gray-50">
+                <tr key={member._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
                       <img
@@ -327,6 +327,7 @@ const TeamMembersTable = () => {
                         )}`}
                       ></span>
                       {member.approval_status || "N/A"}
+               
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
@@ -340,7 +341,7 @@ const TeamMembersTable = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
-                      onClick={() => handleViewUser(member.id || member._id)}
+                      onClick={() => handleViewUser(member._id)}
                       className="text-sm font-medium text-blue-600 hover:text-blue-700 hover:cursor-pointer"
                     >
                       View

@@ -4,8 +4,9 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import Users from "./Users";
-import UserDetailsPage from "./UserDetailsPage";
+
 import Clinics from "./Clinics"; 
+import UserDetailsView from "./UserDetailsView";
 
 const Admindashboard = () => {
   const [sideBarCollapsed, setSidebarCollapsed] = useState(false);
@@ -31,7 +32,8 @@ const Admindashboard = () => {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="users" element={<Users />} />
-            <Route path="users/:id" element={<UserDetailsPage />} />
+            <Route path="users/:id" element={<UserDetailsView />} />
+       
             <Route path="clinics" element={<Clinics />} /> {/* ADD THIS ROUTE */}
         
           </Routes>
