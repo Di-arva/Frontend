@@ -188,7 +188,7 @@ const Officesignup = () => {
         last_name: form.lastname.trim(),
         clinic_name: form.clinicname.trim(),
         email: form.email.trim(),
-        phone: form.phone.trim(),
+        mobile: form.phone.trim(),
         address_line: form.address.trim(),
         city: form.city.trim(),
         zipcode: form.zipcode.toUpperCase().replace(/\s+/g, ""),
