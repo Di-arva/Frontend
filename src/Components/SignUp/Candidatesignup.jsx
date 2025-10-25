@@ -3,11 +3,10 @@ import Marklogo from "../../assets/icons/Dashboard.png";
 import Button from "../Button";
 import { postData } from "../../lib/http";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, ChevronDown, CheckSquare, Square } from "lucide-react";
+import { CheckCircle, ChevronDown, CheckSquare, Square, AlertCircle } from "lucide-react";
 import Popup from "./Popup";
 
-//Roles
-
+// Roles
 const ROLES = [
   {
     value: "dental-assistant",
@@ -23,8 +22,7 @@ const ROLES = [
   },
 ];
 
-//Specialization as per levels
-
+// Specialization as per levels
 const LEVEL_1_SPECIALIZATIONS = [
   "Chairside Assisting",
   "Dental Radiography",
@@ -45,8 +43,7 @@ const LEVEL_2_SPECIALIZATIONS = [
   "Pediatric Assisting",
 ];
 
-//Provinces Array
-
+// Provinces Array
 const PROVINCES = [
   "AB",
   "BC",
@@ -63,17 +60,13 @@ const PROVINCES = [
   "YT",
 ];
 
-//URL for DB Server
-
+// URL for DB Server
 const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_URL || "";
 
 const CandidateSignup = () => {
-  //Navigate Route
-
   const navigate = useNavigate();
 
-  //Intial state of Form Empty
-
+  // Initial state of Form Empty
   const [form, setForm] = useState({
     firstname: "",
     lastname: "",
@@ -87,7 +80,7 @@ const CandidateSignup = () => {
     role: "dental-assistant",
     yearsOfExperience: "",
     licenseNumber: "",
-    certification: "Level-1", // "harp" | "level-1" | "level-2"
+    certification: "level-1", // This is fine - it's your form field name
     specialization: "",
     emergency_name: "",
     emergency_relationship: "",
@@ -95,34 +88,7 @@ const CandidateSignup = () => {
     emergency_email: "",
   });
 
-  //close pop up
-  const handleClosePopup = () => {
-    setPopup({ visible: false, message: "", type: "" });
-    // Reset form when popup closes
-    setForm({
-      firstname: "",
-      lastname: "",
-      email: "",
-      phone: "",
-      address: "",
-      city: "",
-      zipcode: "",
-      province: "ON",
-      country: "Canada",
-      role: "dental-assistant",
-      yearsOfExperience: "",
-      licenseNumber: "",
-      certification: "Level-1", // "harp" | "level-1" | "level-2"
-      specialization: "",
-      emergency_name: "",
-      emergency_relationship: "",
-      emergency_phone: "",
-      emergency_email: "",
-    });
-  };
-
-  //States Definition
-
+  // States Definition
   const [emailOtp, setEmailOtp] = useState("");
   const [phoneOtp, setPhoneOtp] = useState("");
   const [emailVerified, setEmailVerified] = useState(false);
@@ -147,28 +113,34 @@ const CandidateSignup = () => {
     message: "",
     type: "info",
   });
-
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [msg, setMsg] = useState({ type: "", text: "" });
 
-  //Onchange Events
-
+  // Onchange Events
   const onChange = (e) => {
     const { name, value } = e.target;
     setForm((f) => ({ ...f, [name]: value }));
   };
 
-  //specializations selection
+// Specializations selection - keep this the same
+const availableSpecializations =
+  form.certification === "level-1"
+    ? LEVEL_1_SPECIALIZATIONS
+    : form.certification === "level-2"
+    ? LEVEL_2_SPECIALIZATIONS
+    : [];
 
-  const availableSpecializations =
-    form.certification === "level-1"
-      ? LEVEL_1_SPECIALIZATIONS
-      : form.certification === "level-2"
-      ? LEVEL_2_SPECIALIZATIONS
-      : [];
+// In the professionalInfo object - use form.certification for certification_level
+const professionalInfo = {
+  years_of_experience: form.yearsOfExperience,
+  license_number: form.licenseNumber || "",
+  certification_level: form.certification, // Map form.certification to certification_level
+  specializations: form.certification !== "harp" && form.specialization
+    ? [form.specialization]
+    : [],
+};
 
-  //Reseting certification-related fields when role changes
-
+  // Reseting certification-related fields when role changes
   useEffect(() => {
     if (form.role !== "dental-assistant") {
       setCertificateFile(null);
@@ -183,7 +155,7 @@ const CandidateSignup = () => {
     }
   }, [form.role]);
 
-  //Certification changes for HARP only
+  // Certification changes for HARP only
   useEffect(() => {
     if (form.certification === "harp") {
       setForm((prev) => ({ ...prev, specialization: "" }));
@@ -196,20 +168,53 @@ const CandidateSignup = () => {
   }, [form.certification]);
 
   // Email and phone number verified with blue tickmark
-
   useEffect(() => {
     if (msg.text === "Email verified successfully.") setEmailVerified(true);
     if (msg.text === "Phone verified successfully.") setPhoneVerified(true);
   }, [msg.text]);
 
-  //validation regex
+  // Timer countdown for resend OTP
+  useEffect(() => {
+    if (emailOtpTimer > 0) {
+      const interval = setInterval(() => {
+        setEmailOtpTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [emailOtpTimer]);
 
+  useEffect(() => {
+    if (phoneOtpTimer > 0) {
+      const interval = setInterval(() => {
+        setPhoneOtpTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [phoneOtpTimer]);
+
+  // Close popup
+  const handleClosePopup = () => {
+    setPopup({ visible: false, message: "", type: "" });
+  };
+
+  // Validation regex
   const validate = () => {
     const phoneRe = /^\+?1?[2-9]\d{2}[2-9]\d{2}\d{4}$/;
     const postalRe = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/;
-
-    //form filed validation
-
+  
+    // Form field validation
     if (!form.firstname.trim()) return "Please enter first name.";
     if (!form.lastname.trim()) return "Please enter last name.";
     if (!phoneRe.test(form.phone))
@@ -217,14 +222,19 @@ const CandidateSignup = () => {
     if (!postalRe.test(form.zipcode)) return "Invalid Canadian postal code.";
     if (!form.city.trim()) return "City is required.";
     if (!form.yearsOfExperience) return "Years Of Experience is required";
+    
+
+    // Certificate validation - REQUIRED for dental-assistant role
     if (form.role === "dental-assistant") {
       if (form.certification !== "harp" && !form.specialization)
         return "Please select specialization";
-      if (!certificateFile) return "Please upload your certification";
+      if (!certificateFile) return "Please upload your certification file"; // Updated message
     } else {
       if (!form.licenseNumber.trim())
         return "License/Registration number is required";
     }
+    
+
     if (!form.emergency_name || !form.emergency_phone)
       return "Emergency contact name and phone are required.";
     if (!phoneRe.test(form.emergency_phone.trim()))
@@ -235,38 +245,86 @@ const CandidateSignup = () => {
       return "You must accept the Terms and Conditions to proceed.";
     return "";
   };
-
   const handleFileChange = (e) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    
+    if (!file) {
+      setCertificateFile(null);
+      setCertificateUrl("");
+      setMsg({ type: "", text: "" });
+      return;
+    }
+    
     const sizeMB = file.size / (1024 * 1024);
     if (sizeMB > 10) {
       setMsg({
         type: "error",
-        text: `File is too large (${sizeMB.toFixed(2)}MB). Max 10MB.`,
+        text: `File is too large (${sizeMB.toFixed(2)}MB). Maximum file size is 10MB.`,
       });
       e.target.value = "";
+      setCertificateFile(null);
       return;
     }
+  
+    // Check file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+      setMsg({
+        type: "error",
+        text: "Invalid file type. Please upload PDF, JPG, or PNG files only.",
+      });
+      e.target.value = "";
+      setCertificateFile(null);
+      return;
+    }
+  
     setCertificateFile(file);
     setCertificateUrl("");
-    setMsg({ type: "", text: "" });
+    setMsg({ 
+      type: "success", 
+      text: `Certificate file "${file.name}" selected successfully.` 
+    });
   };
 
   const uploadCertificate = async () => {
     if (!certificateFile) return "";
-    const fd = new FormData();
-    fd.append("file", certificateFile);
-    const res = await fetch(`${SERVER_BASE}/auth/certificate`, {
-      method: "POST",
-      body: fd,
-    });
-    if (!res.ok) {
-      const t = await res.text().catch(() => "");
-      throw new Error(t || "Certificate upload failed");
+    
+    try {
+      console.log("Uploading file:", certificateFile.name, certificateFile.type, certificateFile.size);
+      
+      const fd = new FormData();
+      fd.append("file", certificateFile);
+      
+      const res = await fetch(`${SERVER_BASE}auth/certificate`, {
+        method: "POST",
+        body: fd,
+      });
+      
+      console.log("Upload response status:", res.status);
+      
+      if (!res.ok) {
+        const errorText = await res.text().catch(() => "Certificate upload failed");
+        console.error("Upload error:", errorText);
+        throw new Error(`Upload failed: ${res.status} - ${errorText}`);
+      }
+      
+      const data = await res.json();
+      console.log("Upload success data:", data);
+      
+      const certificateUrl = data?.url || data?.data?.url || "";
+      
+      if (!certificateUrl) {
+        console.error("No URL in response data:", data);
+        throw new Error("Server returned success but no certificate URL");
+      }
+      
+      console.log("Certificate URL obtained:", certificateUrl);
+      return certificateUrl;
+      
+    } catch (error) {
+      console.error("Certificate upload error:", error);
+      throw new Error(`Certificate upload failed: ${error.message}`);
     }
-    const data = await res.json();
-    return data?.url || data?.data?.url || "";
   };
 
   const handleSendEmailOtp = async () => {
@@ -279,18 +337,9 @@ const CandidateSignup = () => {
         channel: "email",
         identifier: form.email.trim(),
       });
-      setMsg({ type: "success", text: "Email OTP sent." });
+      setMsg({ type: "success", text: "Email OTP sent successfully." });
       setEmailOtpSent(true);
       setEmailOtpTimer(60);
-      const interval = setInterval(() => {
-        setEmailOtpTimer((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
     } catch (err) {
       setMsg({
         type: "error",
@@ -317,11 +366,10 @@ const CandidateSignup = () => {
         code: emailOtp.trim(),
       });
       const token = res?.data?.token;
-      if (!token) throw new Error("OTP is not matching");
+      if (!token) throw new Error("OTP verification failed");
       setEmailVerified(true);
       setEmailToken(token);
       setEmailOtpError("");
-      setTimeout(() => setEmailOtpError(""), 5000);
       setMsg({ type: "success", text: "Email verified successfully." });
     } catch (err) {
       setEmailVerified(false);
@@ -354,18 +402,9 @@ const CandidateSignup = () => {
         channel: "phone",
         identifier: form.phone.trim(),
       });
-      setMsg({ type: "success", text: "SMS OTP sent." });
+      setMsg({ type: "success", text: "SMS OTP sent successfully." });
       setPhoneOtpSent(true);
       setPhoneOtpTimer(60);
-      const interval = setInterval(() => {
-        setPhoneOtpTimer((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
     } catch (err) {
       setMsg({
         type: "error",
@@ -392,15 +431,11 @@ const CandidateSignup = () => {
         code: phoneOtp.trim(),
       });
       const token = res?.data?.token;
-      if (!token) throw new Error("OTP is not matching");
+      if (!token) throw new Error("OTP verification failed");
       setPhoneVerified(true);
       setPhoneToken(token);
       setPhoneOtpError("");
-      setTimeout(() => setPhoneOtpError(""), 5000);
-      setMsg({
-        type: "success",
-        text: "Phone number is verified successfully.",
-      });
+      setMsg({ type: "success", text: "Phone verified successfully." });
     } catch (err) {
       setPhoneVerified(false);
       setPhoneToken("");
@@ -420,35 +455,49 @@ const CandidateSignup = () => {
       setVerifyingPhoneOtp(false);
     }
   };
-  //form on submit function
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMsg({ type: "", text: "" });
-
+  
     const err = validate();
     if (err) {
       setMsg({ type: "error", text: err });
       return;
     }
-
+  
     setLoading(true);
     try {
       // 1) Upload certificate first (public route)
       let finalCertUrl = certificateUrl;
-
+  
       // Only upload certificate if role is dental-assistant
-      if (form.role === "dental-assistant") {
-        if (!finalCertUrl) {
-          finalCertUrl = await uploadCertificate();
-          setCertificateUrl(finalCertUrl);
-        }
-        if (!finalCertUrl) throw new Error("Failed to upload certificate");
+      if (form.role === "dental-assistant" && certificateFile && !finalCertUrl) {
+        setMsg({ type: "info", text: "Uploading certificate..." });
+        finalCertUrl = await uploadCertificate();
+        setCertificateUrl(finalCertUrl);
       }
-
+  
+      console.log("📁 Certificate URL:", finalCertUrl);
+  
       // 2) Register with certificate URL
       setMsg({ type: "info", text: "Submitting registration..." });
-
+  
+      // Create professional_info object with CORRECT field names
+      const professionalInfo = {
+        years_of_experience: form.yearsOfExperience,
+        license_number: form.licenseNumber || "",
+        certification_level: form.certification, // CHANGED: certification -> certification_level
+        specializations: form.certification !== "harp" && form.specialization
+          ? [form.specialization]
+          : [],
+      };
+  
+      // Only add certificates if we have a URL and role is dental-assistant
+      if (form.role === "dental-assistant" && finalCertUrl) {
+        professionalInfo.certificates = [finalCertUrl];
+      }
+  
       const payload = {
         email: form.email.trim(),
         mobile: form.phone.trim(),
@@ -460,55 +509,64 @@ const CandidateSignup = () => {
         province: form.province,
         country: form.country,
         role: "assistant",
-        certification: form.certification,
-        specializations:
-          form.certification !== "harp" && form.specialization
-            ? [form.specialization]
-            : [],
+        professional_info: professionalInfo,
         emergency_contact: {
-          name: form.emergency_name,
-          relationship: form.emergency_relationship,
-          phone: form.emergency_phone,
-          ...(form.emergency_email && { email: form.emergency_email }),
+          name: form.emergency_name.trim(),
+          relationship: form.emergency_relationship.trim(),
+          phone: form.emergency_phone.trim(),
+          ...(form.emergency_email && { email: form.emergency_email.trim() }),
         },
         email_verification_token: emailToken,
         phone_verification_token: phoneToken,
-        certificates: form.role === "dental-assistant" ? [finalCertUrl] : [],
-        acceptedTerms: form.acceptedTerms,
+        accepted_terms: acceptedTerms,
       };
-
+  
+      console.log("🚀 Final registration payload:", JSON.stringify(payload, null, 2));
+  
       const res = await postData("/auth/register", payload);
+      
+      console.log("✅ Registration response:", res);
+  
       if (res?.data?.success === false || res?.success === false) {
         throw new Error(
           res?.data?.message || res?.message || "Registration failed"
         );
       }
-
+  
+      // Success - redirect to thank you page
       navigate("/thank-you", {
         state: {
           firstname: form.firstname.trim(),
           lastname: form.lastname.trim(),
+          type: "candidate",
         },
       });
     } catch (error) {
-      console.error("Registration error:", error);
-
-      const msg =
-        error?.response?.data?.message || // from axios / fetch
-        error.message || // from JS Error
-        "Something went wrong";
-
-      setPopup({ visible: true, message: msg, type: "error" });
+      console.error("❌ Registration error:", error);
+      
+      if (error.response) {
+        console.error("📋 Error response data:", error.response.data);
+      }
+      
+      const errorMsg =
+        error?.response?.data?.message ||
+        error?.message ||
+        "Something went wrong during registration. Please try again.";
+      
+      setMsg({ type: "error", text: errorMsg });
     } finally {
       setLoading(false);
     }
   };
-
-  const canRegister = emailVerified && phoneVerified && !loading;
-
+  const canRegister = emailVerified && 
+  phoneVerified && 
+  acceptedTerms && 
+  !loading &&
+  // Add certificate validation for dental-assistant role
+  (form.role !== "dental-assistant" || certificateFile);
   return (
     <>
-      <div
+    <div
         id="contactus"
         className="my-6 md:my-10 lg:my-10 px-8 md:px-8 lg:px-20"
       >
@@ -518,7 +576,7 @@ const CandidateSignup = () => {
         <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-1 text-darkblack text-sm  sm:text-base md:text-lg md:ml-2">
           Register yourself at
           <span className="text-darkblue font-semibold text-base sm:text-lg mx-2">
-            Di’arva
+            Di'arva
           </span>
           to start earning
         </p>
@@ -547,6 +605,9 @@ const CandidateSignup = () => {
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Form fields remain exactly the same as your original CandidateSignup */}
+              {/* ... All your existing form fields ... */}
+              
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                   <label
@@ -650,7 +711,7 @@ const CandidateSignup = () => {
                       {emailVerified
                         ? "Verified"
                         : emailOtpTimer > 0
-                        ? `Resend OTP in ${emailOtpTimer}s`
+                        ? `Resend in ${emailOtpTimer}s`
                         : sendingEmailOtp
                         ? "Sending..."
                         : "Send OTP"}
@@ -777,7 +838,7 @@ const CandidateSignup = () => {
                       {phoneVerified
                         ? "Verified"
                         : phoneOtpTimer > 0
-                        ? `Resend OTP in ${phoneOtpTimer}s`
+                        ? `Resend in ${phoneOtpTimer}s`
                         : sendingPhoneOtp
                         ? "Sending..."
                         : "Send OTP"}
@@ -902,29 +963,47 @@ const CandidateSignup = () => {
               {/* Conditional Fields Based on Role */}
               {form.role === "dental-assistant" ? (
                 <>
-                  {/* Certificate Upload */}
-                  <div>
-                    <label
-                      htmlFor="certificate-upload"
-                      className="block text-sm font-medium text-blue-900 mb-1 px-3"
-                    >
-                      Upload Certificate
-                    </label>
-                    <input
-                      id="certificate-upload"
-                      name="certificate_file"
-                      type="file"
-                      required
-                      onChange={handleFileChange}
-                      accept=".pdf,.jpg,.jpeg,.png"
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-white hover:file:bg-opacity-90"
-                    />
-                    {certificateFile && (
-                      <p className="text-xs text-blue-900 mt-2 ml-2">
-                        Selected: {certificateFile.name}
-                      </p>
-                    )}
-                  </div>
+               {/* Certificate Upload - REQUIRED */}
+{/* Certificate Upload - REQUIRED */}
+<div>
+  <label
+    htmlFor="certificate-upload"
+    className="block text-sm font-medium text-blue-900 mb-1 px-3"
+  >
+    Upload Certificate *
+  </label>
+  <input
+    id="certificate-upload"
+    name="certificate_file"
+    type="file"
+    required
+    onChange={handleFileChange}
+    accept=".pdf,.jpg,.jpeg,.png"
+    className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-900 file:text-white hover:file:bg-opacity-90"
+  />
+  
+  {/* File status */}
+  {certificateFile ? (
+    <p className="text-xs text-green-600 mt-2 ml-2 font-medium">
+      ✓ Certificate selected: {certificateFile.name} ({(certificateFile.size / (1024 * 1024)).toFixed(2)}MB)
+    </p>
+  ) : (
+    <p className="text-xs text-red-600 mt-2 ml-2">
+      * Certificate file is required for Dental Assistant registration
+    </p>
+  )}
+  
+  {/* Requirements helper */}
+  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+    <p className="text-xs text-blue-800 font-medium mb-1">Certificate Requirements:</p>
+    <ul className="text-xs text-blue-700 list-disc list-inside space-y-1">
+      <li>File must be in PDF, JPG, or PNG format</li>
+      <li>Maximum file size: 10MB</li>
+      <li>File should clearly show your certification details</li>
+      <li>Certificate must be valid and legible</li>
+    </ul>
+  </div>
+</div>
 
                   {/* Certification & Specialization */}
                   <div>
@@ -1194,7 +1273,6 @@ const CandidateSignup = () => {
                     checked={acceptedTerms}
                     onChange={(e) => setAcceptedTerms(e.target.checked)}
                     className="sr-only"
-                    value={form.acceptedTerms}
                   />
 
                   <label
@@ -1229,9 +1307,11 @@ const CandidateSignup = () => {
                   </label>
                 </div>
               </div>
-              {msg.text ? (
+
+              {/* Error/Success Messages - Same style as OfficeSignup */}
+              {msg.text && (
                 <div
-                  className={`rounded-xl px-4 py-3 text-sm ${
+                  className={`rounded-xl px-4 py-3 text-sm flex items-start gap-3 ${
                     msg.type === "error"
                       ? "bg-red-100 text-red-700"
                       : msg.type === "info"
@@ -1239,44 +1319,55 @@ const CandidateSignup = () => {
                       : "bg-green-100 text-green-700"
                   }`}
                 >
-                  {msg.text}
+                  {msg.type === "error" && (
+                    <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  )}
+                  {msg.type === "success" && (
+                    <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  )}
+                  <span>{msg.text}</span>
                 </div>
-              ) : null}
+              )}
 
-              <div>
-                <Button
-                  type="submit"
-                  variant="dark"
-                  size="lg"
-                  disabled={!canRegister}
-                  className={
-                    !canRegister
-                      ? "opacity-50 cursor-not-allowed"
-                      : "cursor-pointer hover:opacity-80"
-                  }
-                >
-                  {loading
-                    ? "Submitting..."
-                    : emailVerified && phoneVerified
-                    ? "Sign Up"
-                    : "Verify to Sign Up"}
-                </Button>
-                {!emailVerified || !phoneVerified || !acceptedTerms ? (
-                  <p className="text-sm mt-2 text-center text-darkblue">
-                    {!emailVerified && !phoneVerified && !acceptedTerms
-                      ? "Please verify your Email, Phone and accept Terms & Conditions"
-                      : !emailVerified && !phoneVerified
-                      ? "Please verify your Email and Phone number"
-                      : !emailVerified
-                      ? "Please verify your Email address"
-                      : !phoneVerified
-                      ? "Please verify your Phone number"
-                      : !acceptedTerms
-                      ? "Please accept Terms and Conditions to proceed"
-                      : ""}
-                  </p>
-                ) : null}
-              </div>
+           {/* Submit Button - Same style as OfficeSignup */}
+<div>
+  <button
+    type="submit"
+    disabled={!canRegister}
+    className={`bg-darkblue text-white px-4 py-2 rounded-full w-full mt-4 ${
+      !canRegister
+        ? "opacity-50 cursor-not-allowed"
+        : "hover:opacity-80 cursor-pointer"
+    }`}
+  >
+    {loading
+      ? "Submitting..."
+      : emailVerified && phoneVerified && acceptedTerms && (form.role !== "dental-assistant" || certificateFile)
+      ? "Sign Up"
+      : "Complete Requirements to Sign Up"}
+  </button>
+  {(!emailVerified || !phoneVerified || !acceptedTerms || (form.role === "dental-assistant" && !certificateFile)) && (
+    <p className="text-sm mt-2 text-center text-darkblue">
+      {!emailVerified && !phoneVerified && !acceptedTerms && (form.role === "dental-assistant" && !certificateFile)
+        ? "Please verify your email, phone, accept Terms & Conditions, and upload certificate"
+        : !emailVerified && !phoneVerified && (form.role === "dental-assistant" && !certificateFile)
+        ? "Please verify your email, phone, and upload certificate"
+        : !emailVerified && (form.role === "dental-assistant" && !certificateFile)
+        ? "Please verify your email and upload certificate"
+        : !phoneVerified && (form.role === "dental-assistant" && !certificateFile)
+        ? "Please verify your phone and upload certificate"
+        : (form.role === "dental-assistant" && !certificateFile)
+        ? "Please upload your certificate file"
+        : !emailVerified
+        ? "Please verify your email address"
+        : !phoneVerified
+        ? "Please verify your phone number"
+        : !acceptedTerms
+        ? "Please accept Terms and Conditions to proceed"
+        : ""}
+    </p>
+  )}
+</div>
             </form>
             <Popup
               visible={popup.visible}

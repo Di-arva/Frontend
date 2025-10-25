@@ -10,7 +10,7 @@ import {
   ChevronDown,
   Building2
 } from "lucide-react";
-import Marklogo from "../../assets/Diarva_mark.png";
+import Marklogo from "../../assets/icons/Dashboard.png";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -123,7 +123,11 @@ const Sidebar = ({ collapsed, onToggle }) => {
       {/* Logo */}
       <div className="p-6 border-b border-blue-200 flex gap-4 items-center">
         <div className="flex items-center space-x-3 ">
-          <img src={Marklogo} alt="Di'arva markup logo" className="w-16 h-12" />
+        <img
+              src={Marklogo}
+              alt="Diarva Mark Logo"
+              className="bg-lightbg h-20 rounded-full w-auto "
+            />
         </div>
 
         {/* conditional Rendering */}
