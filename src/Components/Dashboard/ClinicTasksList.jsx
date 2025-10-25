@@ -24,6 +24,8 @@ const ClinicTasksList = () => {
     total: 0,
     pages: 0
   });
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [taskDetailLoading, setTaskDetailLoading] = useState(false);
 
   // Filters
   const [filters, setFilters] = useState({
@@ -46,11 +48,15 @@ const ClinicTasksList = () => {
 
     try {
       const token = localStorage.getItem('authToken');
+      
       if (!token) {
         setError('Authentication token not found. Please log in.');
         setLoading(false);
         return;
       }
+
+      console.log('Token found:', token ? 'Yes' : 'No');
+      console.log('Token length:', token?.length);
 
       // Extract clinic_id from JWT token
       const base64Url = token.split('.')[1];
@@ -85,16 +91,24 @@ const ClinicTasksList = () => {
       if (filters.sort_by) params.append('sort_by', filters.sort_by);
       if (filters.sort_dir) params.append('sort_dir', filters.sort_dir);
 
-      const apiBaseUrl = import.meta?.env?.VITE_SERVER_BASE_URL || 'http://localhost:1080';
-      const response = await fetch(`${apiBaseUrl}/api/v1/clinic/tasks?${params.toString()}`, {
+      const apiBaseUrl = import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:1080';
+      const url = `${apiBaseUrl}clinic/tasks?${params.toString()}`;
+      console.log('Fetching URL:', url);
+      
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
         },
       });
 
+      console.log('Response status:', response.status);
+
       if (response.status === 401) {
-        setError('Session expired. Please log in again.');
+        const errorData = await response.json().catch(() => ({}));
+        console.log('401 Error details:', errorData);
+        setError(`Session expired or invalid token. Please log in again. ${errorData.message || ''}`);
         setLoading(false);
         return;
       }
@@ -123,6 +137,65 @@ const ClinicTasksList = () => {
       setLoading(false);
     }
   };
+
+ 
+ // Fetch task details by ID
+ const fetchTaskDetails = async (taskId) => {
+  setTaskDetailLoading(true);
+  try {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      alert('Please log in.');
+      return;
+    }
+
+    // Optional: Validate token
+    let payload;
+    try {
+      payload = JSON.parse(atob(token.split('.')[1]));
+    } catch (e) {
+      alert('Invalid token format.');
+      return;
+    }
+
+    if (payload.exp && payload.exp < Date.now() / 1000) {
+      alert('Session expired. Please log in again.');
+      localStorage.removeItem('authToken');
+      // redirect to login
+      return;
+    }
+
+    const apiBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
+    const url = `${apiBaseUrl}clinic/tasks/${taskId}`; // 
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (response.status === 401) {
+      localStorage.removeItem('authToken');
+      alert('Session expired. Redirecting to login...');
+      // window.location.href = '/login';
+      return;
+    }
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to fetch task');
+    }
+
+    setSelectedTask(result.data);
+  } catch (err) {
+    alert(`Error: ${err.message}`);
+  } finally {
+    setTaskDetailLoading(false);
+  }
+};
 
   // Fetch tasks on mount and when filters/pagination change
   useEffect(() => {
@@ -437,7 +510,10 @@ const ClinicTasksList = () => {
                 <span className="text-sm text-gray-600">
                   Posted {formatDate(task.posted_at)}
                 </span>
-                <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                <button 
+                  onClick={() => fetchTaskDetails(task._id)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
                   View Details
                 </button>
               </div>
@@ -474,6 +550,190 @@ const ClinicTasksList = () => {
                 <ChevronRight className="w-5 h-5" />
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Task Details Modal */}
+      {selectedTask && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
+              <h2 className="text-2xl font-bold text-gray-800">Shift Details</h2>
+              <button 
+                onClick={() => setSelectedTask(null)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                <XCircle className="w-6 h-6 text-gray-600" />
+              </button>
+            </div>
+
+            {taskDetailLoading ? (
+              <div className="flex items-center justify-center p-12">
+                <Loader className="w-8 h-8 text-blue-600 animate-spin" />
+              </div>
+            ) : (
+              <div className="p-6 space-y-6">
+                {/* Header Section */}
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-3">{selectedTask.title}</h3>
+                  <div className="flex items-center gap-3 flex-wrap mb-4">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(selectedTask.status)}`}>
+                      {selectedTask.status.replace('_', ' ')}
+                    </span>
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityBadge(selectedTask.priority)}`}>
+                      {selectedTask.priority}
+                    </span>
+                    {selectedTask.requirements?.certification_level && (
+                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                        {selectedTask.requirements.certification_level.replace('_', ' ')}
+                      </span>
+                    )}
+                  </div>
+                  {selectedTask.description && (
+                    <p className="text-gray-700">{selectedTask.description}</p>
+                  )}
+                </div>
+
+                {/* Schedule Section */}
+                <div className="bg-gray-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <Calendar className="w-5 h-5" />
+                    Schedule
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Start:</span>
+                      <span className="font-medium text-gray-800">{formatDate(selectedTask.schedule?.start_datetime)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">End:</span>
+                      <span className="font-medium text-gray-800">{formatDate(selectedTask.schedule?.end_datetime)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Duration:</span>
+                      <span className="font-medium text-gray-800">{selectedTask.schedule?.duration_hours} hours</span>
+                    </div>
+                    {selectedTask.schedule?.break_duration_minutes && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Break:</span>
+                        <span className="font-medium text-gray-800">{selectedTask.schedule.break_duration_minutes} minutes</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Compensation Section */}
+                <div className="bg-green-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <DollarSign className="w-5 h-5" />
+                    Compensation
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Hourly Rate:</span>
+                      <span className="font-bold text-gray-800 text-lg">
+                        ${selectedTask.compensation?.hourly_rate} {selectedTask.compensation?.currency}
+                      </span>
+                    </div>
+                    {selectedTask.compensation?.total_amount && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Total Amount:</span>
+                        <span className="font-medium text-gray-800">
+                          ${selectedTask.compensation.total_amount} {selectedTask.compensation.currency}
+                        </span>
+                      </div>
+                    )}
+                    {selectedTask.compensation?.payment_method && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Payment Method:</span>
+                        <span className="font-medium text-gray-800">{selectedTask.compensation.payment_method}</span>
+                      </div>
+                    )}
+                    {selectedTask.compensation?.payment_terms && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-600">Payment Terms:</span>
+                        <span className="font-medium text-gray-800">{selectedTask.compensation.payment_terms}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Requirements Section */}
+                <div className="bg-blue-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-800 mb-3">Requirements</h4>
+                  <div className="space-y-3 text-sm">
+                    {selectedTask.requirements?.minimum_experience && (
+                      <div>
+                        <span className="text-gray-600">Minimum Experience:</span>
+                        <span className="font-medium text-gray-800 ml-2">
+                          {selectedTask.requirements.minimum_experience} years
+                        </span>
+                      </div>
+                    )}
+                    {selectedTask.requirements?.required_specializations && selectedTask.requirements.required_specializations.length > 0 && (
+                      <div>
+                        <span className="text-gray-600 block mb-2">Required Specializations:</span>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedTask.requirements.required_specializations.map((spec, idx) => (
+                            <span key={idx} className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                              {spec}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {selectedTask.requirements?.preferred_skills && selectedTask.requirements.preferred_skills.length > 0 && (
+                      <div>
+                        <span className="text-gray-600 block mb-2">Preferred Skills:</span>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedTask.requirements.preferred_skills.map((skill, idx) => (
+                            <span key={idx} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs">
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Applications Section */}
+                <div className="bg-purple-50 rounded-lg p-4">
+                  <h4 className="font-semibold text-gray-800 mb-3 flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    Applications
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Current Applications:</span>
+                      <span className="font-medium text-gray-800">{selectedTask.applications_count || 0}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Maximum Applications:</span>
+                      <span className="font-medium text-gray-800">{selectedTask.max_applications}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Posted:</span>
+                      <span className="font-medium text-gray-800">{formatDate(selectedTask.posted_at)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3 pt-4">
+                  <button 
+                    onClick={() => setSelectedTask(null)}
+                    className="flex-1 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                  >
+                    Close
+                  </button>
+                  <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                    Edit Shift
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
