@@ -97,21 +97,6 @@ const ClinicDashboard = () => {
         setIsSubmitting(false);
         return;
       }
-      
-      // Decode JWT to get clinic_id (sub field)
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      const tokenData = JSON.parse(jsonPayload);
-      const clinicId = tokenData.sub;
-      
-      if (!clinicId) {
-        alert("Clinic ID not found in token. Please log in again.");
-        setIsSubmitting(false);
-        return;
-      }
 
       // Construct the datetime strings (ISO format)
       const startDateTime = new Date(`${newShift.date}T${newShift.startTime}`).toISOString();
@@ -134,7 +119,6 @@ const ClinicDashboard = () => {
 
       // Build the payload according to schema
       const payload = {
-        clinic_id: clinicId,
         title: newShift.title.trim(),
         description: newShift.description.trim(),
         requirements: {

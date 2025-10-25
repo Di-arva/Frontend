@@ -58,24 +58,8 @@ const ClinicTasksList = () => {
       console.log('Token found:', token ? 'Yes' : 'No');
       console.log('Token length:', token?.length);
 
-      // Extract clinic_id from JWT token
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      const tokenData = JSON.parse(jsonPayload);
-      const clinicId = tokenData.sub;
-      
-      if (!clinicId) {
-        setError('Clinic ID not found in token. Please log in again.');
-        setLoading(false);
-        return;
-      }
-
       // Build query parameters
       const params = new URLSearchParams();
-      params.append('clinic_id', clinicId);
       params.append('page', pagination.page);
       params.append('limit', pagination.limit);
       
