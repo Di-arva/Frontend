@@ -194,11 +194,11 @@ const ClinicDashboard = () => {
 
   const handleCreateShift = async () => {
     // Your existing handleCreateShift function remains the same
-    if (!newShift.title || !newShift.description || !newShift.date || 
+    if (!newShift.title  || !newShift.date || 
         !newShift.startTime || !newShift.endTime || !newShift.hourlyRate ||
         !newShift.certificationLevel) {
       alert("Please fill in all required fields marked with *");
-      return;
+      return; 
     }
 
     setIsSubmitting(true);

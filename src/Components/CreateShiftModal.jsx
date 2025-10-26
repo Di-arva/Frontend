@@ -44,16 +44,7 @@ const CreateShiftModal = ({
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-darkblack mb-2">Description *</label>
-              <textarea
-                value={newShift.description}
-                onChange={(e) => setNewShift({...newShift, description: e.target.value})}
-                rows={3}
-                placeholder="Describe the position and responsibilities..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
+         
 
             <div className="grid grid-cols-2 gap-4">
             <div className="flex-1 relative">
@@ -70,15 +61,7 @@ const CreateShiftModal = ({
                 </select>
                 <ChevronDown className="absolute right-3 top-[70%] -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
               </div>
-              <div>
-                    <label className="block text-sm/6 font-medium text-darkblack">Max Applications</label>
-                <input
-                  type="number"
-                  value={newShift.maxApplications}
-                  onChange={(e) => setNewShift({...newShift, maxApplications: e.target.value})}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
+            
             </div>
           </div>
 
@@ -141,15 +124,7 @@ const CreateShiftModal = ({
               />
             </div>
 
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                checked={newShift.requiresBackgroundCheck}
-                onChange={(e) => setNewShift({...newShift, requiresBackgroundCheck: e.target.checked})}
-                className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-              />
-              <label className="ml-2 text-sm text-gray-700">Requires Background Check</label>
-            </div>
+        
           </div>
 
           {/* Schedule */}
@@ -236,97 +211,13 @@ const CreateShiftModal = ({
              
               </div>
 
-              <div className="flex-1 relative">
-              <label className="block text-sm/6 font-medium text-darkblack">Payment Method *</label>
-              <select
-                   value={newShift.paymentMethod}
-                   onChange={(e) => setNewShift({...newShift, paymentMethod: e.target.value})}
-                  className="border w-full appearance-none border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue  mt-2"
-                >
-             <option value="E-transfer">E-transfer</option>
-              <option value="Direct Deposit">Direct Deposit</option>
-                
-               
-                </select>
-                <ChevronDown className="absolute right-3 top-[70%] -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
-             
-              </div>
+         
         
-              <div>
-                    <label className="block text-sm/6 font-medium text-darkblack">Payment Terms *</label>
-                <select
-                  value={newShift.paymentTerms}
-                  onChange={(e) => setNewShift({...newShift, paymentTerms: e.target.value})}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="Same Day">Same Day</option>
-                  <option value="Weekly">Weekly</option>
-                  <option value="Bi-weekly">Bi-weekly</option>
-                  <option value="Monthly">Monthly</option>
-                </select>
-              </div>
+        
             </div>
           </div>
 
-          {/* Location Details */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-gray-800 border-b pb-2">Location & Contact</h4>
-            
-            <div>
-                  <label className="block text-sm/6 font-medium text-darkblack">Parking Information</label>
-              <input
-                type="text"
-                value={newShift.parkingInfo}
-                onChange={(e) => setNewShift({...newShift, parkingInfo: e.target.value})}
-                placeholder="e.g., Free parking available"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-                  <label className="block text-sm/6 font-medium text-darkblack">Specific Instructions</label>
-              <textarea
-                value={newShift.specificInstructions}
-                onChange={(e) => setNewShift({...newShift, specificInstructions: e.target.value})}
-                rows={2}
-                placeholder="e.g., Use rear entrance"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                    <label className="block text-sm/6 font-medium text-darkblack">Contact Name</label>
-                <input
-                  type="text"
-                  value={newShift.contactName}
-                  onChange={(e) => setNewShift({...newShift, contactName: e.target.value})}
-                  placeholder="Dr. Smith"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                    <label className="block text-sm/6 font-medium text-darkblack">Contact Phone</label>
-                <input
-                  type="tel"
-                  value={newShift.contactPhone}
-                  onChange={(e) => setNewShift({...newShift, contactPhone: e.target.value})}
-                  placeholder="+1234567890"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-              <div>
-                    <label className="block text-sm/6 font-medium text-darkblack">Contact Role</label>
-                <input
-                  type="text"
-                  value={newShift.contactRole}
-                  onChange={(e) => setNewShift({...newShift, contactRole: e.target.value})}
-                  placeholder="Clinic Manager"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                />
-              </div>
-            </div>
-          </div>
+   
         </div>
 
         <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
