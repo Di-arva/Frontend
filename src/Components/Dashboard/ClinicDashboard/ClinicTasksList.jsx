@@ -11,7 +11,7 @@ import {
   XCircle,
   Loader,
 } from "lucide-react";
-
+import Button from "../../Button";
 const ClinicTasksList = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -184,22 +184,22 @@ const ClinicTasksList = () => {
         alert("Please log in.");
         return;
       }
-  
+
       const apiBaseUrl = import.meta.env.VITE_SERVER_BASE_URL;
       const url = `${apiBaseUrl}clinic/tasks/${taskId}`;
-  
+
       // Debug: Log the current editFormData to see what we're working with
       console.log("Current editFormData:", editFormData);
       console.log("Schedule data:", editFormData?.schedule);
       console.log("Duration hours:", editFormData?.schedule?.duration_hours);
-  
+
       // Simple number cleaning function
       const cleanNumber = (val) => {
         if (val === null || val === undefined || val === "") return 0;
         const num = parseFloat(val);
         return !isNaN(num) ? num : 0;
       };
-  
+
       // Build the payload step by step to ensure all required fields are included
       const payload = {
         // Basic task info
@@ -208,57 +208,71 @@ const ClinicTasksList = () => {
         priority: editFormData.priority || "normal",
         max_applications: cleanNumber(editFormData.max_applications) || 1,
       };
-  
+
       // Compensation - ensure structure is maintained
       payload.compensation = {
         hourly_rate: cleanNumber(editFormData.compensation?.hourly_rate),
         currency: editFormData.compensation?.currency || "USD",
         ...(editFormData.compensation?.total_amount !== undefined && {
-          total_amount: cleanNumber(editFormData.compensation.total_amount)
+          total_amount: cleanNumber(editFormData.compensation.total_amount),
         }),
         ...(editFormData.compensation?.payment_method && {
-          payment_method: editFormData.compensation.payment_method
+          payment_method: editFormData.compensation.payment_method,
         }),
         ...(editFormData.compensation?.payment_terms && {
-          payment_terms: editFormData.compensation.payment_terms
-        })
+          payment_terms: editFormData.compensation.payment_terms,
+        }),
       };
-  
+
       // SCHEDULE - This is the critical part
       // Ensure duration_hours is always present and valid
       const durationHours = cleanNumber(editFormData.schedule?.duration_hours);
-      
+
       payload.schedule = {
-        start_datetime: editFormData.schedule?.start_datetime || new Date().toISOString(),
+        start_datetime:
+          editFormData.schedule?.start_datetime || new Date().toISOString(),
         duration_hours: durationHours > 0 ? durationHours : 1, // Always include with minimum 1
         ...(editFormData.schedule?.end_datetime && {
-          end_datetime: editFormData.schedule.end_datetime
+          end_datetime: editFormData.schedule.end_datetime,
         }),
         ...(editFormData.schedule?.break_duration_minutes !== undefined && {
-          break_duration_minutes: cleanNumber(editFormData.schedule.break_duration_minutes)
-        })
+          break_duration_minutes: cleanNumber(
+            editFormData.schedule.break_duration_minutes
+          ),
+        }),
       };
-  
+
       // Requirements
       payload.requirements = {};
       if (editFormData.requirements?.certification_level) {
-        payload.requirements.certification_level = editFormData.requirements.certification_level;
+        payload.requirements.certification_level =
+          editFormData.requirements.certification_level;
       }
       if (editFormData.requirements?.minimum_experience !== undefined) {
-        payload.requirements.minimum_experience = cleanNumber(editFormData.requirements.minimum_experience);
+        payload.requirements.minimum_experience = cleanNumber(
+          editFormData.requirements.minimum_experience
+        );
       }
       if (editFormData.requirements?.required_specializations?.length > 0) {
-        payload.requirements.required_specializations = editFormData.requirements.required_specializations;
+        payload.requirements.required_specializations =
+          editFormData.requirements.required_specializations;
       }
       if (editFormData.requirements?.preferred_skills?.length > 0) {
-        payload.requirements.preferred_skills = editFormData.requirements.preferred_skills;
+        payload.requirements.preferred_skills =
+          editFormData.requirements.preferred_skills;
       }
-  
+
       // Debug: Log the final payload before sending
-      console.log("Final payload being sent:", JSON.stringify(payload, null, 2));
+      console.log(
+        "Final payload being sent:",
+        JSON.stringify(payload, null, 2)
+      );
       console.log("Schedule in payload:", payload.schedule);
-      console.log("Duration hours in payload:", payload.schedule.duration_hours);
-  
+      console.log(
+        "Duration hours in payload:",
+        payload.schedule.duration_hours
+      );
+
       const response = await fetch(url, {
         method: "PATCH",
         headers: {
@@ -267,20 +281,22 @@ const ClinicTasksList = () => {
         },
         body: JSON.stringify(payload),
       });
-  
+
       if (response.status === 401) {
         localStorage.removeItem("authToken");
         alert("Session expired. Please log in again.");
         return;
       }
-  
+
       const result = await response.json();
-  
+
       if (!response.ok) {
         console.error("Backend error response:", result);
-        throw new Error(result.error || result.message || "Failed to update task");
+        throw new Error(
+          result.error || result.message || "Failed to update task"
+        );
       }
-  
+
       alert("Shift updated successfully!");
       setIsEditMode(false);
       setSelectedTask(null);
@@ -384,27 +400,31 @@ const ClinicTasksList = () => {
   if (loading && tasks.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader className="w-8 h-8 text-blue-600 animate-spin" />
+        <Loader className="w-8 h-8 text-darkblue animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 p-6 bg-gray-50 min-h-screen">
+    <div className="space-y-6 p-6 bg-lightblue rounded-4xl min-h-screen font-poppins">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-gray-800">Posted Shifts</h2>
-          <p className="text-gray-600 text-sm mt-1">
-            {pagination.total} total shift{pagination.total !== 1 ? "s" : ""}
-          </p>
+          <h3 className="text-3xl font-normal text-darkblack mb-4">
+            Posted Shifts
+          </h3>
+          <span className="px-3 py-1  text-lightbg bg-darkblue rounded-full text-sm font-medium">
+            {pagination.total} Total Shift{pagination.total !== 1 ? "s" : ""}
+          </span>
         </div>
-        <button
+        <Button
+          variant="dark"
+          size="sm"
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 px-4 py-2 bg-white text-gray-700 rounded-lg hover:bg-gray-100 transition-colors shadow-sm border"
+          className="flex items-center gap-2 px-4 py-2rounded-lgtransition-colors "
         >
           <Filter className="w-4 h-4" />
           Filters
-        </button>
+        </Button>
       </div>
 
       {error && (
@@ -418,7 +438,7 @@ const ClinicTasksList = () => {
       )}
 
       {showFilters && (
-        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
+        <div className="bg-lightbg rounded-3xl p-6 shadow-sm border border-darkblue">
           <div className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -530,30 +550,30 @@ const ClinicTasksList = () => {
           tasks.map((task) => (
             <div
               key={task._id}
-              className="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow"
+              className="bg-lightbg rounded-xl p-6 shadow-sm border border-darkblue/30 hover:shadow-md transition-shadow"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                  <h3 className="text-lg font-normal text-darkblack mb-2">
                     {task.title}
                   </h3>
                   <div className="flex items-center gap-3 flex-wrap">
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusBadge(
+                      className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusBadge(
                         task.status
                       )}`}
                     >
                       {task.status.replace("_", " ")}
                     </span>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${getPriorityBadge(
+                      className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getPriorityBadge(
                         task.priority
                       )}`}
                     >
                       {task.priority}
                     </span>
                     {task.requirements?.certification_level && (
-                      <span className="px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                      <span className="px-3 py-1 rounded-full text-xs font-medium capitalize bg-purple-100 text-purple-700">
                         {task.requirements.certification_level.replace(
                           "_",
                           " "
@@ -563,24 +583,26 @@ const ClinicTasksList = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="text-2xl font-bold text-gray-800">
+                  <div className="text-2xl font-semibold text-darkblue">
                     ${task.compensation?.hourly_rate}
                   </div>
-                  <div className="text-sm text-gray-600">per hour</div>
+                  <div className="text-sm text-darkblack capitalize">
+                    per hour
+                  </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Calendar className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-sm text-darkblack">
+                  <Calendar className="w-4 h-4 text-darkblue" />
                   <span>{formatDate(task.schedule?.start_datetime)}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Clock className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-sm text-darkblack">
+                  <Clock className="w-4 h-4 text-darkblue" />
                   <span>{task.schedule?.duration_hours} hours</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Users className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-sm text-darkblack">
+                  <Users className="w-4 h-4 text-darkblue" />
                   <span>
                     {task.applications_count || 0} / {task.max_applications}{" "}
                     applicants
@@ -588,35 +610,21 @@ const ClinicTasksList = () => {
                 </div>
               </div>
 
-              {task.requirements?.required_specializations &&
-                task.requirements.required_specializations.length > 0 && (
-                  <div className="flex items-center gap-2 flex-wrap mb-4">
-                    <span className="text-sm font-medium text-gray-700">
-                      Required:
-                    </span>
-                    {task.requirements.required_specializations.map(
-                      (spec, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs"
-                        >
-                          {spec}
-                        </span>
-                      )
-                    )}
-                  </div>
-                )}
-
-              <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                <span className="text-sm text-gray-600">
-                  Posted {formatDate(task.posted_at)}
+              <div className="flex items-center justify-between pt-3 border-t border-lightblue">
+                <span className="text-sm text-darkblack">
+                  Posted:{" "}
+                  <span className="text-darkblue">
+                    {formatDate(task.posted_at)}
+                  </span>
                 </span>
-                <button
+                <Button
                   onClick={() => fetchTaskDetails(task._id)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                  variant="dark"
+                  size="sm"
+                  className=" transition-colors "
                 >
                   View Details
-                </button>
+                </Button>
               </div>
             </div>
           ))
@@ -624,7 +632,7 @@ const ClinicTasksList = () => {
       </div>
 
       {pagination.pages > 1 && (
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-lightblue">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-600">
               Page {pagination.page} of {pagination.pages}
@@ -653,9 +661,9 @@ const ClinicTasksList = () => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between z-10">
-              <h2 className="text-2xl font-bold text-gray-800">
+              <h3 className="text-2xl font-bold text-darkblue text-md">
                 {isEditMode ? "Edit Shift" : "Shift Details"}
-              </h2>
+              </h3>
               <button
                 onClick={() => {
                   setSelectedTask(null);
@@ -835,24 +843,25 @@ const ClinicTasksList = () => {
                       />
                     </div>
                     <div>
-  <label className="block text-sm font-medium text-gray-700 mb-2">
-    Duration (hours) *
-  </label>
-  <input
-    type="number"
-    min="0.5"
-    step="0.5"
-    value={editFormData?.schedule?.duration_hours || ""}
-    onChange={(e) => {
-      const value = e.target.value;
-      // Ensure we always have a valid number
-      const numValue = value === "" ? 1 : parseFloat(value) || 1;
-      handleEditChange("schedule.duration_hours", numValue);
-    }}
-    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
-    required
-  />
-</div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Duration (hours) *
+                      </label>
+                      <input
+                        type="number"
+                        min="0.5"
+                        step="0.5"
+                        value={editFormData?.schedule?.duration_hours || ""}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          // Ensure we always have a valid number
+                          const numValue =
+                            value === "" ? 1 : parseFloat(value) || 1;
+                          handleEditChange("schedule.duration_hours", numValue);
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                        required
+                      />
+                    </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
                         Break (minutes)

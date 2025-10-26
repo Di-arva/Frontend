@@ -1,65 +1,55 @@
 import { useState } from "react";
-import { 
-  Calendar, 
+import {
+  Calendar,
   ClockArrowDown,
-  Clock, 
+  Clock,
   UserCheck,
-  Plus, 
-  Check, 
-  X, 
+  Plus,
+  Check,
+  X,
   FileText,
   Download,
-
   LayoutDashboard,
   CreditCardIcon,
   Settings,
   ChevronDown,
   Building2,
   Users,
-
   DollarSign,
- 
 } from "lucide-react";
 
-  
-import Button from "../Button";
+import Button from "../../Button";
 
 const stats = [
   {
     title: "Active Shifts",
     value: "12",
-   
-    icon:UserCheck,
 
+    icon: UserCheck,
   },
   {
     title: "Pending Request",
     value: "3",
 
     icon: ClockArrowDown,
-  
   },
   {
     title: "Total Staff",
     value: "22",
- 
-    icon: Users,
 
+    icon: Users,
   },
   {
     title: "Monthly Cost",
     value: "$4000",
 
     icon: DollarSign,
-
   },
-  
 ];
 import ClinicTasksList from "./ClinicTasksList";
-         
-import CreateShiftModal from "../CreateShiftModal";
-import Header from "./Header";
-import Marklogo from "../../assets/icons/Dashboard.png"; 
+import CreateShiftModal from "./CreateShiftModal";
+import Header from "../Header";
+import Marklogo from "../../../assets/icons/Dashboard.png";
 
 const ClinicDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -84,7 +74,11 @@ const ClinicDashboard = () => {
       submenu: [
         { id: "all-shifts", label: "All Shifts", path: "shifts" },
         { id: "post-shift", label: "Post New Shift", path: "post-shift" },
-        { id: "shift-calendar", label: "Shift Calendar", path: "shift-calendar" },
+        {
+          id: "shift-calendar",
+          label: "Shift Calendar",
+          path: "shift-calendar",
+        },
       ],
     },
     {
@@ -118,24 +112,82 @@ const ClinicDashboard = () => {
     },
   ];
 
- 
-
   const upcomingShifts = [
-    { id: 1, role: "Dental Hygienist", date: "Oct 18, 2025", time: "9:00 AM - 5:00 PM", status: "confirmed", staff: "Sarah Johnson" },
-    { id: 2, role: "Dental Assistant", date: "Oct 19, 2025", time: "8:00 AM - 4:00 PM", status: "confirmed", staff: "Mike Chen" },
-    { id: 3, role: "Dental Hygienist", date: "Oct 20, 2025", time: "10:00 AM - 6:00 PM", status: "pending", staff: "Not assigned" },
+    {
+      id: 1,
+      role: "Dental Hygienist",
+      date: "Oct 18, 2025",
+      time: "9:00 AM - 5:00 PM",
+      status: "confirmed",
+      staff: "Sarah Johnson",
+    },
+    {
+      id: 2,
+      role: "Dental Assistant",
+      date: "Oct 19, 2025",
+      time: "8:00 AM - 4:00 PM",
+      status: "confirmed",
+      staff: "Mike Chen",
+    },
+    {
+      id: 3,
+      role: "Dental Hygienist",
+      date: "Oct 20, 2025",
+      time: "10:00 AM - 6:00 PM",
+      status: "pending",
+      staff: "Not assigned",
+    },
   ];
 
   const pendingRequests = [
-    { id: 1, role: "Dental Assistant", date: "Oct 22, 2025", time: "9:00 AM - 5:00 PM", applicants: 3, hourlyRate: "$35" },
-    { id: 2, role: "Dental Hygienist", date: "Oct 23, 2025", time: "8:00 AM - 4:00 PM", applicants: 5, hourlyRate: "$45" },
-    { id: 3, role: "Receptionist", date: "Oct 24, 2025", time: "9:00 AM - 5:00 PM", applicants: 2, hourlyRate: "$25" },
+    {
+      id: 1,
+      role: "Dental Assistant",
+      date: "Oct 22, 2025",
+      time: "9:00 AM - 5:00 PM",
+      applicants: 3,
+      hourlyRate: "$35",
+    },
+    {
+      id: 2,
+      role: "Dental Hygienist",
+      date: "Oct 23, 2025",
+      time: "8:00 AM - 4:00 PM",
+      applicants: 5,
+      hourlyRate: "$45",
+    },
+    {
+      id: 3,
+      role: "Receptionist",
+      date: "Oct 24, 2025",
+      time: "9:00 AM - 5:00 PM",
+      applicants: 2,
+      hourlyRate: "$25",
+    },
   ];
 
   const recentInvoices = [
-    { id: "INV-2025-1012", date: "Oct 10, 2025", amount: "$1,280", status: "Paid", period: "Week 40" },
-    { id: "INV-2025-1005", date: "Oct 3, 2025", amount: "$1,560", status: "Paid", period: "Week 39" },
-    { id: "INV-2025-0928", date: "Sep 28, 2025", amount: "$980", status: "Pending", period: "Week 38" },
+    {
+      id: "INV-2025-1012",
+      date: "Oct 10, 2025",
+      amount: "$1,280",
+      status: "Paid",
+      period: "Week 40",
+    },
+    {
+      id: "INV-2025-1005",
+      date: "Oct 3, 2025",
+      amount: "$1,560",
+      status: "Paid",
+      period: "Week 39",
+    },
+    {
+      id: "INV-2025-0928",
+      date: "Sep 28, 2025",
+      amount: "$980",
+      status: "Pending",
+      period: "Week 38",
+    },
   ];
 
   const [showShiftModal, setShowShiftModal] = useState(false);
@@ -187,25 +239,29 @@ const ClinicDashboard = () => {
       return true;
     }
     if (item.submenu) {
-      return item.submenu.some(sub => currentPage === sub.path);
+      return item.submenu.some((sub) => currentPage === sub.path);
     }
     return false;
   };
 
   const handleCreateShift = async () => {
     // Your existing handleCreateShift function remains the same
-    if (!newShift.title  || !newShift.date || 
-        !newShift.startTime || !newShift.endTime || !newShift.hourlyRate ||
-        !newShift.certificationLevel) {
+    if (
+      !newShift.title ||
+      !newShift.priority ||
+      !newShift.date ||
+      !newShift.startTime ||
+      !newShift.endTime ||
+      !newShift.hourlyRate
+    ) {
       alert("Please fill in all required fields marked with *");
-      return; 
+      return;
     }
 
     setIsSubmitting(true);
     try {
-    
       // Extract clinic_id from JWT token
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       if (!token) {
         alert("Authentication token not found. Please log in again.");
         setIsSubmitting(false);
@@ -213,9 +269,13 @@ const ClinicDashboard = () => {
       }
 
       // Construct the datetime strings (ISO format)
-      const startDateTime = new Date(`${newShift.date}T${newShift.startTime}`).toISOString();
-      const endDateTime = new Date(`${newShift.date}T${newShift.endTime}`).toISOString();
-      const deadlineDateTime = newShift.applicationDeadline 
+      const startDateTime = new Date(
+        `${newShift.date}T${newShift.startTime}`
+      ).toISOString();
+      const endDateTime = new Date(
+        `${newShift.date}T${newShift.endTime}`
+      ).toISOString();
+      const deadlineDateTime = newShift.applicationDeadline
         ? new Date(`${newShift.applicationDeadline}T23:59:59`).toISOString()
         : new Date(`${newShift.date}T00:00:00`).toISOString();
 
@@ -259,34 +319,41 @@ const ClinicDashboard = () => {
 
       // Add optional arrays only if they have values
       if (newShift.requiredSpecializations.length > 0) {
-        payload.requirements.required_specializations = newShift.requiredSpecializations;
+        payload.requirements.required_specializations =
+          newShift.requiredSpecializations;
       }
-      
+
       if (newShift.preferredSkills.length > 0) {
         payload.requirements.preferred_skills = newShift.preferredSkills;
       }
 
       // Add location details only if at least one field is filled
-      if (newShift.specificInstructions || newShift.parkingInfo || newShift.contactName) {
+      if (
+        newShift.specificInstructions ||
+        newShift.parkingInfo ||
+        newShift.contactName
+      ) {
         payload.location_details = {};
-        
+
         if (newShift.specificInstructions) {
-          payload.location_details.specific_instructions = newShift.specificInstructions;
+          payload.location_details.specific_instructions =
+            newShift.specificInstructions;
         }
-        
+
         if (newShift.parkingInfo) {
           payload.location_details.parking_info = newShift.parkingInfo;
         }
-        
+
         if (newShift.contactName) {
           payload.location_details.contact_person = {
             name: newShift.contactName,
           };
-          
+
           if (newShift.contactPhone) {
-            payload.location_details.contact_person.phone = newShift.contactPhone;
+            payload.location_details.contact_person.phone =
+              newShift.contactPhone;
           }
-          
+
           if (newShift.contactRole) {
             payload.location_details.contact_person.role = newShift.contactRole;
           }
@@ -294,46 +361,50 @@ const ClinicDashboard = () => {
       }
 
       // Replace with your actual API base URL
-      const apiBaseUrl = import.meta?.env?.VITE_SERVER_BASE_URL || 'http://localhost:1080';
-      
+      const apiBaseUrl =
+        import.meta?.env?.VITE_SERVER_BASE_URL || "http://localhost:1080";
+
       console.log("=== SENDING PAYLOAD ===");
       console.log(JSON.stringify(payload, null, 2));
       console.log("======================");
-      
+
       const response = await fetch(`${apiBaseUrl}/api/v1/clinic/tasks`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(payload),
       });
 
       const result = await response.json();
-      
+
       if (!response.ok) {
         console.error("=== API ERROR RESPONSE ===");
         console.error("Status:", response.status);
         console.error("Response:", JSON.stringify(result, null, 2));
         console.error("=========================");
-        
+
         // Handle 401 specifically
         if (response.status === 401) {
-          alert('Authentication failed. Please log in again.');
+          alert("Authentication failed. Please log in again.");
           setIsSubmitting(false);
           return;
         }
-        
+
         // Show detailed error message
-        const errorMessage = result.message || result.error || 'Failed to create shift';
-        const errorDetails = result.errors ? '\n\nDetails:\n' + JSON.stringify(result.errors, null, 2) : '';
+        const errorMessage =
+          result.message || result.error || "Failed to create shift";
+        const errorDetails = result.errors
+          ? "\n\nDetails:\n" + JSON.stringify(result.errors, null, 2)
+          : "";
         throw new Error(errorMessage + errorDetails);
       }
 
       console.log("=== SUCCESS ===");
       console.log(JSON.stringify(result, null, 2));
       console.log("===============");
-      
+
       setShowShiftModal(false);
       setNewShift({
         title: "",
@@ -360,9 +431,8 @@ const ClinicDashboard = () => {
         requiresBackgroundCheck: true,
         applicationDeadline: "",
       });
-      
-      alert("Shift posted successfully!");
 
+      alert("Shift posted successfully!");
     } catch (error) {
       console.error("=== CATCH ERROR ===");
       console.error(error);
@@ -387,7 +457,7 @@ const ClinicDashboard = () => {
             <img
               src={Marklogo}
               alt="Diarva Mark Logo"
-              className="bg-lightbg h-20 rounded-full w-auto"
+              className="bg-lightbg h-12 rounded-full w-auto"
             />
           </div>
 
@@ -456,25 +526,27 @@ const ClinicDashboard = () => {
                 </button>
 
                 {/* Submenus */}
-                {!sideBarCollapsed && item.submenu && expandedItems.has(item.id) && (
-                  <div className="ml-8 mt-2 space-y-1">
-                    {item.submenu.map((subitem) => {
-                      return (
-                        <button
-                          key={subitem.id}
-                          onClick={() => handleNavigation(subitem.path)}
-                          className={`w-full text-left p-2 text-sm font-poppins text-darkblack hover:cursor-pointer rounded-lg transition-all ${
-                            currentPage === subitem.path
-                              ? "border-1 border-darkblue bg-white/50"
-                              : "hover:border-1 hover:border-darkblue hover:bg-white/30"
-                          }`}
-                        >
-                          {subitem.label}
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
+                {!sideBarCollapsed &&
+                  item.submenu &&
+                  expandedItems.has(item.id) && (
+                    <div className="ml-8 mt-2 space-y-1">
+                      {item.submenu.map((subitem) => {
+                        return (
+                          <button
+                            key={subitem.id}
+                            onClick={() => handleNavigation(subitem.path)}
+                            className={`w-full text-left p-2 text-sm font-poppins text-darkblack hover:cursor-pointer rounded-lg transition-all ${
+                              currentPage === subitem.path
+                                ? "border-1 border-darkblue bg-white/50"
+                                : "hover:border-1 hover:border-darkblue hover:bg-white/30"
+                            }`}
+                          >
+                            {subitem.label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
               </div>
             );
           })}
@@ -516,94 +588,101 @@ const ClinicDashboard = () => {
             <div className="space-y-6">
               {/* Stats Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 bg-lightbg">
-      {stats.map((stats, index) => {
-        return (
-          <div
-            className="bg-lightblue backdrop-blur-xl rounded-2xl p-6  transition-all duration-300 group  hover:cursor-pointer hover:scale-110"
-            key={index}
-          >
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <p className="text-md font-light text-darkblack font-poppins">
-                  {stats.title}
-                </p>
-                <p className="text-3xl font-medium text-darkblue font-poppins my-2">
-                  {stats.value}
-                </p>
-             
-              </div>
+                {stats.map((stats, index) => {
+                  return (
+                    <div
+                      className="bg-lightblue backdrop-blur-xl rounded-2xl p-6  transition-all duration-300 group  hover:cursor-pointer hover:scale-110"
+                      key={index}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <p className="text-md font-light text-darkblack font-poppins">
+                            {stats.title}
+                          </p>
+                          <p className="text-3xl font-medium text-darkblue font-poppins my-2">
+                            {stats.value}
+                          </p>
+                        </div>
 
-              <div
-                className={`p-2 rounded-xl bg-darkblue group-hover:scale-110 transition-all duration-200 hover:cursor-pointer`}
-              >
-                {<stats.icon className={`w-6 h-6 text-lightbg`} />}
+                        <div
+                          className={`p-2 rounded-xl bg-darkblue group-hover:scale-110 transition-all duration-200 hover:cursor-pointer`}
+                        >
+                          {<stats.icon className={`w-6 h-6 text-lightbg`} />}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
-    
-          </div>
-        );
-      })}
-    </div>
 
               {/* Quick Actions */}
-        
-<div className="border border-lightblue font-poppins rounded-xl p-6 shadow-sm">
-  <h3 className="text-3xl font-normal text-darkblack mb-4">Quick Actions</h3>
-  <div className="flex gap-4">
-    <Button
-      variant="dark"
-      size="sm"
-      onClick={() => setShowShiftModal(true)}
-    >
-      <div className="flex items-center gap-2">
-        <Plus className="w-5 h-5" />
-        Post New Shift
-      </div>
-    </Button>
-    
-    <Button
-      variant="dark"
-      size="sm"
-    >
-      <div className="flex items-center gap-2">
-        <Users className="w-5 h-5" />
-        View Staffs
-      </div>
-    </Button>
-     
-    <Button
-      variant="dark"
-      size="sm"
-    >
-      <div className="flex items-center gap-2">
-        <FileText className="w-5 h-5" />
-        Download Reports
-      </div>
-    </Button>
-  </div>
-</div>
+
+              <div className="border border-lightblue font-poppins rounded-xl p-6 shadow-sm">
+                <h3 className="text-3xl font-normal text-darkblack mb-4">
+                  Quick Actions
+                </h3>
+                <div className="flex gap-4">
+                  <Button
+                    variant="dark"
+                    size="sm"
+                    onClick={() => setShowShiftModal(true)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Plus className="w-5 h-5" />
+                      Post New Shift
+                    </div>
+                  </Button>
+
+                  <Button variant="dark" size="sm">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-5 h-5" />
+                      View Staffs
+                    </div>
+                  </Button>
+
+                  <Button variant="dark" size="sm">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-5 h-5" />
+                      Download Reports
+                    </div>
+                  </Button>
+                </div>
+              </div>
 
               {/* Two Column Layout */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-poppins">
                 {/* Upcoming Shifts */}
                 <div className="bg-lightblue rounded-xl p-6 shadow-sm ">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-darkblue">Upcoming Shifts</h3>
-                    <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">View All</button>
+                    <h3 className="text-lg font-semibold text-darkblue">
+                      Upcoming Shifts
+                    </h3>
+                    <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">
+                      View All
+                    </button>
                   </div>
                   <div className="space-y-3">
                     {upcomingShifts.map((shift) => (
-                      <div key={shift.id} className="p-4 bg-lightbg rounded-2xl border border-lightblue">
+                      <div
+                        key={shift.id}
+                        className="p-4 bg-lightbg rounded-2xl border border-lightblue"
+                      >
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h4 className="font-semibold  text-darkblue">{shift.role}</h4>
-                            <p className="text-sm text-darkblack">{shift.staff}</p>
+                            <h4 className="font-semibold  text-darkblue">
+                              {shift.role}
+                            </h4>
+                            <p className="text-sm text-darkblack">
+                              {shift.staff}
+                            </p>
                           </div>
-                          <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            shift.status === "confirmed" 
-                              ? "bg-emerald-100 text-emerald-700" 
-                              : "bg-yellow-100 text-yellow-700"
-                          }`}>
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium ${
+                              shift.status === "confirmed"
+                                ? "bg-emerald-100 text-emerald-700"
+                                : "bg-yellow-100 text-yellow-700"
+                            }`}
+                          >
                             {shift.status}
                           </span>
                         </div>
@@ -625,34 +704,43 @@ const ClinicDashboard = () => {
                 {/* Pending Applications */}
                 <div className="bg-lightblue rounded-xl p-6 shadow-sm border border-lightblue">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-darkblue">Pending Applications</h3>
-                    <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">View All</button>
+                    <h3 className="text-lg font-semibold text-darkblue">
+                      Pending Applications
+                    </h3>
+                    <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">
+                      View All
+                    </button>
                   </div>
                   <div className="space-y-3">
                     {pendingRequests.map((req) => (
-                      <div key={req.id} className="p-4 bg-gray-50 rounded-2xl border border-lightblue">
-                        <div className="flex items-start justify-between mb-3">
-                 
+                      <div
+                        key={req.id}
+                        className="p-4 bg-gray-50 rounded-2xl border border-lightblue"
+                      >
+                        <div className="flex items-start justify-between mb-3 ">
                           <div>
-                            <h4 className="font-semibold text-darkblue">{req.role}</h4>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {req.date}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-4 h-4" />
-                            {req.time}
-                          </span>
-                        </div>
+                            <h4 className="font-semibold text-darkblue">
+                              {req.role}
+                            </h4>
+                            <div className="flex items-center w-full gap-2 mt-2 text-sm text-darkblack">
+                              <span className="flex items-center gap-1 ">
+                                <Calendar className="w-4 h-4 text-darkblue" />
+                                {req.date}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Clock className="w-4 h-4 text-darkblue" />
+                                {req.time}
+                              </span>
+                            </div>
                           </div>
                           <span className="px-3 py-1 bg-blue-100 text-darkblue rounded-full text-xs font-medium">
                             {req.applicants} applicants
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-md font-medium text-darkblue">{req.hourlyRate}/hr</span>
-                     
+                          <span className="text-md font-medium text-darkblue">
+                            {req.hourlyRate}/hr
+                          </span>
                         </div>
                       </div>
                     ))}
@@ -663,34 +751,63 @@ const ClinicDashboard = () => {
               {/* Recent Invoices */}
               <div className="bg-lightbg rounded-xl p-6 shadow-sm border border-lightblue">
                 <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-darkblue font-poppins">Recent Bills</h3>
-                <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">View All</button>
+                  <h3 className="text-xl font-semibold text-darkblue font-poppins">
+                    Recent Bills
+                  </h3>
+                  <button className="font-poppins font-medium text-sm hover:cursor-pointer text-darkblue hover:text-blue-800">
+                    View All
+                  </button>
                 </div>
                 <div className="overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-lightblue">
-                         <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">Bill ID</th>
-                         <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">Period</th>
-                         <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">Date</th>
-                         <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">Amount</th>
-                         <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">Status</th>
-                         <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">Action</th>
+                        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                          Bill ID
+                        </th>
+                        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                          Period
+                        </th>
+                        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                          Date
+                        </th>
+                        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                          Amount
+                        </th>
+                        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                          Status
+                        </th>
+                        <th className="text-left p-4 text-sm font-semibold text-darkblue font-poppins">
+                          Action
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {recentInvoices.map((invoice) => (
-                        <tr key={invoice.id} className="border-b border-lightblue hover:bg-lightblue/50">
-                          <td className="py-4 px-4 text-sm font-medium text-darkblack">{invoice.id}</td>
-                          <td className="py-4 px-4 text-sm text-darkblack">{invoice.period}</td>
-                          <td className="py-4 px-4 text-sm text-darkblack">{invoice.date}</td>
-                          <td className="py-4 px-4 text-sm font-semibold text-darkblack">{invoice.amount}</td>
+                        <tr
+                          key={invoice.id}
+                          className="border-b border-lightblue hover:bg-lightblue/50"
+                        >
+                          <td className="py-4 px-4 text-sm font-medium text-darkblack">
+                            {invoice.id}
+                          </td>
+                          <td className="py-4 px-4 text-sm text-darkblack">
+                            {invoice.period}
+                          </td>
+                          <td className="py-4 px-4 text-sm text-darkblack">
+                            {invoice.date}
+                          </td>
+                          <td className="py-4 px-4 text-sm font-semibold text-darkblack">
+                            {invoice.amount}
+                          </td>
                           <td className="py-4 px-4">
-                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                              invoice.status === "Paid" 
-                                ? "bg-emerald-100 text-emerald-700" 
-                                : "bg-yellow-100 text-yellow-700"
-                            }`}>
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                invoice.status === "Paid"
+                                  ? "bg-emerald-100 text-emerald-700"
+                                  : "bg-yellow-100 text-yellow-700"
+                              }`}
+                            >
                               {invoice.status}
                             </span>
                           </td>
@@ -708,32 +825,30 @@ const ClinicDashboard = () => {
             </div>
           )}
 
-          {currentPage === "shifts" && (
-            <ClinicTasksList />
-          )}
+          {currentPage === "shifts" && <ClinicTasksList />}
 
           {currentPage !== "dashboard" && currentPage !== "shifts" && (
             <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200 text-center">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                {currentPage.charAt(0).toUpperCase() + currentPage.slice(1)} Page
+                {currentPage.charAt(0).toUpperCase() + currentPage.slice(1)}{" "}
+                Page
               </h3>
-              <p className="text-gray-600">Content for {currentPage} will be displayed here</p>
+              <p className="text-gray-600">
+                Content for {currentPage} will be displayed here
+              </p>
             </div>
           )}
 
           {/* Create Shift Modal - Keep your existing modal code */}
 
-
-
-<CreateShiftModal
-  showShiftModal={showShiftModal}
-  setShowShiftModal={setShowShiftModal}
-  newShift={newShift}
-  setNewShift={setNewShift}
-  isSubmitting={isSubmitting}
-  handleCreateShift={handleCreateShift}
-/>
-        
+          <CreateShiftModal
+            showShiftModal={showShiftModal}
+            setShowShiftModal={setShowShiftModal}
+            newShift={newShift}
+            setNewShift={setNewShift}
+            isSubmitting={isSubmitting}
+            handleCreateShift={handleCreateShift}
+          />
         </main>
       </div>
     </div>

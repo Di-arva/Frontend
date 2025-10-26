@@ -13,7 +13,7 @@ import Candidatedashboard from "./Components/Dashboard/Candidatedashboard";
 import ThankYouPage from "./Components/Thanyoupage";
 import SetPasswordPage from "./Components/SignUp/SetPasswordPage";
 import TermsCheckbox from "./Components/Termsandcondition";
-import ClinicDashboard from "./Components/Dashboard/ClinicDashboard";
+import ClinicDashboard from "./Components/Dashboard/ClinicDashboard/ClinicDashboard";
 
 // Layout wrapper for public pages
 const PublicLayout = ({ children }) => {
@@ -34,9 +34,8 @@ function App() {
         {/* Admin dashboard */}
         <Route path="/admin/*" element={<Admindashboard />} />
         <Route path="/candidate/*" element={<Candidatedashboard />} />
-        <Route path="/clinic/*" element={<ClinicDashboard/>} />
-       
-      
+        <Route path="/clinic/*" element={<ClinicDashboard />} />
+
         {/* Public routes wrapped in PublicLayout */}
         <Route
           path="/*"
@@ -54,8 +53,7 @@ function App() {
                   path="/individualsignup"
                   element={<Individualsignup />}
                 />
-                <Route path="/terms" element={<TermsCheckbox/>} />
-
+                <Route path="/terms" element={<TermsCheckbox />} />
               </Routes>
             </PublicLayout>
           }
