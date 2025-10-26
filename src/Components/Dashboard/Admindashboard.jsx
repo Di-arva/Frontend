@@ -4,19 +4,49 @@ import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Dashboard from "./Dashboard";
 import Users from "./Users";
-
+import { adminMenuItems } from "../Dashboard/Config/MenuItems";
 import Clinics from "./Clinics"; 
 import UserDetailsView from "./UserDetailsView";
 
 const Admindashboard = () => {
   const [sideBarCollapsed, setSidebarCollapsed] = useState(false);
+  const adminUser = {
+    name: "Navjot Bassi",
+    role: "Administrator",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"
+  };
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        await fetch("/api/v1/auth/logout", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+      }
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userRole");
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout error:", error);
+      localStorage.clear();
+      window.location.href = "/login";
+    }
+  };
 
   return (
     <div className="h-screen flex overflow-hidden">
+
       {/* Sidebar */}
       <Sidebar
         collapsed={sideBarCollapsed}
         onToggle={() => setSidebarCollapsed(!sideBarCollapsed)}
+        menuItems={adminMenuItems}
+        user={adminUser}
+        portalName="Admin Panel"
       />
 
       {/* Main area */}

@@ -1,92 +1,19 @@
-import {
-  LayoutDashboard,
-  ChartBar,
-  Users,
-  CreditCardIcon,
-  Calendar,
-  FileSpreadsheet,
-  MessageSquare,
-  Settings,
-  ChevronDown,
-  Building2
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import Marklogo from "../../assets/icons/Dashboard.png";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
-const menuItems = [
-  {
-    id: "dashboard",
-    icon: LayoutDashboard,
-    label: "Dashboard",
-    path: "/admin",
-    badge: "New",
-  },
-  {
-    id: "analytics",
-    icon: ChartBar,
-    label: "Analytics",
-    submenu: [
-      { id: "overview", label: "Overview", path: "/admin/analytics/overview" },
-      { id: "reports", label: "Reports", path: "/admin/analytics/reports" },
-      { id: "insights", label: "Insights", path: "/admin/analytics/insights" },
-    ],
-  },
-  {
-    id: "users",
-    icon: Users,
-    label: "Users",
-    count: "2.4k",
-    submenu: [
-      { id: "all-users", label: "All Users", path: "/admin/users" },
-      { id: "roles", label: "Roles & Permission", path: "/admin/users/roles" },
-      { id: "activity", label: "User Activity", path: "/admin/users/activity" },
-    ],
-  },
-  {
-    id: "clinics",
-    icon: Building2,
-    label: "Clinics",
-    path: "/admin/clinics",
-  },
-  {
-    id: "messages",
-    icon: MessageSquare,
-    label: "Messages",
-    count: "12",
-    path: "/admin/messages",
-  },
-  {
-    id: "transactions",
-    icon: CreditCardIcon,
-    label: "Transaction",
-    count: "23",
-    path: "/admin/transactions",
-  },
-  {
-    id: "calendar",
-    icon: Calendar,
-    label: "Calendar",
-    path: "/admin/calendar",
-  },
-  {
-    id: "reports",
-    icon: FileSpreadsheet,
-    label: "Reports",
-    path: "/admin/reports",
-  },
-  {
-    id: "settings",
-    icon: Settings,
-    label: "Settings",
-    path: "/admin/settings",
-  },
-];
-
-const Sidebar = ({ collapsed, onToggle }) => {
+const Sidebar = ({ 
+  collapsed, 
+  onToggle, 
+  menuItems, 
+  user = {},
+  portalName = "Portal",
+  logo = Marklogo 
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [expandedItems, setExpandedItems] = useState(new Set(["analytics"]));
+  const [expandedItems, setExpandedItems] = useState(new Set());
 
   const toggleExpanded = (itemId) => {
     const newExpanded = new Set(expandedItems);
@@ -114,6 +41,14 @@ const Sidebar = ({ collapsed, onToggle }) => {
     return false;
   };
 
+  // Default user data
+  const defaultUser = {
+    name: "User Name",
+    role: "User",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D",
+    ...user
+  };
+
   return (
     <div
       className={`${
@@ -122,22 +57,22 @@ const Sidebar = ({ collapsed, onToggle }) => {
     >
       {/* Logo */}
       <div className="p-6 border-b border-blue-200 flex gap-4 items-center">
-        <div className="flex items-center space-x-3 ">
-        <img
-              src={Marklogo}
-              alt="Diarva Mark Logo"
-              className="bg-lightbg h-20 rounded-full w-auto "
-            />
+        <div className="flex items-center space-x-3">
+          <img
+            src={logo}
+            alt="Diarva Mark Logo"
+            className="bg-lightbg h-12 rounded-full w-auto"
+          />
         </div>
 
-        {/* conditional Rendering */}
+        {/* Conditional Rendering */}
         {!collapsed && (
           <div>
             <h1 className="font-poppins text-md text-darkblue font-medium">
               Di'arva
             </h1>
             <p className="font-poppins text-xs font-medium text-darkblack">
-              Admin Panel
+              {portalName}
             </p>
           </div>
         )}
@@ -224,19 +159,17 @@ const Sidebar = ({ collapsed, onToggle }) => {
         <div className="p-4 border-t border-slate-200/50">
           <div className="flex items-center space-x-3 p-3 rounded-xl bg-white">
             <img
-              src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+              src={defaultUser.avatar}
               alt="user profile image"
-              className="w-10 h-10 rounded-full ring-2 ring-darkblue  object-cover shrink-0"
+              className="w-10 h-10 rounded-full ring-2 ring-darkblue object-cover shrink-0"
             />
             <div className="flex-1 min-w-0">
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-darkblue truncate">
-                  Navjot Bassi
-                </p>
-                <p className="text-xs font-medium text-darkblack truncate">
-                  Administrator
-                </p>
-              </div>
+              <p className="text-sm font-semibold text-darkblue truncate">
+                {defaultUser.name}
+              </p>
+              <p className="text-xs font-medium text-darkblack truncate">
+                {defaultUser.role}
+              </p>
             </div>
           </div>
         </div>

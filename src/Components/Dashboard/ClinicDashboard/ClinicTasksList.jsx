@@ -8,11 +8,14 @@ import {
   ChevronLeft,
   ChevronRight,
   AlertCircle,
+  ChevronDown,
   XCircle,
   Loader,
+  X,
 } from "lucide-react";
 import Button from "../../Button";
 import ShiftDetailsModal from "./ShiftDetailsModal";
+
 const ClinicTasksList = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -398,6 +401,16 @@ const ClinicTasksList = () => {
     });
   };
 
+  // Active filters count for badge
+  const activeFiltersCount = [
+    filters.status.length,
+    filters.priority,
+    filters.certification_level,
+    filters.specialization,
+    filters.start_from,
+    filters.start_to,
+  ].filter(Boolean).length + (filters.status.length > 0 ? filters.status.length - 1 : 0);
+
   if (loading && tasks.length === 0) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -413,7 +426,7 @@ const ClinicTasksList = () => {
           <h3 className="text-3xl font-normal text-darkblack mb-4">
             Posted Shifts
           </h3>
-          <span className="px-3 py-1  text-lightbg bg-darkblue rounded-full text-sm font-medium">
+          <span className="px-3 py-1 text-lightbg bg-darkblue rounded-full text-sm font-medium">
             {pagination.total} Total Shift{pagination.total !== 1 ? "s" : ""}
           </span>
         </div>
@@ -421,15 +434,20 @@ const ClinicTasksList = () => {
           variant="dark"
           size="sm"
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-2 px-4 py-2rounded-lgtransition-colors "
+          className="flex items-center gap-2 px-4 py-2 rounded-full transition-colors relative"
         >
           <Filter className="w-4 h-4" />
           Filters
+          {activeFiltersCount > 0 && (
+            <span className="absolute -top-1 -right-1 w-5 h-5 bg-lightblue text-darkblack border border-darkblue text-xs rounded-full flex items-center justify-center">
+              {activeFiltersCount}
+            </span>
+          )}
         </Button>
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
           <div>
             <h4 className="font-semibold text-red-800">Error</h4>
@@ -439,38 +457,62 @@ const ClinicTasksList = () => {
       )}
 
       {showFilters && (
-        <div className="bg-lightbg rounded-3xl p-6 shadow-sm border border-darkblue">
-          <div className="space-y-4">
+        <div className="bg-lightbg rounded-3xl p-6 shadow-sm border border-darkblue/20">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-lg font-semibold text-darkblue">Filter Shifts</h4>
+            <div className="flex items-center gap-3">
+              {activeFiltersCount > 0 && (
+                <button
+                  onClick={resetFilters}
+                  className="text-sm text-darkblue hover:underline font-medium cursor-pointer"
+                >
+                  Clear All
+                </button>
+              )}
+              <button
+                onClick={() => setShowFilters(false)}
+                className="p-1 hover:bg-darkblue  transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5 text-darkblue hover:text-lightbg" />
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {/* Status Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Status (Multiple)
+              <label className="block text-sm font-medium text-darkblue mb-3">
+                Status
               </label>
               <div className="flex flex-wrap gap-2">
                 {[
-                  "open",
-                  "assigned",
-                  "in_progress",
-                  "completed",
-                  "cancelled",
+                  { value: "open", label: "Open" },
+                  { value: "assigned", label: "Assigned" },
+                  { value: "in_progress", label: "In Progress" },
+                  { value: "completed", label: "Completed" },
+                  { value: "cancelled", label: "Cancelled" },
                 ].map((status) => (
                   <button
-                    key={status}
-                    onClick={() => handleStatusToggle(status)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      filters.status.includes(status)
-                        ? "bg-blue-600 text-white"
-                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    key={status.value}
+                    onClick={() => handleStatusToggle(status.value)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 ${
+                      filters.status.includes(status.value)
+                        ? "bg-darkblue text-white shadow-md"
+                        : "bg-white text-darkblack border border-darkblue/30 hover:bg-darkblue hover:text-white"
                     }`}
                   >
-                    {status.replace("_", " ")}
+                    {status.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+            {/* Other Filters Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Priority Filter */}
+              <div className="relative">
+                <label className="block text-sm font-medium text-darkblue mb-2">
                   Priority
                 </label>
                 <select
@@ -478,7 +520,7 @@ const ClinicTasksList = () => {
                   onChange={(e) =>
                     handleFilterChange("priority", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="appearance-none w-full px-4 py-2 bg-white border border-darkblue/30 rounded-full text-darkblack focus:outline-none focus:ring-2 focus:ring-darkblue focus:border-transparent transition-all"
                 >
                   <option value="">All Priorities</option>
                   <option value="low">Low</option>
@@ -486,10 +528,12 @@ const ClinicTasksList = () => {
                   <option value="high">High</option>
                   <option value="urgent">Urgent</option>
                 </select>
+                <ChevronDown className="absolute right-3 top-12 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+              {/* Certification Level Filter */}
+              <div className="relative">
+                <label className="block text-sm font-medium text-darkblue mb-2">
                   Certification Level
                 </label>
                 <select
@@ -497,20 +541,22 @@ const ClinicTasksList = () => {
                   onChange={(e) =>
                     handleFilterChange("certification_level", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="appearance-none w-full px-4 py-2 bg-white border border-darkblue/30 rounded-full text-darkblack focus:outline-none focus:ring-2 focus:ring-darkblue focus:border-transparent transition-all"
                 >
                   <option value="">All Levels</option>
                   <option value="Level_I">Level I</option>
                   <option value="Level_II">Level II</option>
-                  <option value="RDA">RDA</option>
-                  <option value="CDA">CDA</option>
-                  <option value="PDA">PDA</option>
-                  <option value="Any">Any</option>
+                  <option value="HARP">HARP</option>
+              
                 </select>
+                <ChevronDown className="absolute right-3 top-12 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
               </div>
 
+      
+
+              {/* Start Date From */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-darkblue mb-2">
                   Start From
                 </label>
                 <input
@@ -519,16 +565,64 @@ const ClinicTasksList = () => {
                   onChange={(e) =>
                     handleFilterChange("start_from", e.target.value)
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2 bg-white border border-darkblue/30 rounded-full text-darkblack focus:outline-none focus:ring-2 focus:ring-darkblue focus:border-transparent transition-all"
                 />
               </div>
 
-              <div className="flex items-end">
+              {/* Start Date To */}
+              <div>
+                <label className="block text-sm font-medium text-darkblue mb-2">
+                  Start To
+                </label>
+                <input
+                  type="date"
+                  value={filters.start_to}
+                  onChange={(e) =>
+                    handleFilterChange("start_to", e.target.value)
+                  }
+                  className="w-full px-4 py-2 bg-white border border-darkblue/30 rounded-full text-darkblack focus:outline-none focus:ring-2 focus:ring-darkblue focus:border-transparent transition-all"
+                />
+              </div>
+
+              {/* Sort By */}
+              <div className="relative">
+                <label className="block text-sm font-medium text-darkblue mb-2">
+                  Sort By
+                </label>
+                <select
+                  value={filters.sort_by}
+                  onChange={(e) =>
+                    handleFilterChange("sort_by", e.target.value)
+                  }
+                  className="w-full appearance-none px-4 py-2 bg-white border border-darkblue/30 rounded-full text-darkblack focus:outline-none focus:ring-2 focus:ring-darkblue focus:border-transparent transition-all"
+                >
+                  <option value="schedule.start_datetime">Start Date</option>
+                  <option value="compensation.hourly_rate">Hourly Rate</option>
+                  <option value="priority">Priority</option>
+                  <option value="posted_at">Date Posted</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-12 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
+              </div>
+             
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between pt-4 border-t border-darkblue/20">
+              <span className="text-sm text-darkblue">
+                {activeFiltersCount} Active Filter{activeFiltersCount !== 1 ? 's' : ''}
+              </span>
+              <div className="flex items-center gap-3">
                 <button
                   onClick={resetFilters}
-                  className="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="px-6 py-2 border border-darkblue text-darkblue rounded-full hover:bg-darkblue hover:text-white transition-all duration-200"
                 >
-                  Reset Filters
+                  Reset
+                </button>
+                <button
+                  onClick={() => setShowFilters(false)}
+                  className="px-6 py-2 bg-darkblue text-white rounded-full hover:bg-darkblue/90 transition-all duration-200"
+                >
+                  Apply Filters
                 </button>
               </div>
             </div>
@@ -536,14 +630,65 @@ const ClinicTasksList = () => {
         </div>
       )}
 
+      {/* Active Filters Display */}
+      {activeFiltersCount > 0 && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-sm text-darkblue font-medium">Active filters:</span>
+          {filters.status.map(status => (
+          <span key={status} className="px-3 py-1 bg-darkblue text-white rounded-full text-xs font-medium capitalize flex items-center gap-1">
+              {status.replace('_', ' ')}
+              <button
+                onClick={() => handleStatusToggle(status)}
+                className="ml-2 hover:cursor-pointer"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </span>
+          ))}
+          {filters.priority && (
+            <span className="px-3 py-1 bg-darkblue text-white rounded-full text-xs font-medium capitalize">
+              Priority: {filters.priority}
+              <button
+                onClick={() => handleFilterChange('priority', '')}
+                className="ml-2 hover:text-red-200"
+              >
+                ×
+              </button>
+            </span>
+          )}
+          {filters.certification_level && (
+            <span className="px-3 py-1 bg-darkblue text-white rounded-full text-xs font-medium">
+              Cert: {filters.certification_level}
+              <button
+                onClick={() => handleFilterChange('certification_level', '')}
+                className="ml-2 hover:text-red-200"
+              >
+                ×
+              </button>
+            </span>
+          )}
+          {filters.start_from && (
+            <span className="px-3 py-1 bg-darkblue text-white rounded-full text-xs font-medium">
+              From: {filters.start_from}
+              <button
+                onClick={() => handleFilterChange('start_from', '')}
+                className="ml-2 hover:text-red-200"
+              >
+                ×
+              </button>
+            </span>
+          )}
+        </div>
+      )}
+
       <div className="space-y-4">
         {tasks.length === 0 ? (
-          <div className="bg-white rounded-xl p-12 text-center shadow-sm border border-gray-200">
-            <AlertCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          <div className="bg-white rounded-3xl p-12 text-center shadow-sm border border-darkblue/20">
+            <AlertCircle className="w-12 h-12 text-darkblue/50 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-darkblack mb-2">
               No shifts found
             </h3>
-            <p className="text-gray-600">
+            <p className="text-darkblack/70">
               Try adjusting your filters or post a new shift
             </p>
           </div>
@@ -551,7 +696,7 @@ const ClinicTasksList = () => {
           tasks.map((task) => (
             <div
               key={task._id}
-              className="bg-lightbg rounded-xl p-6 shadow-sm border border-darkblue/30 hover:shadow-md transition-shadow"
+              className="bg-lightbg rounded-3xl p-6 shadow-sm border border-darkblue/20 hover:shadow-md transition-all duration-300 hover:border-darkblue/40"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex-1">
@@ -622,7 +767,7 @@ const ClinicTasksList = () => {
                   onClick={() => fetchTaskDetails(task._id)}
                   variant="dark"
                   size="sm"
-                  className=" transition-colors "
+                  className="rounded-full transition-all duration-200 hover:scale-105"
                 >
                   View Details
                 </Button>
@@ -633,23 +778,23 @@ const ClinicTasksList = () => {
       </div>
 
       {pagination.pages > 1 && (
-        <div className="bg-white rounded-xl p-4 shadow-sm border border-lightblue">
+        <div className="bg-white rounded-3xl p-4 shadow-sm border border-lightblue">
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-600">
+            <div className="text-sm text-darkblack">
               Page {pagination.page} of {pagination.pages}
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => handlePageChange(pagination.page - 1)}
                 disabled={pagination.page === 1}
-                className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                className="p-2 border border-darkblue/30 rounded-full hover:bg-darkblue hover:text-white disabled:opacity-50 transition-all duration-200"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={() => handlePageChange(pagination.page + 1)}
                 disabled={pagination.page === pagination.pages}
-                className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+                className="p-2 border border-darkblue/30 rounded-full hover:bg-darkblue hover:text-white disabled:opacity-50 transition-all duration-200"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>

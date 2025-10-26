@@ -4,6 +4,9 @@ import Header from "./Header";
 import { useState, useEffect } from 'react';
 import AvailableShifts from '../AvailableShifts';
 import { useNavigate } from 'react-router-dom';
+import { candidateMenuItems } from './Config/MenuItems';
+
+
 
 const Candidatedashboard = () => {
   const [sideBarCollapsed, setSidebarCollapsed] = useState(false);
@@ -22,6 +25,9 @@ const Candidatedashboard = () => {
   
   const navigate = useNavigate();
   const API_BASE_URL = import.meta.env.VITE_SERVER_BASE_URL || 'http://localhost:1080/api/v1/';
+
+
+
 
   // Check authentication on component mount
   useEffect(() => {
@@ -185,13 +191,13 @@ const Candidatedashboard = () => {
   };
   return (
     <div className="h-screen flex overflow-hidden">
-      {/* Sidebar */}
-      <Sidebar
+        {/* Sidebar */}
+        <Sidebar
         collapsed={sideBarCollapsed}
         onToggle={() => setSidebarCollapsed(!sideBarCollapsed)}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-        onLogout={handleLogout}
+        menuItems={candidateMenuItems}
+        user={candidateUser}
+        portalName="Candidate Portal"
       />
 
       {/* Main area */}
