@@ -58,6 +58,13 @@ const ClinicDashboard = () => {
   const [currentPage, setCurrentPage] = useState("dashboard");
   const [expandedItems, setExpandedItems] = useState(new Set());
 
+   // Clinic-specific user data
+   const clinicUser = {
+    name: "Clinic Manager",
+    role: "clinic",
+    avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHJvZmlsZXxlbnwwfHwwfHx8MA%3D%3D"
+  };
+
   // Clinic-specific menu items
   const clinicMenuItems = [
     {
@@ -189,6 +196,35 @@ const ClinicDashboard = () => {
       period: "Week 38",
     },
   ];
+
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      
+      if (token) {
+        await fetch("/api/v1/auth/logout", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        });
+      }
+      
+      // Clear local storage
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userRole");
+      localStorage.removeItem("user");
+      
+      // Redirect to login
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Fallback: clear storage and redirect
+      localStorage.clear();
+      window.location.href = "/login";
+    }
+  };
 
   const [showShiftModal, setShowShiftModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -580,6 +616,10 @@ const ClinicDashboard = () => {
         <Header
           sideBarCollapsed={sideBarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed(!sideBarCollapsed)}
+          onLogout={handleLogout}
+          user={clinicUser}
+          showSearch={true}
+          variant="clinic"
         />
 
         {/* Scrollable dashboard content */}
