@@ -56,8 +56,10 @@ const stats = [
   
 ];
 import ClinicTasksList from "./ClinicTasksList";
+         
+import CreateShiftModal from "../CreateShiftModal";
 import Header from "./Header";
-import Marklogo from "../../assets/icons/Dashboard.png"; // Update path as needed
+import Marklogo from "../../assets/icons/Dashboard.png"; 
 
 const ClinicDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -544,45 +546,42 @@ const ClinicDashboard = () => {
     </div>
 
               {/* Quick Actions */}
-              <div className="border border-lightblue font-poppins rounded-xl p-6 shadow-sm">
-                <h3 className="text-3xl font-normal text-darkblack mb-4">Quick Actions</h3>
-                <div className="flex gap-4">
-                <Button
-                      type="button"
-                      variant="dark"
-                      size="sm"
-                    onClick={() =>  setShowShiftModal(true)}
-                    className="flex items-center gap-2 px-6 py-3 hover:bg-darkblue/80 transition-colors"
-                  >
-                    <Plus className="w-5 h-5" />
-                    Post New Shift
-                  </Button>
-                  <Button
-                      type="button"
-                      variant="dark"
-                      size="sm"
-                  
-                    className="flex items-center gap-2 px-6 py-3 hover:bg-darkblue/80 transition-colors"
-                  >
-                    <Users className="w-5 h-5" />
-                    View Staffs
-                  </Button>
-                   
-                  <Button
-                      type="button"
-                      variant="dark"
-                      size="sm"
-                  
-                    className="flex items-center gap-2 px-6 py-3 hover:bg-darkblue/80 transition-colors"
-                  >
-                    <FileText className="w-5 h-5" />
-                    Download Reports
-                  </Button>
-                
-             
-                 
-                </div>
-              </div>
+        
+<div className="border border-lightblue font-poppins rounded-xl p-6 shadow-sm">
+  <h3 className="text-3xl font-normal text-darkblack mb-4">Quick Actions</h3>
+  <div className="flex gap-4">
+    <Button
+      variant="dark"
+      size="sm"
+      onClick={() => setShowShiftModal(true)}
+    >
+      <div className="flex items-center gap-2">
+        <Plus className="w-5 h-5" />
+        Post New Shift
+      </div>
+    </Button>
+    
+    <Button
+      variant="dark"
+      size="sm"
+    >
+      <div className="flex items-center gap-2">
+        <Users className="w-5 h-5" />
+        View Staffs
+      </div>
+    </Button>
+     
+    <Button
+      variant="dark"
+      size="sm"
+    >
+      <div className="flex items-center gap-2">
+        <FileText className="w-5 h-5" />
+        Download Reports
+      </div>
+    </Button>
+  </div>
+</div>
 
               {/* Two Column Layout */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-poppins">
@@ -647,12 +646,12 @@ const ClinicDashboard = () => {
                           </span>
                         </div>
                           </div>
-                          <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
+                          <span className="px-3 py-1 bg-blue-100 text-darkblue rounded-full text-xs font-medium">
                             {req.applicants} applicants
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium text-gray-700">{req.hourlyRate}/hr</span>
+                          <span className="text-md font-medium text-darkblue">{req.hourlyRate}/hr</span>
                      
                         </div>
                       </div>
@@ -723,10 +722,18 @@ const ClinicDashboard = () => {
           )}
 
           {/* Create Shift Modal - Keep your existing modal code */}
-          {showShiftModal && (
-            // Your existing modal JSX here
-            <div>Shift Modal Content</div>
-          )}
+
+
+
+<CreateShiftModal
+  showShiftModal={showShiftModal}
+  setShowShiftModal={setShowShiftModal}
+  newShift={newShift}
+  setNewShift={setNewShift}
+  isSubmitting={isSubmitting}
+  handleCreateShift={handleCreateShift}
+/>
+        
         </main>
       </div>
     </div>
