@@ -1,513 +1,420 @@
-import React, { useState, useEffect } from "react";
-import { Search, SlidersHorizontal, Download, Plus, ChevronDown, Loader2, Building2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Building2,
+  MapPin,
+  Phone,
+  Mail,
+  Calendar,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Search,
+  Filter,
+  MoreVertical,
+  Eye,
+  Edit3,
+  Loader2,
+  X,
+} from "lucide-react";
+import Button from "../Button";
+import { useNavigate } from "react-router-dom";
 
-const mockClinics = [
-  {
-    id: 1,
-    clinic_name: "Downtown Medical Clinic",
-    first_name: "John",
-    last_name: "Smith",
-    username: "downtown",
-    email: "john.smith@downtown-medical.com",
-    phone: "+1 (555) 123-4567",
-    city: "Toronto",
-    province: "ON",
-    status: "pending",
-  },
-  {
-    id: 2,
-    clinic_name: "Riverside Health Center",
-    first_name: "Sarah",
-    last_name: "Johnson",
-    username: "riverside",
-    email: "sarah.j@riverside-health.com",
-    phone: "+1 (555) 987-6543",
-    city: "Ottawa",
-    province: "ON",
-    status: "approved",
-  },
-  {
-    id: 3,
-    clinic_name: "Family Care Clinic",
-    first_name: "Michael",
-    last_name: "Brown",
-    username: "familycare",
-    email: "mbrown@familycare.com",
-    phone: "+1 (555) 456-7890",
-    city: "Mississauga",
-    province: "ON",
-    status: "approved",
-  },
-  {
-    id: 4,
-    clinic_name: "North End Medical",
-    first_name: "Emily",
-    last_name: "Davis",
-    username: "northend",
-    email: "emily@northend-med.com",
-    phone: "+1 (555) 321-0987",
-    city: "Hamilton",
-    province: "ON",
-    status: "pending",
-  },
-  {
-    id: 5,
-    clinic_name: "Wellness Plus Clinic",
-    first_name: "David",
-    last_name: "Wilson",
-    username: "wellness",
-    email: "david@wellnessplus.com",
-    phone: "+1 (555) 678-1234",
-    city: "Kitchener",
-    province: "ON",
-    status: "approved",
-  },
-];
-
-const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
-
-const Clinics = ({ token, useMockData = false, apiBaseUrl = BASE_URL }) => {
+const Clinics = () => {
+  const navigate = useNavigate();
   const [clinics, setClinics] = useState([]);
+  const [filteredClinics, setFilteredClinics] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [processingId, setProcessingId] = useState(null);
   const [error, setError] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [showFilters, setShowFilters] = useState(false);
 
-  useEffect(() => {
-    fetchClinics();
-  }, []);
+  const BASE_URL = import.meta.env.VITE_SERVER_BASE_URL;
 
-  const fetchClinics = async () => {
-    setLoading(true);
-    setError(null);
+  const fetchUsers = async () => {
     try {
-      if (useMockData) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        setClinics(mockClinics);
-      } else {
-        const authToken = localStorage.getItem("authToken");
-
-        if (!authToken) {
-          throw new Error("No authentication token found. Please login again.");
-        }
-
-        const response = await fetch(`${apiBaseUrl}admin/clinics`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setClinics(data.clinics || data || []);
+      setLoading(true);
+      
+      // Get token from localStorage
+      const token = localStorage.getItem("accessToken") || 
+                    localStorage.getItem("token") ||
+                    localStorage.getItem("authToken");
+      
+      if (!token) {
+        console.error("No authentication token found");
+        navigate("/login");
+        return;
       }
+      
+      const headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      };
+      
+      const response = await fetch(`${BASE_URL}admin/users`, {
+        method: "GET",
+        credentials: "include",
+        headers: headers,
+      });
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.clear();
+          navigate("/login");
+          return;
+        }
+        throw new Error(`Failed to fetch users: ${response.statusText}`);
+      }
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Server returned HTML instead of JSON. Check your API endpoint.");
+      }
+
+      const data = await response.json();
+      
+      // Backend returns { success: true, data: [...users] }
+      const users = data.data || data.users || data;
+      
+      // Filter only clinic role users
+      const clinicUsers = users.filter(user => 
+        user.role?.toLowerCase() === "clinic" || 
+        user.role?.toLowerCase() === "clinic_admin"
+      );
+      
+      setClinics(clinicUsers);
+      setFilteredClinics(clinicUsers);
+      setError(null);
     } catch (err) {
-      console.error("Failed to fetch clinics:", err);
+      console.error("Error fetching clinics:", err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleApprove = async (id) => {
-    if (!window.confirm("Approve this clinic?")) return;
-    setProcessingId(id);
-
-    try {
-      if (useMockData) {
-        await new Promise((r) => setTimeout(r, 800));
-        setClinics((prev) =>
-          prev.map((c) => (c.id === id ? { ...c, status: "approved" } : c))
-        );
-      } else {
-        const authToken = localStorage.getItem("authToken");
-
-        const response = await fetch(`${apiBaseUrl}admin/clinics/${id}/approve`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to approve clinic");
-        }
-
-        setClinics((prev) =>
-          prev.map((c) => (c.id === id ? { ...c, status: "approved" } : c))
-        );
-      }
-    } catch (err) {
-      console.error("Failed to approve clinic:", err);
-      alert("Failed to approve clinic. Please try again.");
-    } finally {
-      setProcessingId(null);
-    }
-  };
-
-  const handleReject = async (id) => {
-    if (!window.confirm("Reject this clinic?")) return;
-    setProcessingId(id);
-
-    try {
-      if (useMockData) {
-        await new Promise((r) => setTimeout(r, 800));
-        setClinics((prev) =>
-          prev.map((c) => (c.id === id ? { ...c, status: "rejected" } : c))
-        );
-      } else {
-        const authToken = localStorage.getItem("authToken");
-
-        const response = await fetch(`${apiBaseUrl}admin/clinics/${id}/reject`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to reject clinic");
-        }
-
-        setClinics((prev) =>
-          prev.map((c) => (c.id === id ? { ...c, status: "rejected" } : c))
-        );
-      }
-    } catch (err) {
-      console.error("Failed to reject clinic:", err);
-      alert("Failed to reject clinic. Please try again.");
-    } finally {
-      setProcessingId(null);
-    }
-  };
-
   // Filter clinics based on search and status
-  const filteredClinics = clinics.filter((clinic) => {
-    const matchesSearch =
-      clinic.clinic_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      clinic.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      clinic.city?.toLowerCase().includes(searchQuery.toLowerCase());
+  useEffect(() => {
+    let filtered = [...clinics];
 
-    const matchesStatus =
-      statusFilter === "all" || clinic.status === statusFilter;
+    // Apply search filter
+    if (searchTerm) {
+      filtered = filtered.filter(clinic => 
+        clinic.clinic_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        clinic.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        clinic.first_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        clinic.last_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        clinic.address?.city?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
-    return matchesSearch && matchesStatus;
-  });
+    // Apply status filter
+    if (statusFilter !== "all") {
+      filtered = filtered.filter(
+        clinic => clinic.approval_status?.toLowerCase() === statusFilter.toLowerCase()
+      );
+    }
 
-  const stats = {
-    total: clinics.length,
-    pending: clinics.filter((c) => c.status === "pending").length,
-    approved: clinics.filter((c) => c.status === "approved").length,
-    rejected: clinics.filter((c) => c.status === "rejected").length,
+    setFilteredClinics(filtered);
+  }, [searchTerm, statusFilter, clinics]);
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setStatusFilter("all");
   };
+
+  const hasActiveFilters = searchTerm || statusFilter !== "all";
+
+  const handleViewClinic = (clinicId) => {
+    navigate(`/admin/clinics/${clinicId}`);
+  };
+
+  // Get status badge style
+  const getStatusBadge = (status) => {
+    const styles = {
+      approved: "bg-green-100 text-green-700",
+      active: "bg-green-100 text-green-700",
+      pending: "bg-yellow-100 text-yellow-700",
+      rejected: "bg-red-100 text-red-700",
+      inactive: "bg-red-100 text-red-700",
+    };
+    return styles[status?.toLowerCase()] || "bg-gray-100 text-gray-700";
+  };
+
+  // Get status icon
+  const getStatusIcon = (status) => {
+    const statusLower = status?.toLowerCase();
+    if (statusLower === "approved" || statusLower === "active") {
+      return CheckCircle;
+    } else if (statusLower === "pending") {
+      return Clock;
+    } else if (statusLower === "rejected" || statusLower === "inactive") {
+      return XCircle;
+    }
+    return Clock;
+  };
+
+  // Format date
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+  };
+
+  // Get unique statuses from data
+  const getUniqueStatuses = () => {
+    const statuses = clinics.map((c) => c.approval_status).filter(Boolean);
+    return [...new Set(statuses)];
+  };
+
+  const getAvatarUrl = (clinic) => {
+    if (clinic.avatar || clinic.profileImage) {
+      return clinic.avatar || clinic.profileImage;
+    }
+    const seed = clinic.clinic_name || clinic.first_name || clinic.email || clinic.id;
+    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 text-darkblue animate-spin" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+        <div className="text-red-600 mb-4">Error loading clinics</div>
+        <p className="text-red-700 mb-4">{error}</p>
+        <Button onClick={fetchUsers} variant="dark">
+          Try Again
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Clinics</h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Manage and monitor all registered clinics
-            </p>
-          </div>
-          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-            <Plus className="w-4 h-4" />
-            <span className="font-medium">Add Clinic</span>
-          </button>
+    <div className="space-y-6 p-6 bg-lightblue rounded-3xl min-h-screen font-poppins">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-3xl font-normal text-darkblack mb-2">
+            Clinics Management
+          </h3>
+          <p className="text-darkblack/70">
+            Manage all registered dental clinics ({clinics.length} total)
+          </p>
         </div>
-
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg border border-gray-200 p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Total Clinics</p>
-                <p className="text-2xl font-bold text-gray-900 mt-1">{stats.total}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg border border-gray-200 p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Pending</p>
-                <p className="text-2xl font-bold text-amber-600 mt-1">{stats.pending}</p>
-              </div>
-              <div className="w-12 h-12 bg-amber-50 rounded-lg flex items-center justify-center">
-                <div className="w-2 h-2 bg-amber-500 rounded-full"></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg border border-gray-200 p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Approved</p>
-                <p className="text-2xl font-bold text-emerald-600 mt-1">{stats.approved}</p>
-              </div>
-              <div className="w-12 h-12 bg-emerald-50 rounded-lg flex items-center justify-center">
-                <div className="w-2 h-2 bg-emerald-600 rounded-full"></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg border border-gray-200 p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-500">Rejected</p>
-                <p className="text-2xl font-bold text-rose-600 mt-1">{stats.rejected}</p>
-              </div>
-              <div className="w-12 h-12 bg-rose-50 rounded-lg flex items-center justify-center">
-                <div className="w-2 h-2 bg-rose-600 rounded-full"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Card */}
-        <div className="bg-white rounded-lg border border-gray-200">
-          {/* Toolbar */}
-          <div className="p-4 border-b border-gray-200">
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex-1 flex items-center gap-3">
-                {/* Search */}
-                <div className="relative flex-1 max-w-md">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                  <input
-                    type="text"
-                    placeholder="Search clinics..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
-
-                {/* Status Filter */}
-                <div className="relative">
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="appearance-none px-4 py-2 pr-10 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                  >
-                    <option value="all">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="approved">Approved</option>
-                    <option value="rejected">Rejected</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2">
-                <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                  <SlidersHorizontal className="w-4 h-4" />
-                  <span>Filters</span>
-                </button>
-                <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                  <Download className="w-4 h-4" />
-                  <span>Export</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="px-6 py-4 bg-rose-50 border-b border-rose-100">
-              <p className="text-sm text-rose-700">Error: {error}</p>
-              <button
-                onClick={fetchClinics}
-                className="mt-2 text-sm text-rose-800 underline hover:no-underline"
-              >
-                Try again
-              </button>
-            </div>
-          )}
-
-          {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left">
-                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Clinic Name
-                    </span>
-                  </th>
-                  <th className="px-6 py-3 text-left">
-                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Status
-                    </span>
-                  </th>
-                  <th className="px-6 py-3 text-left">
-                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Location
-                    </span>
-                  </th>
-                  <th className="px-6 py-3 text-left">
-                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Contact
-                    </span>
-                  </th>
-                  <th className="px-6 py-3 text-right">
-                    <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                      Actions
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className="divide-y divide-gray-200">
-                {loading ? (
-                  <tr>
-                    <td colSpan="5" className="py-16 text-center">
-                      <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto" />
-                      <p className="text-sm text-gray-500 mt-3">Loading clinics...</p>
-                    </td>
-                  </tr>
-                ) : filteredClinics.length === 0 ? (
-                  <tr>
-                    <td colSpan="5" className="py-16 text-center">
-                      <Building2 className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-                      <p className="text-sm font-medium text-gray-900">No clinics found</p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {searchQuery || statusFilter !== "all"
-                          ? "Try adjusting your filters"
-                          : "Get started by adding a new clinic"}
-                      </p>
-                    </td>
-                  </tr>
-                ) : (
-                  filteredClinics.map((clinic) => (
-                    <tr key={clinic.id} className="hover:bg-gray-50 transition-colors">
-                      {/* Clinic Name */}
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
-                            {clinic.clinic_name.substring(0, 2).toUpperCase()}
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-sm font-semibold text-gray-900 truncate">
-                              {clinic.clinic_name}
-                            </div>
-                            <div className="text-xs text-gray-500 truncate">
-                              @{clinic.username}
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Status */}
-                      <td className="px-6 py-4">
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${
-                            clinic.status === "approved"
-                              ? "bg-emerald-50 text-emerald-700"
-                              : clinic.status === "rejected"
-                              ? "bg-rose-50 text-rose-700"
-                              : "bg-amber-50 text-amber-700"
-                          }`}
-                        >
-                          <span
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              clinic.status === "approved"
-                                ? "bg-emerald-600"
-                                : clinic.status === "rejected"
-                                ? "bg-rose-600"
-                                : "bg-amber-500"
-                            }`}
-                          ></span>
-                          {clinic.status.charAt(0).toUpperCase() + clinic.status.slice(1)}
-                        </span>
-                      </td>
-
-                      {/* Location */}
-                      <td className="px-6 py-4">
-                        <div className="text-sm text-gray-900">
-                          {clinic.city}, {clinic.province}
-                        </div>
-                      </td>
-
-                      {/* Contact */}
-                      <td className="px-6 py-4">
-                        <div className="space-y-1">
-                          <div className="text-sm text-gray-900">{clinic.email}</div>
-                          <div className="text-xs text-gray-500">{clinic.phone}</div>
-                        </div>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="px-6 py-4">
-                        {clinic.status === "pending" ? (
-                          <div className="flex justify-end gap-2">
-                            <button
-                              onClick={() => handleApprove(clinic.id)}
-                              disabled={processingId === clinic.id}
-                              className="px-3 py-1.5 bg-emerald-600 text-white text-sm font-medium rounded-lg hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                            >
-                              {processingId === clinic.id ? (
-                                <Loader2 className="w-4 h-4 animate-spin mx-auto" />
-                              ) : (
-                                "Approve"
-                              )}
-                            </button>
-                            <button
-                              onClick={() => handleReject(clinic.id)}
-                              disabled={processingId === clinic.id}
-                              className="px-3 py-1.5 bg-rose-600 text-white text-sm font-medium rounded-lg hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex justify-end">
-                            <button className="px-4 py-1.5 text-sm font-medium text-blue-700 hover:bg-blue-50 rounded-lg transition-colors">
-                              View Details
-                            </button>
-                          </div>
-                        )}
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Footer */}
-          {!loading && filteredClinics.length > 0 && (
-            <div className="px-6 py-4 border-t border-gray-200">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">
-                  Showing {filteredClinics.length} of {clinics.length} clinics
-                </span>
-                <div className="flex items-center gap-2">
-                  <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                    Previous
-                  </button>
-                  <button className="px-3 py-1.5 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                    Next
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
+        
+        <div className="flex items-center gap-3">
+          <Button
+            variant="dark"
+            onClick={fetchUsers}
+            className="flex items-center gap-2"
+          >
+            Refresh
+          </Button>
         </div>
       </div>
+
+      {/* Filters and Search */}
+      <div className="bg-lightbg rounded-2xl p-6 border border-darkblue/20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {/* Search */}
+          <div className="md:col-span-2">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-darkblue" />
+              <input
+                type="text"
+                placeholder="Search clinics by name, email, or city..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-white border border-darkblue/30 rounded-xl text-darkblack focus:outline-none focus:ring-2 focus:ring-darkblue focus:border-transparent transition-all"
+              />
+            </div>
+          </div>
+
+          {/* Status Filter */}
+          <div className="flex items-center gap-3">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="w-full px-4 py-2 bg-white border border-darkblue/30 rounded-xl text-darkblack focus:outline-none focus:ring-2 focus:ring-darkblue focus:border-transparent transition-all"
+            >
+              <option value="all">All Status</option>
+              {getUniqueStatuses().map((status) => (
+                <option key={status} value={status}>
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
+                </option>
+              ))}
+            </select>
+            
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+              >
+                <X className="w-4 h-4" />
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Clinics Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {filteredClinics.length === 0 ? (
+          <div className="col-span-full bg-white rounded-2xl p-12 text-center border border-darkblue/20">
+            <Building2 className="w-12 h-12 text-darkblue/50 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-darkblack mb-2">
+              {clinics.length === 0 ? "No clinics found" : "No matching clinics"}
+            </h3>
+            <p className="text-darkblack/70">
+              {clinics.length === 0 
+                ? "No clinics have registered yet." 
+                : "Try adjusting your search or filters."
+              }
+            </p>
+          </div>
+        ) : (
+          filteredClinics.map((clinic) => {
+            const StatusIcon = getStatusIcon(clinic.approval_status);
+            
+            return (
+              <div
+                key={clinic._id}
+                className="bg-lightbg rounded-2xl p-6 border border-darkblue/20 hover:shadow-md transition-all duration-300"
+              >
+                {/* Clinic Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-darkblue rounded-xl flex items-center justify-center">
+                      <Building2 className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-darkblack text-lg">
+                        {clinic.clinic_name || `${clinic.first_name} ${clinic.last_name}`}
+                      </h4>
+                      <div className="flex items-center gap-2 mt-1">
+                        <StatusIcon className={`w-4 h-4 ${
+                          clinic.approval_status?.toLowerCase() === 'approved' ? 'text-green-600' :
+                          clinic.approval_status?.toLowerCase() === 'pending' ? 'text-yellow-600' : 'text-red-600'
+                        }`} />
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${getStatusBadge(clinic.approval_status)}`}>
+                          {clinic.approval_status || "Unknown"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Actions Menu */}
+                  <div className="relative">
+                    <button className="p-1 hover:bg-white/50 rounded-lg transition-colors">
+                      <MoreVertical className="w-4 h-4 text-darkblue" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Contact Information */}
+                <div className="space-y-2 mb-4">
+                  <div className="flex items-center gap-2 text-sm text-darkblack">
+                    <Mail className="w-4 h-4 text-darkblue" />
+                    <span>{clinic.email}</span>
+                  </div>
+                  
+                  {clinic.mobile && (
+                    <div className="flex items-center gap-2 text-sm text-darkblack">
+                      <Phone className="w-4 h-4 text-darkblue" />
+                      <span>{clinic.mobile}</span>
+                    </div>
+                  )}
+                  
+                  {clinic.address?.city && (
+                    <div className="flex items-center gap-2 text-sm text-darkblack">
+                      <MapPin className="w-4 h-4 text-darkblue" />
+                      <span>
+                        {clinic.address.city}, {clinic.address.province}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Additional Info */}
+                <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                  <div>
+                    <span className="text-darkblue font-medium">Role:</span>
+                    <span className="text-darkblack ml-2 capitalize">{clinic.role}</span>
+                  </div>
+                  <div>
+                    <span className="text-darkblue font-medium">Joined:</span>
+                    <span className="text-darkblack ml-2">{formatDate(clinic.createdAt)}</span>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-4 border-t border-darkblue/20">
+                  <div className="text-xs text-darkblack/70">
+                    Clinic ID: {clinic._id?.slice(-8)}
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <button 
+                      onClick={() => handleViewClinic(clinic._id)}
+                      className="p-1 hover:bg-white/50 rounded-lg transition-colors"
+                    >
+                      <Eye className="w-4 h-4 text-darkblue" />
+                    </button>
+                    <button className="p-1 hover:bg-white/50 rounded-lg transition-colors">
+                      <Edit3 className="w-4 h-4 text-darkblue" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Stats Summary */}
+      {clinics.length > 0 && (
+        <div className="bg-lightbg rounded-2xl p-6 border border-darkblue/20">
+          <h4 className="text-lg font-semibold text-darkblue mb-4">Clinics Summary</h4>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-darkblue">{clinics.length}</div>
+              <div className="text-sm text-darkblack/70">Total Clinics</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">
+                {clinics.filter(c => c.approval_status?.toLowerCase() === 'approved').length}
+              </div>
+              <div className="text-sm text-darkblack/70">Approved</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-yellow-600">
+                {clinics.filter(c => c.approval_status?.toLowerCase() === 'pending').length}
+              </div>
+              <div className="text-sm text-darkblack/70">Pending</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-red-600">
+                {clinics.filter(c => c.approval_status?.toLowerCase() === 'rejected').length}
+              </div>
+              <div className="text-sm text-darkblack/70">Rejected</div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

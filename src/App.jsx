@@ -8,7 +8,7 @@ import CreateAccount from "./Components/CreateAccount";
 import Officesignup from "./Components/SignUp/Officesignup";
 import Candidatesignup from "./Components/SignUp/Candidatesignup";
 import Individualsignup from "./Components/SignUp/Individualsignup";
-import Admindashboard from "./Components/Dashboard/Admindashboard";
+import Admindashboard from "./Components/Dashboard/AdminDashboard/Admindashboard";
 import Candidatedashboard from "./Components/Dashboard/Candidatedashboard";
 import ThankYouPage from "./Components/Thanyoupage";
 import SetPasswordPage from "./Components/SignUp/SetPasswordPage";
