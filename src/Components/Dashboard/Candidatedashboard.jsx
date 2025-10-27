@@ -142,10 +142,6 @@ const Candidatedashboard = () => {
       setLoading(false);
     }
   };
-
-
-
-
   //function to fetch applications
   const fetchMyApplications = async () => {
     try {
@@ -918,7 +914,6 @@ const checkIfUserApplied = (shiftId) => {
       onWithdraw={handleWithdrawApplication}
       onViewDetails={fetchShiftDetails}
     />
-    
   )}
 </div>
 

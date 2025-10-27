@@ -12,9 +12,11 @@ import {
   XCircle,
   Loader,
   X,
+  Eye
 } from "lucide-react";
 import Button from "../../Button";
 import ShiftDetailsModal from "./ShiftDetailsModal";
+import AppliedCandidatesModal from './AppliedCandidatesModal'
 
 const ClinicTasksList = () => {
   const [tasks, setTasks] = useState([]);
@@ -26,12 +28,15 @@ const ClinicTasksList = () => {
     total: 0,
     pages: 0,
   });
-  const [selectedTask, setSelectedTask] = useState(null);
+
   const [taskDetailLoading, setTaskDetailLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editFormData, setEditFormData] = useState(null);
   const [updateLoading, setUpdateLoading] = useState(false);
-
+  const [showCandidatesModal, setShowCandidatesModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTaskId, setSelectedTaskId] = useState(null);
+  
   const [filters, setFilters] = useState({
     status: [],
     priority: "",
@@ -44,6 +49,12 @@ const ClinicTasksList = () => {
   });
 
   const [showFilters, setShowFilters] = useState(false);
+
+  //function to handle viewing candidates
+  const handleViewCandidates = (taskId) => {
+    setSelectedTaskId(taskId);
+    setShowCandidatesModal(true);
+  };
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -763,6 +774,16 @@ const ClinicTasksList = () => {
                     {formatDate(task.posted_at)}
                   </span>
                 </span>
+                 {/* Add View Applicants button */}
+    <Button
+      onClick={() => handleViewCandidates(task._id)}
+      variant="light"
+      size="sm"
+      className="flex items-center gap-2 rounded-full transition-all duration-200 hover:scale-105"
+    >
+      <Eye className="w-4 h-4" />
+      View Applicants
+    </Button>
                 <Button
                   onClick={() => fetchTaskDetails(task._id)}
                   variant="dark"
@@ -819,6 +840,16 @@ const ClinicTasksList = () => {
           formatDate={formatDate}
         />
       )}
+
+{showCandidatesModal && (
+  <AppliedCandidatesModal
+    taskId={selectedTaskId}
+    onClose={() => {
+      setShowCandidatesModal(false);
+      setSelectedTaskId(null);
+    }}
+  />
+)}
     </div>
   );
 };
