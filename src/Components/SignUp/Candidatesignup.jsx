@@ -485,7 +485,7 @@ const professionalInfo = {
   
       // Create professional_info object with CORRECT field names
       const professionalInfo = {
-        years_of_experience: form.yearsOfExperience,
+        experience_years: form.yearsOfExperience,
         license_number: form.licenseNumber || "",
         certification_level: form.certification, // CHANGED: certification -> certification_level
         specializations: form.certification !== "harp" && form.specialization

@@ -14,6 +14,10 @@ import ThankYouPage from "./Components/Thanyoupage";
 import SetPasswordPage from "./Components/SignUp/SetPasswordPage";
 import TermsCheckbox from "./Components/Termsandcondition";
 import ClinicDashboard from "./Components/Dashboard/ClinicDashboard/ClinicDashboard";
+import ForgotPassword from './Components/ForgotPassword';
+import ResetPassword from './Components/SignUp/ResetPassword';
+
+
 
 // Layout wrapper for public pages
 const PublicLayout = ({ children }) => {
@@ -54,6 +58,8 @@ function App() {
                   element={<Individualsignup />}
                 />
                 <Route path="/terms" element={<TermsCheckbox />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/reset-password" element={<ResetPassword />} />
               </Routes>
             </PublicLayout>
           }
