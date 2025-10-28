@@ -12,7 +12,8 @@ import {
   XCircle,
   Loader,
   X,
-  Eye
+  Eye,
+  Briefcase
 } from "lucide-react";
 import Button from "../../Button";
 import ShiftDetailsModal from "./ShiftDetailsModal";
@@ -432,6 +433,7 @@ const ClinicTasksList = () => {
 
   return (
     <div className="space-y-6 p-6 bg-lightblue rounded-4xl min-h-screen font-poppins">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-3xl font-normal text-darkblack mb-4">
@@ -441,6 +443,7 @@ const ClinicTasksList = () => {
             {pagination.total} Total Shift{pagination.total !== 1 ? "s" : ""}
           </span>
         </div>
+        
         <Button
           variant="dark"
           size="sm"
@@ -467,6 +470,7 @@ const ClinicTasksList = () => {
         </div>
       )}
 
+      {/* Filters Section */}
       {showFilters && (
         <div className="bg-lightbg rounded-3xl p-6 shadow-sm border border-darkblue/20">
           {/* Header */}
@@ -558,12 +562,9 @@ const ClinicTasksList = () => {
                   <option value="Level_I">Level I</option>
                   <option value="Level_II">Level II</option>
                   <option value="HARP">HARP</option>
-              
                 </select>
                 <ChevronDown className="absolute right-3 top-12 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
               </div>
-
-      
 
               {/* Start Date From */}
               <div>
@@ -614,7 +615,6 @@ const ClinicTasksList = () => {
                 </select>
                 <ChevronDown className="absolute right-3 top-12 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
               </div>
-             
             </div>
 
             {/* Action Buttons */}
@@ -692,6 +692,7 @@ const ClinicTasksList = () => {
         </div>
       )}
 
+      {/* Tasks List */}
       <div className="space-y-4">
         {tasks.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 text-center shadow-sm border border-darkblue/20">
@@ -774,30 +775,32 @@ const ClinicTasksList = () => {
                     {formatDate(task.posted_at)}
                   </span>
                 </span>
-                 {/* Add View Applicants button */}
-    <Button
-      onClick={() => handleViewCandidates(task._id)}
-      variant="light"
-      size="sm"
-      className="flex items-center gap-2 rounded-full transition-all duration-200 hover:scale-105"
-    >
-      <Eye className="w-4 h-4" />
-      View Applicants
-    </Button>
-                <Button
-                  onClick={() => fetchTaskDetails(task._id)}
-                  variant="dark"
-                  size="sm"
-                  className="rounded-full transition-all duration-200 hover:scale-105"
-                >
-                  View Details
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => handleViewCandidates(task._id)}
+                    variant="light"
+                    size="sm"
+                    className="flex items-center gap-2 rounded-full transition-all duration-200 hover:scale-105"
+                  >
+                    <Eye className="w-4 h-4" />
+                    View Applicants
+                  </Button>
+                  <Button
+                    onClick={() => fetchTaskDetails(task._id)}
+                    variant="dark"
+                    size="sm"
+                    className="rounded-full transition-all duration-200 hover:scale-105"
+                  >
+                    View Details
+                  </Button>
+                </div>
               </div>
             </div>
           ))
         )}
       </div>
 
+      {/* Pagination */}
       {pagination.pages > 1 && (
         <div className="bg-white rounded-3xl p-4 shadow-sm border border-lightblue">
           <div className="flex items-center justify-between">
@@ -824,6 +827,7 @@ const ClinicTasksList = () => {
         </div>
       )}
 
+      {/* Modals */}
       {selectedTask && (
         <ShiftDetailsModal
           selectedTask={selectedTask}
@@ -841,15 +845,15 @@ const ClinicTasksList = () => {
         />
       )}
 
-{showCandidatesModal && (
-  <AppliedCandidatesModal
-    taskId={selectedTaskId}
-    onClose={() => {
-      setShowCandidatesModal(false);
-      setSelectedTaskId(null);
-    }}
-  />
-)}
+      {showCandidatesModal && (
+        <AppliedCandidatesModal
+          taskId={selectedTaskId}
+          onClose={() => {
+            setShowCandidatesModal(false);
+            setSelectedTaskId(null);
+          }}
+        />
+      )}
     </div>
   );
 };

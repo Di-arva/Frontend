@@ -107,6 +107,12 @@ import {
       ],
     },
     {
+      id: "All Applicants",
+      label: "Applicants",
+      icon: Users,
+      path: "/clinic/applicants",
+    },
+    {
       id: "staff",
       icon: Users,
       label: "Staff",
@@ -135,6 +141,7 @@ import {
       label: "Settings",
       path: "/clinic/settings",
     },
+  
   ];
   
   // Candidate Menu Items

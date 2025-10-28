@@ -7,10 +7,7 @@ import {
   Plus,
   FileText,
   Download,
-  LayoutDashboard,
-  CreditCardIcon,
-  Settings,
-  Building2,
+
   Users,
   DollarSign,
 } from "lucide-react";
@@ -21,7 +18,8 @@ import ClinicTasksList from "./ClinicTasksList";
 import CreateShiftModal from "./CreateShiftModal";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
-import { clinicMenuItems } from "../config/menuItems";
+import { clinicMenuItems } from "../Config/MenuItems";
+import AllApplicantsPage from "./AllApplicantsPage"; 
 
 const stats = [
   {
@@ -60,12 +58,13 @@ const ClinicDashboard = () => {
     if (path === "/clinic/shifts") return "shifts";
     if (path === "/clinic/post-shift") return "post-shift";
     if (path === "/clinic/shift-calendar") return "shift-calendar";
-    if (path === "/clinic/staff") return "staff";
+    if (path === "/clinic/applicants") return "applicants";
     if (path === "/clinic/staff/schedules") return "staff/schedules";
     if (path === "/clinic/staff/performance") return "staff/performance";
     if (path === "/clinic/billing") return "billing";
     if (path === "/clinic/clinic-profile") return "clinic-profile";
     if (path === "/clinic/settings") return "settings";
+
     return "dashboard";
   };
 
@@ -579,6 +578,9 @@ const ClinicDashboard = () => {
 
       case "shifts":
         return <ClinicTasksList />;
+
+        case "applicants":
+          return <AllApplicantsPage />;
 
       default:
         return (
