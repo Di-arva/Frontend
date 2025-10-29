@@ -31,12 +31,7 @@ const CreateShiftModal = ({
     return requiredFields.every((field) => field && field.trim() !== "");
   };
 
-  const getFieldError = (fieldName, value) => {
-    if (!value || value.trim() === "") {
-      return `${fieldName} is required`;
-    }
-    return null;
-  };
+ 
 
   return (
     <div className="fixed rounded-4xl inset-0 bg-lightbg/60 bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">

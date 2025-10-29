@@ -130,10 +130,11 @@ import {
       path: "/clinic/billing",
     },
     {
-      id: "clinic-profile",
+      id: "clinicprofile",
       icon: Building2,
       label: "Clinic Profile",
       path: "/clinic/clinic-profile",
+    
     },
     {
       id: "settings",

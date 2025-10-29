@@ -16,6 +16,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Button from "../../Button";
 import ClinicTasksList from "./ClinicTasksList";
 import CreateShiftModal from "./CreateShiftModal";
+import ClinicProfilePage from "./ClinicProfilePage";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import { clinicMenuItems } from "../Config/MenuItems";
@@ -581,6 +582,9 @@ const ClinicDashboard = () => {
 
         case "applicants":
           return <AllApplicantsPage />;
+
+          case "clinic-profile": 
+          return <ClinicProfilePage />;
 
       default:
         return (
