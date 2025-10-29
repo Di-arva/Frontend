@@ -18,7 +18,11 @@ const ROLES = [
   },
   {
     value: "assistant-dental",
-    label: "Assistant Dental",
+    label: "Associate Dentist",
+  },
+  {
+    value: "frontdesk-admin",
+    label: "Frontdesk Admin",
   },
 ];
 
@@ -1026,32 +1030,34 @@ const professionalInfo = {
                       </div>
 
                       {form.certification !== "harp" && (
-                        <div className="relative">
-                          <select
-                            name="specialization"
-                            value={form.specialization}
-                            onChange={onChange}
-                            required
-                            className="border appearance-none w-full border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
-                          >
-                            <option value="" disabled>
-                              Select specialization
-                            </option>
-                            {availableSpecializations.map((spec) => (
-                              <option key={spec} value={spec}>
-                                {spec}
-                              </option>
-                            ))}
-                          </select>
-                          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2  w-5 h-5 text-darkblue pointer-events-none" />
-                        </div>
-                      )}
-                    </div>
+  <div className="relative">
+    <select
+      name="specialization"
+      value={form.specialization}
+      onChange={onChange}
+      className="border appearance-none w-full border-darkblue h-10 rounded-3xl text-sm px-4 text-darkblue font-semibold"
+    >
+      <option value="" disabled>
+        Select specialization
+      </option>
+      {availableSpecializations.map((spec) => (
+        <option key={spec} value={spec}>
+          {spec}
+        </option>
+      ))}
+    </select>
+    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2  w-5 h-5 text-darkblue pointer-events-none" />
+  </div>
+)}
                   </div>
-                </>
-              ) : (
-                /* License Number for Hygienist and Assistant Dental */
-                <div>
+                </div>
+              </>
+            ) : form.role === "frontdesk-admin" ? (
+              // No license required for frontdesk-admin
+              null
+            ) : (
+              /* License Number for Hygienist and Assistant Dental */
+              <div>
                   <label
                     htmlFor="licenseNumber"
                     className="block text-sm font-medium text-gray-900 mb-1 px-3"

@@ -150,15 +150,15 @@ const ClinicProfilePage = () => {
         <div>
   <div className="flex items-center gap-3">
     <h1 className="text-3xl font-normal text-gray-900 mb-1">Clinic Profile</h1>
-    {(!clinicProfile.parking_info?.type || !clinicProfile.parking_info?.details) && (
+    {!clinicProfile.parking_info?.type && (
       <span className="relative flex h-3 w-3">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-darkblue opacity-75"></span>
-        <span className="relative inline-flex rounded-full h-3 w-3 bg-darkblue"></span>
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
       </span>
     )}
   </div>
-  <p className="text-darkblack">
-    {(!clinicProfile.parking_info?.type || !clinicProfile.parking_info?.details) 
+  <p className="text-gray-600">
+    {!clinicProfile.parking_info?.type 
       ? "Please add parking information" 
       : "View your clinic information"}
   </p>
