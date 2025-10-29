@@ -38,6 +38,25 @@ const ClinicProfilePage = () => {
     fetchClinicProfile();
   }, []);
 
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return "Not available";
+    
+    // Remove all non-digit characters
+    const cleaned = phone.replace(/\D/g, '');
+    
+    // Format as +1-416-111-2222
+    if (cleaned.length === 11 && cleaned.startsWith('1')) {
+      return `+${cleaned[0]}-${cleaned.slice(1, 4)}-${cleaned.slice(4, 7)}-${cleaned.slice(7)}`;
+    }
+    
+    // Format as 416-111-2222 (if no country code)
+    if (cleaned.length === 10) {
+      return `${cleaned.slice(0, 3)}-${cleaned.slice(3, 6)}-${cleaned.slice(6)}`;
+    }
+    
+    // Return original if format doesn't match
+    return phone;
+  };
   const fetchClinicProfile = async () => {
     try {
       setIsLoading(true);
@@ -129,9 +148,21 @@ const ClinicProfilePage = () => {
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-normal text-darkblack mb-1">Clinic Profile</h1>
-          <p className="text-gray-600">View your clinic information</p>
-        </div>
+  <div className="flex items-center gap-3">
+    <h1 className="text-3xl font-normal text-gray-900 mb-1">Clinic Profile</h1>
+    {(!clinicProfile.parking_info?.type || !clinicProfile.parking_info?.details) && (
+      <span className="relative flex h-3 w-3">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-darkblue opacity-75"></span>
+        <span className="relative inline-flex rounded-full h-3 w-3 bg-darkblue"></span>
+      </span>
+    )}
+  </div>
+  <p className="text-darkblack">
+    {(!clinicProfile.parking_info?.type || !clinicProfile.parking_info?.details) 
+      ? "Please add parking information" 
+      : "View your clinic information"}
+  </p>
+</div>
 
         {/* Main Profile Card */}
         <div className="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
@@ -152,7 +183,7 @@ const ClinicProfilePage = () => {
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-darkblue" />
                 <h3 className="text-base font-semibold text-darkblue">Contact:</h3>
-                <p className="text-base text-gray-600">{clinicProfile.contact?.phone}</p>
+                <p className="text-base text-darkblack">{formatPhoneNumber(clinicProfile.contact?.phone)}</p>
               </div>
             </div>
 
@@ -161,7 +192,7 @@ const ClinicProfilePage = () => {
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-darkblue" />
                 <h3 className="text-base font-semibold text-darkblue">Address:</h3>
-                <p className="text-base text-gray-600">
+                <p className="text-base text-darkblack">
                   {clinicProfile.address?.address_line}, {clinicProfile.address?.city}, {clinicProfile.address?.province} {clinicProfile.address?.postal_code}
                 </p>
               </div>
