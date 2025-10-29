@@ -16,22 +16,14 @@ const CreateShiftModal = ({
     const requiredFields = [
       newShift.title,
       newShift.priority,
-      newShift.minimumExperience,
       newShift.date,
       newShift.startTime,
       newShift.endTime,
       newShift.hourlyRate,
     ];
-
-    // If Dental Assistant is selected, certificationLevel is also required
-    if (newShift.title === "Dental Assistant") {
-      requiredFields.push(newShift.certificationLevel);
-    }
-
+    
     return requiredFields.every((field) => field && field.trim() !== "");
   };
-
- 
 
   return (
     <div className="fixed rounded-4xl inset-0 bg-lightbg/60 bg-opacity-50 flex items-center justify-center p-4 z-50 overflow-y-auto">
@@ -79,7 +71,8 @@ const CreateShiftModal = ({
                   <option value="">Select a role</option>
                   <option value="Dental Assistant">Dental Assistant</option>
                   <option value="Higienist">Higienist</option>
-                  <option value="Assistant Dentist">Assistant Dentist</option>
+                  <option value="Associate Dentist">Associate Dentist</option>
+                  <option value="Frontdesk Admin">Frontdesk Admin</option>
                 </select>
                 <ChevronDown className="absolute right-3 top-[70%] -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
                 {!newShift.title && (
@@ -110,82 +103,6 @@ const CreateShiftModal = ({
                 {!newShift.priority && (
                   <p className="text-red-700 text-xs mt-1">
                     Priority is required
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Requirements - Conditionally render Certification Level */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-darkblue pb-2">
-              Requirements
-            </h4>
-
-            <div className="grid grid-cols-2 gap-4">
-              {/* Show Certification Level only for Dental Assistant */}
-              {newShift.title === "Dental Assistant" && (
-                <div className="flex-1 relative">
-                  <label className="block text-sm/6 font-medium text-darkblack">
-                    Certification Level <span className="text-red-700">*</span>
-                  </label>
-                  <select
-                    value={newShift.certificationLevel}
-                    onChange={(e) =>
-                      setNewShift({
-                        ...newShift,
-                        certificationLevel: e.target.value,
-                      })
-                    }
-                    className={`border w-full appearance-none border-darkblue h-10 rounded-3xl text-sm px-4 mt-2 ${
-                      !newShift.certificationLevel
-                        ? "border-red-700"
-                        : "text-darkblue"
-                    }`}
-                  >
-                    <option value="">Select level</option>
-                    <option value="HARP">HARP</option>
-                    <option value="Level_I">Level I</option>
-                    <option value="Level_II">Level II</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-13 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
-                  {!newShift.certificationLevel && (
-                    <p className="text-red-700 text-xs mt-1">
-                      Certification level is required for Dental Assistant
-                    </p>
-                  )}
-                </div>
-              )}
-
-              <div className="flex-1 relative">
-                <label className="block text-sm/6 font-medium text-darkblack">
-                  Minimum Experience
-                  <span className="text-red-700">*</span>
-                </label>
-                <select
-                  value={newShift.minimumExperience}
-                  onChange={(e) =>
-                    setNewShift({
-                      ...newShift,
-                      minimumExperience: e.target.value,
-                    })
-                  }
-                  className={`border w-full appearance-none border-darkblue h-10 rounded-3xl text-sm px-4 mt-2 ${
-                    !newShift.minimumExperience
-                      ? "border-red-700"
-                      : "text-darkblue"
-                  }`}
-                >
-                  <option value="">Select experience</option>
-                  <option value="None Experience">None Experience</option>
-                  <option value="1 year">1 Year</option>
-                  <option value="2 years">2 years</option>
-                  <option value="3 years">3 years or more</option>
-                </select>
-                <ChevronDown className="absolute right-3 top-13 -translate-y-1/2 w-5 h-5 text-darkblue pointer-events-none" />
-                {!newShift.minimumExperience && (
-                  <p className="text-red-700 text-xs mt-1">
-                    Minimum experience is required
                   </p>
                 )}
               </div>

@@ -174,10 +174,7 @@ const ClinicDashboard = () => {
       const payload = {
         title: newShift.title.trim(),
         description: newShift.description.trim(),
-        requirements: {
-          certification_level: newShift.certificationLevel,
-          minimum_experience: parseInt(newShift.minimumExperience) || 0,
-        },
+  
         schedule: {
           start_datetime: startDateTime,
           end_datetime: endDateTime,
