@@ -1,11 +1,10 @@
 import {
   Bell,
   ChevronDown,
-  ChevronUp,
+ 
   Menu,
-  Search,
-  Settings,
-  LogOut,
+ 
+  LogOut
 } from "lucide-react";
 import { useState } from "react";
 
@@ -79,7 +78,7 @@ const Header = ({
   };
 
   return (
-    <div className="bg-lightbg backdrop-blur-xl border-b border-lightbg px-6 py-4">
+    <div className="bg-lightbg backdrop-blur-xl border-b border-lightbg px-6 py-5">
       <div className="flex items-center justify-between">
         {/* Left Section */}
         <div className="flex items-center space-x-4">
@@ -120,11 +119,12 @@ const Header = ({
       
 
 
+
 {/* User Profile */}
-<div className="relative pl-3 border-l border-lightblue hover:cursor-pointer">
+<div className="relative pl-3 border-l border-lightblue">
   <button
     onClick={() => setShowProfileMenu(!showProfileMenu)}
-    className="flex  hover:cursor-pointer items-center gap-3 hover:opacity-80 transition-opacity" 
+    className="flex items-center gap-3 hover:opacity-80 transition-opacity" 
   >
     <img
       src={defaultUser.avatar}
@@ -140,10 +140,10 @@ const Header = ({
       </p>
     </div>
     {/* Fixed width container */}
-    <div className="w-4 h-4 flex items-center justify-center shrink-0 ml-auto ">
+    <div className="w-4 h-4 flex items-center justify-center shrink-0 ml-auto">
       <ChevronDown 
-        className={`w-4 h-4 text-darkblue transition-transform duration-200  ${
-          showProfileMenu ? 'rotate-180 ' : ''
+        className={`w-4 h-4 text-darkblue transition-transform duration-200 ${
+          showProfileMenu ? 'rotate-180' : ''
         }`}
       />
     </div>

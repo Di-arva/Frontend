@@ -16,7 +16,7 @@ import {
   Loader2,
   X,
 } from "lucide-react";
-import Button from "../Button";
+import Button from "../../Button";
 import { useNavigate } from "react-router-dom";
 
 const Clinics = () => {

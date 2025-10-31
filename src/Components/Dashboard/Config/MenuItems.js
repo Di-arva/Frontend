@@ -163,7 +163,7 @@ import {
       id: "my-applications",
       icon: FileText,
       label: "My Applications",
-      path: "/candidate/applications",
+      path: "/candidate/my-applications",
     },
     {
       id: "schedule",

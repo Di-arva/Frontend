@@ -86,7 +86,7 @@ const MyApplicationsContent = ({ applications, loading, onRefresh, onWithdraw, o
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-lightbg rounded-4xl p-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -97,15 +97,15 @@ const MyApplicationsContent = ({ applications, loading, onRefresh, onWithdraw, o
         </div>
         <button
           onClick={onRefresh}
-          className="flex items-center gap-2 px-4 py-2 bg-darkblue text-white rounded-full hover:bg-darkblue/90 transition-colors"
+          className="hover:cursor-pointer flex hover:cursor items-center gap-2 px-4 py-2 bg-darkblue text-white rounded-full hover:bg-darkblue/90 transition-colors"
         >
-          <RefreshCw className="w-4 h-4" />
+          <RefreshCw className="w-4 h-4 " />
           Refresh
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div >
         <nav className="-mb-px flex space-x-8">
           {[
             { id: 'pending', name: 'Pending', includes: ['pending', 'under_review'] },
@@ -115,7 +115,7 @@ const MyApplicationsContent = ({ applications, loading, onRefresh, onWithdraw, o
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap hover:cursor-pointer ${
                 activeTab === tab.id
                   ? 'border-darkblue text-darkblue'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'

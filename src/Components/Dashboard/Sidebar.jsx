@@ -56,7 +56,7 @@ const Sidebar = ({
       } transition-all duration-300 ease-in-out bg-lightblue backdrop-blur-xl border-r border-blue-200 flex flex-col relative z-10`}
     >
       {/* Logo */}
-      <div className="p-6 border-b border-blue-200 flex gap-4 items-center">
+      <div className="px-5 py-5 border-b border-blue-200 flex gap-4 items-center">
         <div className="flex items-center space-x-3">
           <img
             src={logo}

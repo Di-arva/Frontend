@@ -2,11 +2,11 @@ import Sidebar from "../Sidebar";
 import Header from "../Header";
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Dashboard from "../Dashboard";
-import Users from "../Users";
+import Dashboard from "../AdminDashboard/Dashboard";
+import Users from "../AdminDashboard/Users";
 import { adminMenuItems } from "../Config/MenuItems";
-import Clinics from "../Clinics"; 
-import UserDetailsView from "../UserDetailsView";
+import Clinics from "../AdminDashboard/Clinics"; 
+import UserDetailsView from "../AdminDashboard/UserDetailsView";
 
 const Admindashboard = () => {
   const [sideBarCollapsed, setSidebarCollapsed] = useState(false);
