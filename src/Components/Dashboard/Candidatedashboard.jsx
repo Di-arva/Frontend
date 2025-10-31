@@ -60,7 +60,19 @@ const Candidatedashboard = () => {
   // Check authentication on component mount
   useEffect(() => {
     checkAuthentication();
+    fetchMyApplications(); 
+
+    // Pre-fetch applications but only if we don't have them yet
+  if (myApplications.length === 0) {
+    fetchMyApplications();
+  }
+
   }, []);
+
+    // Fetch available shifts when component mounts or filters change
+    useEffect(() => {
+      fetchAvailableShifts();
+    }, [filters.page, filters]);
 
   const checkAuthentication = () => {
     const token = localStorage.getItem('authToken');

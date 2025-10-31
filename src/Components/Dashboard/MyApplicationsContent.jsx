@@ -9,10 +9,24 @@ import {
   CheckCircle, 
   UserCheck 
 } from 'lucide-react';
+import { useState, useMemo } from 'react';
 import Button from '../Button';
 
 const MyApplicationsContent = ({ applications, loading, onRefresh, onWithdraw, onViewDetails }) => {
+  const [activeTab, setActiveTab] = useState('pending');
   
+  // Filter applications based on active tab
+  const filteredApplications = useMemo(() => {
+    if (activeTab === 'accepted') {
+      return applications.filter(app => app.status === 'accepted');
+    } else if (activeTab === 'withdrawn') {
+      return applications.filter(app => app.status === 'withdrawn');
+    } else if (activeTab === 'pending') {
+      return applications.filter(app => app.status === 'pending' || app.status === 'under_review');
+    }
+    return applications;
+  }, [applications, activeTab]);
+
   const getStatusBadge = (status) => {
     const styles = {
       pending: 'bg-yellow-100 text-yellow-700 border border-yellow-200',
@@ -47,6 +61,19 @@ const MyApplicationsContent = ({ applications, loading, onRefresh, onWithdraw, o
     });
   };
 
+  const getTabCount = (tabName) => {
+    switch (tabName) {
+      case 'pending':
+        return applications.filter(app => app.status === 'pending' || app.status === 'under_review').length;
+      case 'accepted':
+        return applications.filter(app => app.status === 'accepted').length;
+      case 'withdrawn':
+        return applications.filter(app => app.status === 'withdrawn').length;
+      default:
+        return 0;
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -74,20 +101,54 @@ const MyApplicationsContent = ({ applications, loading, onRefresh, onWithdraw, o
         </button>
       </div>
 
+      {/* Tabs */}
+      <div className="border-b border-gray-200">
+        <nav className="-mb-px flex space-x-8">
+          {[
+            { id: 'pending', name: 'Pending', includes: ['pending', 'under_review'] },
+            { id: 'accepted', name: 'Accepted', includes: ['accepted'] },
+            { id: 'withdrawn', name: 'Withdrawn', includes: ['withdrawn'] }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`py-2 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                activeTab === tab.id
+                  ? 'border-darkblue text-darkblue'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              {tab.name}
+              <span className={`ml-2 py-0.5 px-2 text-xs rounded-full ${
+                activeTab === tab.id
+                  ? 'bg-darkblue text-white'
+                  : 'bg-gray-200 text-gray-700'
+              }`}>
+                {getTabCount(tab.id)}
+              </span>
+            </button>
+          ))}
+        </nav>
+      </div>
+
       {/* Applications List */}
       <div className="space-y-4">
-        {applications.length === 0 ? (
+        {filteredApplications.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 text-center shadow-sm border border-darkblue/20">
             <FileText className="w-12 h-12 text-darkblue/50 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-darkblack mb-2">
-              No applications yet
+              {activeTab === 'pending' && 'No pending applications'}
+              {activeTab === 'accepted' && 'No accepted applications'}
+              {activeTab === 'withdrawn' && 'No withdrawn applications'}
             </h3>
             <p className="text-darkblack/70 mb-4">
-              You haven't applied to any shifts yet. Browse available shifts and apply to get started.
+              {activeTab === 'pending' && 'You have no pending applications. Browse available shifts and apply to get started.'}
+              {activeTab === 'accepted' && 'You have no accepted applications yet. Keep applying to shifts!'}
+              {activeTab === 'withdrawn' && 'You have no withdrawn applications.'}
             </p>
           </div>
         ) : (
-          applications.map((application) => {
+          filteredApplications.map((application) => {
             const StatusIcon = getStatusIcon(application.status);
             return (
               <div
