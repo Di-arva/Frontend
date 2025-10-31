@@ -7,10 +7,13 @@ import {
   AlertCircle, 
   X, 
   CheckCircle, 
-  UserCheck 
+  UserCheck ,
+  Building,
+  ExternalLink
 } from 'lucide-react';
 import { useState, useMemo } from 'react';
 import Button from '../Button';
+import openGoogleMaps from "../../utils/maps"
 
 const MyApplicationsContent = ({ applications, loading, onRefresh, onWithdraw, onViewDetails }) => {
   const [activeTab, setActiveTab] = useState('pending');
@@ -200,10 +203,43 @@ const MyApplicationsContent = ({ applications, loading, onRefresh, onWithdraw, o
                     <Clock className="w-4 h-4 text-darkblue" />
                     <span>{application.task_id?.schedule?.duration_hours || 0} hours</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-darkblack">
-                    <MapPin className="w-4 h-4 text-darkblue" />
-                    <span>{application.clinic_id?.name || 'Clinic'}</span>
-                  </div>
+             
+{/* Clinic Information Section */}
+<div className="mb-4">
+    {/* Clinic Name */}
+    <div className="flex items-center gap-2 text-sm font-medium text-darkblack mb-2">
+      <Building className="w-4 h-4 text-darkblue" />
+      <span>{application.clinic_id?.clinic_name || 'Dental Clinic'}</span>
+    </div>
+    
+    {/* Clickable Address */}
+    {application.clinic_id?.address && (
+  <div className="relative group">
+    <button
+      onClick={() => openGoogleMaps(application.clinic_id.address)}
+      className="flex  hover:cursor-pointer items-start gap-2 text-sm text-darkblack/80 hover:text-darkblue transition-colors w-full text-left"
+    >
+      <MapPin className="w-4 h-4 text-darkblue mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform" />
+      <div className="flex-1">
+        <div className="group-hover:underline">
+          {application.clinic_id.address.address_line}
+        </div>
+        <div>
+          {application.clinic_id.address.city}, {application.clinic_id.address.province} {application.clinic_id.address.postal_code}
+        </div>
+      </div>
+      <ExternalLink className="w-4 h-4 text-darkblue opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+    </button>
+    
+    {/* Tooltip - moved inside the wrapper div */}
+    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+      Open in Google Maps
+      <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
+    </div>
+  </div>
+)}
+
+  </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-3 border-t border-lightblue">

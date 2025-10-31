@@ -1,6 +1,7 @@
 import {
   Bell,
   ChevronDown,
+  ChevronUp,
   Menu,
   Search,
   Settings,
@@ -102,19 +103,7 @@ const Header = ({
           </div>
         </div>
 
-        {/* Center Search - Conditionally rendered */}
-        {showSearch && (
-          <div className="flex-1 max-w-md mx-8">
-            <div className="relative">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-darkblue" />
-              <input
-                type="text"
-                placeholder="Search Anything"
-                className="w-full pl-10 pr-4 py-2.5 bg-lightblue border-lightblue/50 rounded-xl text-darkblack font-poppins text-sm placeholder:text-darkblue focus:outline-none focus:ring-2 focus:ring-darkblue focus:border-transparent transition-all"
-              />
-            </div>
-          </div>
-        )}
+  
 
         {/* Right Section */}
         <div className="flex items-center space-x-3">
@@ -126,53 +115,60 @@ const Header = ({
             </span>
           </button>
 
-          {/* Settings */}
-          <button className="p-2.5 rounded-xl text-darkblue bg-lightblue hover:bg-lightblue/70 transition-colors hover:cursor-pointer">
-            <Settings className="w-5 h-5" />
-          </button>
+  
 
-          {/* User Profile */}
-          <div className="relative flex items-center space-x-3 pl-3 border-l border-lightblue">
-            <button
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
-              className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
-            >
-              <img
-                src={defaultUser.avatar}
-                alt="user profile"
-                className="w-9 h-9 rounded-full ring-2 ring-darkblue object-cover shrink-0"
-              />
-              <div className="hidden md:block">
-                <p className="text-sm font-poppins text-darkblue font-medium">
-                  {defaultUser.name}
-                </p>
-                <p className="text-xs font-medium text-darkblack font-poppins">
-                  {config.portal}
-                </p>
-              </div>
-              <ChevronDown className="w-4 h-4 text-darkblue" />
-            </button>
+      
 
-            {/* Dropdown Menu */}
-            {showProfileMenu && (
-              <>
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setShowProfileMenu(false)}
-                ></div>
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-lightblue py-2 z-20">
-                  <button
-                    onClick={handleLogoutClick}
-                    disabled={loggingOut}
-                    className="w-full px-4 py-2.5 text-left text-sm font-poppins text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <LogOut className="w-4 h-4" />
-                    {loggingOut ? "Logging out..." : "Logout"}
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+
+{/* User Profile */}
+<div className="relative pl-3 border-l border-lightblue hover:cursor-pointer">
+  <button
+    onClick={() => setShowProfileMenu(!showProfileMenu)}
+    className="flex  hover:cursor-pointer items-center gap-3 hover:opacity-80 transition-opacity" 
+  >
+    <img
+      src={defaultUser.avatar}
+      alt="user profile"
+      className="w-9 h-9 rounded-full ring-2 ring-darkblue object-cover shrink-0"
+    />
+    <div className="hidden md:block shrink-0">
+      <p className="text-sm font-poppins text-darkblue font-medium whitespace-nowrap">
+        {defaultUser.name}
+      </p>
+      <p className="text-xs font-medium text-darkblack font-poppins whitespace-nowrap">
+        {config.portal}
+      </p>
+    </div>
+    {/* Fixed width container */}
+    <div className="w-4 h-4 flex items-center justify-center shrink-0 ml-auto ">
+      <ChevronDown 
+        className={`w-4 h-4 text-darkblue transition-transform duration-200  ${
+          showProfileMenu ? 'rotate-180 ' : ''
+        }`}
+      />
+    </div>
+  </button>
+
+  {/* Dropdown Menu */}
+  {showProfileMenu && (
+    <>
+      <div
+        className="fixed inset-0 z-10"
+        onClick={() => setShowProfileMenu(false)}
+      ></div>
+      <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-lightblue py-2 z-20">
+        <button
+          onClick={handleLogoutClick}
+          disabled={loggingOut}
+          className="w-full px-4 py-2.5 text-left text-sm font-poppins text-darkblue hover:bg-lightblue/40 hover:cursor-pointer flex items-center gap-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <LogOut className="w-4 h-4 text-darkblue" />
+          {loggingOut ? "Logging out..." : "Logout"}
+        </button>
+      </div>
+    </>
+  )}
+</div>
         </div>
       </div>
     </div>

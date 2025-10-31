@@ -177,16 +177,5 @@ import {
       label: "My Profile",
       path: "/candidate/profile",
     },
-    {
-      id: "earnings",
-      icon: CreditCardIcon,
-      label: "Earnings",
-      path: "/candidate/earnings",
-    },
-    {
-      id: "settings",
-      icon: Settings,
-      label: "Settings",
-      path: "/candidate/settings",
-    },
+
   ];
