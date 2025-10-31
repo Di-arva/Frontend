@@ -48,14 +48,14 @@ const Footer = () => {
                 <FaPhoneVolume />
               </p>
               <a
-                href="tel:123-456-7890"
+                href="tel:365-767-0707"
                 aria-label="Phone number of Di’arva"
                 target="_blank"
                 rel="noopener noreferrer"
                 title="Our phone"
                 className="hover:text-darkblue font-poppins text-sm font-medium text-darkblack"
               >
-                123-456-7890
+                +1-365-767-0707
               </a>
             </div>
             <div className="flex items-center">

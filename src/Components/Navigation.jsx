@@ -25,7 +25,7 @@ const Navigation = () => {
 
   return (
     <>
-      <nav className="fixed w-full h-20 z-40 bg-lightbg flex justify-between items-center px-6 lg:px-10">
+      <nav className="fixed w-full h-22 z-40 border-b border-lightblue bg-lightbg flex justify-between items-center px-6 lg:px-10">
         {/* Logo */}
         <div>
           <img
@@ -73,7 +73,7 @@ const Navigation = () => {
             className="hover:bg-darkblue/80"
             variant="dark"
             size="md"
-            onClick={() => navigate("/register")}
+            onClick={() => navigate("/create-account")}
           >
             Create Account
           </Button>

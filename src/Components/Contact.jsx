@@ -1,10 +1,12 @@
 import Button from "./Button";
-import emailjs from "@emailjs/browser";
 import { useState, useEffect } from "react";
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ type: "", message: "" });
+
+  // URL for DB Server
+const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_URL || "";
 
   useEffect(() => {
     if (submitStatus.message) {
@@ -15,6 +17,7 @@ const Contact = () => {
       return () => clearTimeout(timer);
     }
   }, [submitStatus]);
+
   const handleContact = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -29,22 +32,27 @@ const Contact = () => {
       message: formData.get("message"),
     };
 
-    const serviceID = "service_ul00k0k";
-    const templateID = "template_za5jqac";
-    const publicKey = "PUHd-9-v4ll3uJMX_";
-
     try {
-      await emailjs.send(
-        serviceID,
-        templateID,
-        {
+      const response = await fetch(`${SERVER_BASE}send-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          // Remove process.env from frontend, handle this in backend
           name: `${data.firstname} ${data.lastname}`,
           email: data.email,
           phone: data.phone,
           message: data.message,
-        },
-        publicKey
-      );
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
 
       setSubmitStatus({
         type: "success",
@@ -53,10 +61,10 @@ const Contact = () => {
 
       e.target.reset();
     } catch (error) {
+      console.error("Error sending email:", error);
       setSubmitStatus({
-        type: error,
-        message:
-          "Sorry, there was an error sending your message. Please try again.",
+        type: "error",
+        message: error.message || "Sorry, there was an error sending your message. Please try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -71,7 +79,7 @@ const Contact = () => {
       <p className="font-poppins w-full md:w-4/5 lg:w-2/3 mt-4 text-darkblack text-sm sm:text-base md:text-lg">
         Email, call or complete the form to learn how
         <span className="text-darkblue font-semibold text-base sm:text-lg mx-2">
-          Di’arva
+          Di'arva
         </span>
         can help you.
       </p>
@@ -197,7 +205,13 @@ const Contact = () => {
         </form>
 
         {submitStatus.message && (
-          <div className="mt-6 p-4 font-poppins text-lg font-medium rounded-2xl shadow-md text-center text-darkblue border border-darkblue">
+          <div
+            className={`mt-6 p-4 font-poppins text-md font-medium rounded-2xl text-center border border-darkblue ${
+              submitStatus.type === "error"
+                ? "text-red-700 border-red-700 bg-red-50"
+                : "text-darkblue border-darkblue bg-lightblue"
+            }`}
+          >
             {submitStatus.message}
           </div>
         )}

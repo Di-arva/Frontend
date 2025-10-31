@@ -49,7 +49,7 @@ function App() {
                 <Route path="/" element={<Homepage />} />
                 <Route path="/set-password" element={<SetPasswordPage />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<CreateAccount />} />
+                <Route path="/create-account" element={<CreateAccount />} />
                 <Route path="/officesignup" element={<Officesignup />} />
                 <Route path="/candidatesignup" element={<Candidatesignup />} />
                 <Route path="/thank-you" element={<ThankYouPage />} />
