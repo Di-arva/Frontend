@@ -22,7 +22,7 @@ const QuickActions = ({ navigate }) => (
       <QuickActionButton
         icon={FileText}
         label="Browse Available Shifts"
-        onClick={() => navigate('/candidate/available-shifts')}
+        onClick={() => navigate('/candidate/shifts')}
         primary
       />
       <QuickActionButton

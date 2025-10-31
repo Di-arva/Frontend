@@ -5,10 +5,10 @@ import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Calendar from './Calendar';
 import MyApplicationsContent from "../Dashboard/MyApplicationsContent"
-import AvailableShiftsContent from '../AvailableShifts';
+import AvailableShiftsContent from '../Dashboard/CandidateDashboard/AvailableShiftsContent';
 import DashboardContent from '../Dashboard/CandidateDashboard/DashboardContent';
 import ShiftDetailsModal from '../Dashboard/CandidateDashboard/ShiftDetailsModal';
-import { Loader, CalendarIcon, CheckCircle, FileText, Briefcase } from 'lucide-react';
+import { Loader} from 'lucide-react';
 import Button from '../Button';
 
 const Candidatedashboard = () => {
@@ -69,11 +69,7 @@ const Candidatedashboard = () => {
     fetchMyApplications();
   }, [currentPage]);
 
-  useEffect(() => {
-    if (currentPage === 'available-shifts') {
-      fetchAvailableShifts();
-    }
-  }, [filters.page, filters, currentPage]);
+
 
   const checkAuthentication = () => {
     const token = localStorage.getItem('authToken');
@@ -82,7 +78,6 @@ const Candidatedashboard = () => {
       return;
     }
   };
-
   const fetchAvailableShifts = async () => {
     try {
       setLoading(true);
@@ -100,7 +95,7 @@ const Candidatedashboard = () => {
           queryParams.append(key, value);
         }
       });
-
+  
       const url = `${API_BASE_URL}applications/tasks?${queryParams}`;
       const response = await fetch(url, {
         method: 'GET',
@@ -109,21 +104,23 @@ const Candidatedashboard = () => {
           'Authorization': `Bearer ${token}`
         }
       });
-
+  
       if (response.status === 401) {
         localStorage.removeItem('authToken');
         localStorage.removeItem('userRole');
         navigate('/login');
         return;
       }
-
+  
       if (!response.ok) {
         throw new Error(`Failed to fetch available shifts: ${response.status}`);
       }
-
+  
       const result = await response.json();
+      console.log('API Response:', result); // Debug log
       
       if (result.success) {
+        // FIX: Set the data array directly to availableShifts
         setAvailableShifts(result.data || []);
         setPagination({
           page: result.page || 1,
@@ -132,10 +129,13 @@ const Candidatedashboard = () => {
           pages: result.pages || 0
         });
       } else {
+        setAvailableShifts([]);
         throw new Error(result.message || 'Failed to fetch shifts');
       }
     } catch (err) {
+      console.error('Error fetching shifts:', err);
       setError(err.message);
+      setAvailableShifts([]); // Ensure it's always an array
     } finally {
       setLoading(false);
     }
@@ -259,91 +259,85 @@ const Candidatedashboard = () => {
     }
   };
  
-  const handleApplyToShift = async (shiftId) => {
-    try {
-      setApplyLoading(true);
-      const token = localStorage.getItem('authToken');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
-  
-      const url = `${API_BASE_URL}applications/tasks/`;
-      const requestBody = {};
+const handleApplyToShift = async (shiftId) => {
+  try {
+    setApplyLoading(true);
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+      navigate('/login');
+      return;
+    }
 
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(requestBody)
-      });
-  
-      if (response.ok) {
-        const result = await response.json();
-        
-        if (result.success) {
-          setAvailableShifts(prevShifts => 
-            prevShifts.map(shift => 
-              shift._id === shiftId 
-                ? { 
-                    ...shift, 
-                    has_applied: true,
-                    application_id: result.data?.application_id,
-                    applications_count: (shift.applications_count || 0) + 1
-                  }
-                : shift
-            )
-          );
-          
-          if (selectedShift && selectedShift._id === shiftId) {
-            setSelectedShift(prev => ({
-              ...prev,
-              has_applied: true,
-              application_id: result.data?.application_id,
-              applications_count: (prev.applications_count || 0) + 1
-            }));
-          }
-          
-          setApplySuccess(true);
-          setTimeout(() => setApplySuccess(false), 3000);
-          fetchMyApplications();
-          alert(`✅ Successfully applied to shift!`);
-        } else {
-          throw new Error(result.message || 'Application failed');
-        }
-      } else if (response.status === 409) {
-        const errorData = await response.json();
-        
+    // FIX: Correct API endpoint - should include shiftId in the URL
+    const url = `${API_BASE_URL}applications/tasks/${shiftId}/apply`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+      // Remove the empty body since it's causing issues
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      
+      if (result.success) {
+        // Update the shifts to mark as applied
         setAvailableShifts(prevShifts => 
           prevShifts.map(shift => 
             shift._id === shiftId 
-              ? { ...shift, has_applied: true }
+              ? { 
+                  ...shift, 
+                  has_applied: true,
+                  applications_count: (shift.applications_count || 0) + 1
+                }
               : shift
           )
         );
         
         if (selectedShift && selectedShift._id === shiftId) {
-          setSelectedShift(prev => ({ ...prev, has_applied: true }));
+          setSelectedShift(prev => ({
+            ...prev,
+            has_applied: true,
+            applications_count: (prev.applications_count || 0) + 1
+          }));
         }
         
-        throw new Error('You have already applied to this shift.');
+        setApplySuccess(true);
+        setTimeout(() => setApplySuccess(false), 3000);
+        fetchMyApplications(); // Refresh applications list
+        alert(`✅ Successfully applied to shift!`);
       } else {
-        const errorText = await response.text();
-        throw new Error(`Application failed: ${response.status} - ${errorText}`);
+        throw new Error(result.message || 'Application failed');
       }
-  
-    } catch (err) {
-      if (err.message.includes('already applied')) {
-        alert('❌ You have already applied to this shift.');
-      } else {
-        alert(`❌ Error applying to shift: ${err.message}`);
+    } else if (response.status === 409) {
+      // Already applied
+      setAvailableShifts(prevShifts => 
+        prevShifts.map(shift => 
+          shift._id === shiftId 
+            ? { ...shift, has_applied: true }
+            : shift
+        )
+      );
+      
+      if (selectedShift && selectedShift._id === shiftId) {
+        setSelectedShift(prev => ({ ...prev, has_applied: true }));
       }
-    } finally {
-      setApplyLoading(false);
+      
+      alert('❌ You have already applied to this shift.');
+    } else {
+      const errorData = await response.json();
+      throw new Error(errorData.message || `Application failed: ${response.status}`);
     }
-  };
+
+  } catch (err) {
+    console.error('Error applying to shift:', err);
+    alert(`❌ Error applying to shift: ${err.message}`);
+  } finally {
+    setApplyLoading(false);
+  }
+};
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value, page: 1 }));
@@ -403,24 +397,24 @@ const Candidatedashboard = () => {
           />
         );
 
-      case "available-shifts":
-        return (
-          <AvailableShiftsContent
-            availableShifts={availableShifts}
-            loading={loading}
-            error={error}
-            pagination={pagination}
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onPageChange={handlePageChange}
-            onApplyToShift={handleApplyToShift}
-            applyLoading={applyLoading}
-            applySuccess={applySuccess}
-            onViewDetails={fetchShiftDetails}
-            formatDate={formatDate}
-            getStatusBadge={getStatusBadge}
-          />
-        );
+        case "available-shifts":
+          return (   <AvailableShiftsContent
+          availableShifts={availableShifts}
+          loading={loading}
+          error={error}
+          pagination={pagination}
+          filters={filters}
+          onFilterChange={handleFilterChange}
+          onPageChange={handlePageChange}
+          onApplyToShift={handleApplyToShift}
+          applyLoading={applyLoading}
+          applySuccess={applySuccess}
+          onViewDetails={fetchShiftDetails}
+          formatDate={formatDate}
+          getStatusBadge={getStatusBadge}
+        />
+        )
+
 
       case "my-applications":
         return (
