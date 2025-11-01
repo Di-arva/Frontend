@@ -19,10 +19,10 @@ const ForgotPassword = () => {
     }
 
     setLoading(true);
-    const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_URL
+    const SERVER_BASE = import.meta.env.VITE_SERVER_BASE_URL;
     try {
       const response = await fetch(
-        `${SERVER_BASE}auth/reset-password`,
+        `${SERVER_BASE}auth/request-password-reset`,
         {
           method: "POST",
           headers: {
@@ -64,9 +64,12 @@ const ForgotPassword = () => {
 
           {/* Header */}
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900">Forgot Password</h2>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Forgot Password
+            </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Enter your email address and we'll send you a link to reset your password.
+              Enter your email address and we'll send you a link to reset your
+              password.
             </p>
           </div>
 
@@ -87,7 +90,10 @@ const ForgotPassword = () => {
             )}
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Email Address
               </label>
               <input
@@ -116,7 +122,10 @@ const ForgotPassword = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Remember your password?{" "}
-              <Link to="/login" className="font-medium text-darkblue hover:text-blue-700">
+              <Link
+                to="/login"
+                className="font-medium text-darkblue hover:text-blue-700"
+              >
                 Back to Login
               </Link>
             </p>
